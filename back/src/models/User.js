@@ -2,7 +2,15 @@ import { DataTypes } from "sequelize";
 import sequelize from "../db/connection.js";
 
 const User = sequelize.define("User", {
-  username: {
+  first_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  last_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+   email:{
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
@@ -11,6 +19,7 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+ 
   role: {
     type: DataTypes.ENUM("ADMIN", "JURY", "PRODUCER"),
     defaultValue: "PRODUCER",
