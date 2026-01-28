@@ -41,7 +41,7 @@ createRoot(document.getElementById("root")).render(
              // </RoleGuard> 
               } >
             <Route index element={<Dashboard />} />
-            <Route path="/videos" element={<Videos />} />
+            <Route path="videos" element={<Videos />} />
           </Route>
         </Routes>
       </QueryClientProvider>

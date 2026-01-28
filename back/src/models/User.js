@@ -32,7 +32,6 @@ const User = sequelize.define(
       allowNull: false,
     },
 
-    // Optional fields (you changed these to NULL DEFAULT NULL)
     phone: { type: DataTypes.STRING(20), allowNull: true, defaultValue: null },
     mobile: { type: DataTypes.STRING(20), allowNull: true, defaultValue: null },
     birth_date: { type: DataTypes.DATEONLY, allowNull: true, defaultValue: null },
