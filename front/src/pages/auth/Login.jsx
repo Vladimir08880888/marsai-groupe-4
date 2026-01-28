@@ -76,7 +76,7 @@ export function Login() {
         <input
           id="email"
           type="text"
-          placeholder="Votre email"
+          placeholder="Your email"
           {...register("email")}
           required
         />
@@ -90,7 +90,7 @@ export function Login() {
         <input
           id="password"
           type="password"
-          placeholder="Votre mot de passe"
+          placeholder="Your password"
           {...register("password")}
           required
         />
