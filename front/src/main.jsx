@@ -12,6 +12,8 @@ import PublicLayout from "./layouts/PublicLayout.jsx";
 import { Login } from "./pages/auth/Login.jsx";
 import { Register } from "./pages/auth/Register.jsx";
 import { RoleGuard } from "./middlewares/RoleGuard.jsx";
+import UploadVideo from "./pages/public/Upload.jsx";
+import { UploadRoleGuard } from "./middlewares/Upload.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,6 +33,7 @@ createRoot(document.getElementById("root")).render(
             <Route index element={<Home />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
+            <Route path="/upload" element={<UploadRoleGuard><UploadVideo /></UploadRoleGuard>} />
           </Route>
 
           {/* Routes privées */}
