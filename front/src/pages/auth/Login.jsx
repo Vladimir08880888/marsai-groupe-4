@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const loginSchema = z.object({
-  email: z.string().email(),
+  email: z.string(),
   password: z.string(),
 });
 
@@ -34,8 +34,9 @@ export function Login() {
     mutationFn: async (data) => {
       return await login(data);
     },
-    onSuccess: (response, variables, context) => {
+    onSuccess: (response) => {
       // If you are logged
+      localStorage.setItem("first_name", response.data.first_name);
       localStorage.setItem("email", response.data?.email);
       localStorage.setItem("role", response.data?.role);
       localStorage.setItem("token", response.data?.token);
@@ -52,7 +53,7 @@ export function Login() {
           break;
       }
     },
-    onError: (error, variables, context) => {
+    onError: (error) => {
       alert(error.response?.data?.error);
     },
   });

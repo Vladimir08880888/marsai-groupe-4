@@ -2,10 +2,13 @@ import { Link } from "react-router";
 import Button from "./Button";
 
 export default function Navbar() {
-  const email = localStorage.getItem("email");
-
+    const userStr = localStorage.getItem("user");
+  const user = userStr ? JSON.parse(userStr) : null;
+  const displayName = user?.first_name;
+  
   function handleLogout() {
     localStorage.removeItem("email");
+    localStorage.removeItem("first_name");
     localStorage.removeItem("role");
     localStorage.removeItem("token");
     window.location.reload();
@@ -34,9 +37,9 @@ export default function Navbar() {
         </svg>
       </div>
       <div>
-        {email ? (
+        {user ? (
           <>
-            <span className="mr-4">Hello, {email}</span>
+            <span>Bonjour, {displayName} </span>
             <button onClick={handleLogout}>Logout</button>
           </>
         ) : (
