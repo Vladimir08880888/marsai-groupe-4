@@ -6,10 +6,12 @@ async function getStats(req, res) {
   try {
     const videos = await Video.findAll();
     const users = await User.findAll();
+    const producerCount = await User.count({ where: { role: 'PRODUCER' } });
 
     const stats = {
       totalVideos: videos.length,
       totalUsers: users.length,
+      producerCount: producerCount,
       recentVideos: videos.slice(0, 5),
       recentUsers: users.slice(0, 5),
     };

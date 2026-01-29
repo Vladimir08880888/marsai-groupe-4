@@ -1,9 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
 import { BrowserRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import "./index.css";
 import Home from "./pages/public/Home.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
@@ -14,6 +12,7 @@ import { Register } from "./pages/auth/Register.jsx";
 import { RoleGuard } from "./middlewares/RoleGuard.jsx";
 import Videos from "./pages/admin/Videos.jsx";
 import Users from "./pages/admin/Users.jsx";
+import Jury from "./pages/admin/Jury.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,14 +35,15 @@ createRoot(document.getElementById("root")).render(
           </Route>
 
           {/* Routes privées */}
-          <Route path="admin" element={ <AdminLayout />
-             // <RoleGuard allowedRoles={["ADMIN"]}>
-             //   <AdminLayout />
-             // </RoleGuard> 
+          <Route path="admin" element={ 
+             <RoleGuard allowedRoles={["ADMIN"]}>
+                <AdminLayout />
+             </RoleGuard> 
               } >
             <Route index element={<Dashboard />} />
             <Route path="users" element={<Users />} />
             <Route path="videos" element={<Videos />} />
+            <Route path="jury" element={<Jury />} />
           </Route>
         </Routes>
       </QueryClientProvider>

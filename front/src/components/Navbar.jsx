@@ -1,5 +1,4 @@
 import { Link,useNavigate } from "react-router";
-
 export default function Navbar() {
   const navigate = useNavigate();
   const firstName = localStorage.getItem("first_name") || "Utilisateur";

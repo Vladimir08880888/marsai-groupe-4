@@ -30,6 +30,10 @@ function Overview() {
           <h3>Total Vidéos</h3>
           <p style={{ fontSize: "2rem", fontWeight: "bold" }}>{stats.totalVideos}</p>
         </div>
+        <div style={{ padding: "20px", border: "1px solid #ddd", borderRadius: "8px", flex: 1 }}>
+          <h3>Comptes Réalisateur actifs</h3>
+          <p style={{ fontSize: "2rem", fontWeight: "bold" }}>{stats.producerCount}</p>
+        </div>
       </div>
 
       <div style={{ marginBottom: "30px" }}>
