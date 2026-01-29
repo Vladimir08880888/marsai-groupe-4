@@ -1,6 +1,8 @@
+// controllers/UploadController.js
 import Upload from "../models/Upload.js";
+import getVideoDuration from "@numairawan/video-duration";
 
-function getUpload(req, res) {
+function getUploads(req, res) {
   Upload.findAll()
     .then((uploads) => res.json(uploads))
     .catch((error) => {
@@ -21,18 +23,42 @@ function getUploadbyId(req, res) {
       }
     })
     .catch((error) => {
-      console.error("Erreur lors de la recuperation de l'upload :", error);
+      console.error("Erreur lors de la récupération de l'upload :", error);
       res.status(500).json({ error: "Erreur serveur" });
     });
 }
 
 async function createUpload(req, res) {
   try {
-    const userId = req.userId;
+    const userId = req.user.id; // ← doit venir de ton middleware AuthMiddleware
+    const role = req.user.role;
+
+    if (role !== "PARTICIPANT" && role !== "ADMIN") {
+      return res.status(403).json({ error: "Seuls les participants et admins peuvent uploader" });
+    }
+
+    const videoFile = req.file; // ← reçu par multer.single("video")
+
+    if (!videoFile) {
+      return res.status(400).json({ error: "Aucune vidéo envoyée" });
+    }
+
+    // Vérification durée avec video-duration
+    const durationSeconds = await getVideoDuration(videoFile.path);
+
+    const MAX_DURATION = 60; // 1 minute
+
+    if (durationSeconds > MAX_DURATION) {
+      // Pas de suppression manuelle ici → multer gère le cleanup à la fin de la requête
+      return res.status(400).json({
+        error: `La vidéo est trop longue (${Math.round(durationSeconds)}s). Maximum autorisé : ${MAX_DURATION} secondes.`,
+      });
+    }
+
+    // Si OK → création en base
     const {
       title,
       translated_title,
-      duration,
       synopsis,
       language,
       synopsis_en,
@@ -45,39 +71,50 @@ async function createUpload(req, res) {
     } = req.body;
 
     if (!title) {
-      return res.status(400).json({ error: "Le titre est requis" });
+      return res.status(400).json({ error: "Le titre est obligatoire" });
     }
+
+    // Formatage de la durée en "mm:ss"
+    const formattedDuration = `${Math.floor(durationSeconds / 60)
+      .toString()
+      .padStart(2, "0")}:${Math.floor(durationSeconds % 60)
+      .toString()
+      .padStart(2, "0")}`;
+
     const newFilm = await Upload.create({
       title,
       translated_title: translated_title || null,
-      duration: duration || null,
+      duration: formattedDuration,
       synopsis: synopsis || null,
       language: language || null,
       synopsis_en: synopsis_en || null,
       youtube_link: youtube_link || null,
-      status: "submitted",
       subtitles: subtitles || null,
       ai_tools: ai_tools || null,
       thumbnail: thumbnail || null,
       image_2: image_2 || null,
       image_3: image_3 || null,
+      status: "submitted",
       user_id: userId,
+      // video_path: videoFile.path, // optionnel si tu veux conserver le chemin temporaire
     });
+
     res.status(201).json({
-      message: "Film uploadé avec succès",
+      message: "Film soumis avec succès",
+      duration_seconds: Math.round(durationSeconds),
       film: newFilm,
     });
   } catch (error) {
     console.error("Erreur lors de la création de l'upload :", error);
-    res.status(500).json({ error: "Erreur serveur" });
+    res.status(500).json({ error: "Erreur serveur lors du traitement" });
   }
 }
 
-// A voir si utilisé ou pas
+// Mise à jour (inchangée)
 async function updateUpload(req, res) {
   try {
     const { id } = req.params;
-    const UserId = req.userId;
+    const userId = req.user.id;
     const role = req.user.role;
 
     const film = await Upload.findOne({ where: { id } });
@@ -85,10 +122,8 @@ async function updateUpload(req, res) {
       return res.status(404).json({ error: "Film non trouvé" });
     }
 
-    if (film.user_id !== UserId && role !== "ADMIN") {
-      return res
-        .status(403)
-        .json({ error: "Accès refusé pour modifier ce film" });
+    if (film.user_id !== userId && role !== "ADMIN") {
+      return res.status(403).json({ error: "Accès refusé pour modifier ce film" });
     }
 
     const updated = await film.update(req.body);
@@ -102,28 +137,34 @@ async function updateUpload(req, res) {
   }
 }
 
+// Suppression (inchangée)
 async function deleteUpload(req, res) {
-  const { id } = req.params;
-  const UserId = req.userId;
-  const role = req.user.role;
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const role = req.user.role;
 
-  const upload = await Upload.findOne({ where: { id } });
-  if (!upload) {
-    return res.status(404).json({ error: "Upload non trouvé" });
-  }
+    const upload = await Upload.findOne({ where: { id } });
+    if (!upload) {
+      return res.status(404).json({ error: "Upload non trouvé" });
+    }
 
-  if (upload.user_id !== UserId && role !== "ADMIN") {
-    return res.status(403).json({ error: "Accès refusé pour supprimer cet upload" });
+    if (upload.user_id !== userId && role !== "ADMIN") {
+      return res.status(403).json({ error: "Accès refusé pour supprimer cet upload" });
+    }
+
+    await upload.destroy();
+    res.status(204).send(); // No Content
+  } catch (error) {
+    console.error("Erreur lors de la suppression :", error);
+    res.status(500).json({ error: "Erreur serveur" });
   }
-  Upload.destroy({ where: { id } }).then(() => {
-    res.status(204).json({ message: "Uploads supprimé" });
-  });
 }
 
 export default {
-  createUpload,
-  getUpload,
+  getUploads,
   getUploadbyId,
+  createUpload,
   updateUpload,
   deleteUpload,
 };

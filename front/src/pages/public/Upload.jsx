@@ -1,79 +1,68 @@
-// UploadVideo.jsx
 import { useState } from "react";
-import { useNavigate } from "react-router";
 
-export default function UploadVideo() {
-  const [title, setTitle] = useState("");
-  const [file, setFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+const MAX_SECONDS = 60; // durée max autorisée
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) return alert("Choisissez une vidéo");
+function getVideoDuration(file) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const video = document.createElement("video");
 
-    setLoading(true);
+    video.preload = "metadata";
+    video.src = url;
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("video", file);
+    video.onloadedmetadata = () => {
+      URL.revokeObjectURL(url);
+      if (Number.isFinite(video.duration)) {
+        resolve(video.duration);
+      } else {
+        reject(new Error("Durée non lisible"));
+      }
+    };
+
+    video.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Fichier vidéo invalide"));
+    };
+  });
+}
+
+export default function Upload() {
+  const [error, setError] = useState(null);
+  const [duration, setDuration] = useState(null);
+
+  async function handleFileChange(e) {
+    setError(null);
+    setDuration(null);
+
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
 
     try {
-      const res = await fetch("/api/uploads", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: formData,
-      });
+      const d = await getVideoDuration(selectedFile);
 
-      if (!res.ok) throw new Error("Erreur upload");
+      if (d > MAX_SECONDS) {
+        setError(
+          `Vidéo trop longue (${Math.ceil(d)}s). Maximum autorisé : ${MAX_SECONDS}s`,
+        );
+        return;
+      }
 
-      alert("Vidéo envoyée avec succès !");
-      navigate("/");
+      setDuration(d);
     } catch (err) {
-      alert("Erreur : " + err.message);
-    } finally {
-      setLoading(false);
+      setError(err.message);
     }
-  };
+  }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Uploader une vidéo</h1>
+    <div style={{ maxWidth: 400 }}>
+      <h2>Upload vidéo</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium mb-1">Titre de la vidéo</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border p-3 rounded"
-            placeholder="Mon super court-métrage"
-            required
-          />
-        </div>
+      <input type="file" accept="video/*" onChange={handleFileChange} />
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Vidéo (MP4, max 500 Mo)</label>
-          <input
-            type="file"
-            accept="video/mp4,video/quicktime"
-            onChange={(e) => setFile(e.target.files[0])}
-            className="w-full border p-3 rounded"
-            required
-          />
-        </div>
+      {duration !== null && <p>Durée : {Math.ceil(duration)} secondes</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-green-600 text-white py-3 rounded hover:bg-green-700 disabled:opacity-50"
-        >
-          {loading ? "Envoi en cours..." : "Envoyer la vidéo"}
-        </button>
-      </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
+
