@@ -2,11 +2,17 @@ import express from "express";
 import userRouter from "./User.route.js";
 import videoRouter from "./Video.route.js";
 import authRouter from "./Auth.route.js";
+import filmRouter from "./Film.route.js";
+import evenementRouter from "./Evenement.route.js";
+import reservationRouter from "./Reservation.route.js";
 
 const router = express.Router();
 
 router.use("/auth", authRouter);
 router.use("/users", userRouter);
 router.use("/videos", videoRouter);
+router.use("/films", filmRouter);
+router.use("/evenements", evenementRouter);
+router.use("/reservations", reservationRouter);
 
 export default router;

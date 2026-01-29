@@ -1,14 +1,17 @@
 import { Outlet } from "react-router";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function PublicLayout() {
   return (
-    <div>
-      <Navbar />
-      <main>
+    <div className="min-h-screen flex flex-col">
+      <header className="absolute top-0 left-0 right-0 z-50">
+        <Navbar />
+      </header>
+      <main className="flex-1">
         <Outlet />
       </main>
-      <footer>Footer</footer>
+      <Footer />
     </div>
   );
 }

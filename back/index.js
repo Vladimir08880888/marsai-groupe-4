@@ -12,6 +12,10 @@ app.use(express.json());
 
 const PORT = process.env.PORT || 3000; // Définir le port du serveur
 
+app.get("/", (req, res) => {
+  res.json({ message: "MarsAI API is running" });
+});
+
 app.use("/", router);
 
 // Démarrer le serveur

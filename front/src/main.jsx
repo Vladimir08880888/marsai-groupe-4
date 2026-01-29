@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "./index.css";
 import Home from "./pages/public/Home.jsx";
+import Agenda from "./pages/public/Agenda.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import PublicLayout from "./layouts/PublicLayout.jsx";
@@ -29,6 +30,7 @@ createRoot(document.getElementById("root")).render(
           {/* Routes publiques */}
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
+            <Route path="/agenda" element={<Agenda />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
           </Route>
