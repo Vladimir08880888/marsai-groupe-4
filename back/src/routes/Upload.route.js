@@ -5,6 +5,9 @@ import AuthMiddleware from "../middlewares/AuthMiddleware.js";
 const uploadRouter = express.Router();
 
 // Upload
+uploadRouter.use((req, res, next) => {
+  AuthMiddleware(req, res, next, ["PARTICIPANT", "ADMIN"]); 
+});
 
 uploadRouter.use((req, res, next) => AuthMiddleware(req, res, next, ["ADMIN"]));
 uploadRouter.get("/", UploadController.getUploads); // Liste de tous les uploads

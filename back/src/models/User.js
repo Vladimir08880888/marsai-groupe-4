@@ -26,14 +26,14 @@ const User = sequelize.define("User", {
   },
   phone: {
     type: DataTypes.STRING(20),
-    allowNull: true,           // ou false si obligatoire
+    allowNull: true,           
   },
   mobile: {
     type: DataTypes.STRING(20),
     allowNull: true,
   },
   birth_date: {
-    type: DataTypes.DATEONLY,  // ou DATE si heure incluse
+    type: DataTypes.DATEONLY, 
     allowNull: true,
   },
   street: {
