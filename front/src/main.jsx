@@ -13,6 +13,7 @@ import { Login } from "./pages/auth/Login.jsx";
 import { Register } from "./pages/auth/Register.jsx";
 import { RoleGuard } from "./middlewares/RoleGuard.jsx";
 import GalerieDesFilmsPage from "./pages/Gallerie.jsx";
+import Videos from "./pages/admin/Videos.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -36,15 +37,13 @@ createRoot(document.getElementById("root")).render(
           </Route>
 
           {/* Routes privées */}
-          <Route
-            path="admin"
-            element={
-              <RoleGuard allowedRoles={["ADMIN"]}>
-                <AdminLayout />
-              </RoleGuard>
-            }
-          >
+          <Route path="admin" element={ <AdminLayout />
+             // <RoleGuard allowedRoles={["ADMIN"]}>
+             //   <AdminLayout />
+             // </RoleGuard> 
+              } >
             <Route index element={<Dashboard />} />
+            <Route path="videos" element={<Videos />} />
           </Route>
         </Routes>
       </QueryClientProvider>
