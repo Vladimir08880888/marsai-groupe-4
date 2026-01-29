@@ -8,7 +8,7 @@ export default function PublicLayout() {
       <main>
         <Outlet />
       </main>
-      <footer>Footer</footer>
+      <footer className="bg-black">Footer</footer>
     </div>
   );
 }
