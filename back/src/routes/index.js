@@ -1,5 +1,5 @@
 import express from "express";
-import userRouter from "./User.route.js";
+import userRouter from "./admin/User.route.js";
 import authRouter from "./Auth.route.js";
 import filmRouter from "./Film.route.js";
 import evenementRouter from "./Evenement.route.js";
