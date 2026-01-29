@@ -113,11 +113,11 @@ export const reservationsApi = {
 
 // Auth API
 export const authApi = {
-  login: async (username, password) => {
+  login: async (email, password) => {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || "Erreur de connexion");
@@ -185,7 +185,7 @@ export const awardsApi = {
     const response = await fetch(`${API_URL}/awards/${awardId}/films`, {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ id_film: filmId }),
+      body: JSON.stringify({ film_id: filmId }),
     });
     return response.json();
   },
@@ -207,11 +207,11 @@ export const juryApi = {
     return response.json();
   },
 
-  assign: async (id_film, id_jury) => {
+  assign: async (film_id, jury_id) => {
     const response = await fetch(`${API_URL}/jury/assign`, {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ id_film, id_jury }),
+      body: JSON.stringify({ film_id, jury_id }),
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || "Erreur");
@@ -232,11 +232,11 @@ export const juryApi = {
     return response.json();
   },
 
-  vote: async (id_film, vote, comment) => {
+  vote: async (film_id, vote, comment) => {
     const response = await fetch(`${API_URL}/jury/vote`, {
       method: "POST",
       headers: { ...authHeaders(), "Content-Type": "application/json" },
-      body: JSON.stringify({ id_film, vote, comment }),
+      body: JSON.stringify({ film_id, vote, comment }),
     });
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || "Erreur");

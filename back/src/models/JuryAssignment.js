@@ -7,17 +7,20 @@ const JuryAssignment = sequelize.define("JuryAssignment", {
     primaryKey: true,
     autoIncrement: true,
   },
-  id_film: {
+  film_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  id_jury: {
+  jury_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
 }, {
-  tableName: "jury_assignment",
-  timestamps: false,
+  tableName: "jury_assignments",
+  timestamps: true,
+  createdAt: "created_at",
+  updatedAt: "updated_at",
+  freezeTableName: true,
 });
 
 export default JuryAssignment;

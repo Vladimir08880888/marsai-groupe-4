@@ -2,11 +2,22 @@
 
 ## Identifiants de test
 
-| Rôle | Nom d'utilisateur | Mot de passe | Email |
-|------|-------------------|--------------|-------|
-| Administrateur | `admin` | `admin123` | admin@marsai.io |
-| Jury | `jury1` | `jury123` | jury1@marsai.io |
-| Producteur | `producer1` | `prod123` | producer1@marsai.io |
+| Rôle | Email | Mot de passe |
+|------|-------|--------------|
+| Administrateur | `admin@marsai.io` | `admin123` |
+| Jury | `jury1@marsai.io` | `jury123` |
+| Producteur | `producer1@marsai.io` | `prod123` |
+
+---
+
+## Conventions adoptées (compatibilité branche main)
+
+- **Authentification** : par email (pas username)
+- **Noms de champs** : anglais, snake_case (`title`, `status`, `thumbnail`, `user_id`, etc.)
+- **Tables** : minuscules avec `freezeTableName: true` (`users`, `films`, `tags`, etc.)
+- **Timestamps** : `created_at` / `updated_at` (underscored)
+- **Rôles** : ADMIN, JURY, PRODUCER
+- **Statuts film** : `submitted`, `under_review`, `rejected`, `selected`, `finalist`
 
 ---
 
@@ -14,25 +25,27 @@
 
 ### Phase 1 — Modèles de base de données (Backend)
 
-**Modèle Film** (`back/src/models/Film.js`) — refactorisé avec de nouveaux champs :
-- `titre_original`, `titre_anglais` — titres multilingues
-- `duree` — durée en secondes (INTEGER)
+**Modèle Film** (`back/src/models/Film.js`) — champs :
+- `title`, `original_title`, `translated_title` — titres multilingues
+- `duration` — durée en secondes (INTEGER)
 - `type` — ENUM : `hybride` ou `total_ia`
-- `langue` — langue principale du film
-- `synopsis_original`, `synopsis_anglais` — synopsis multilingues (TEXT)
-- `processus_creatif` — description du processus créatif (TEXT)
-- `outils` — outils IA utilisés (TEXT)
-- `url_youtube` — lien YouTube
+- `language` — langue principale du film
+- `synopsis`, `synopsis_en` — synopsis multilingues (TEXT)
+- `creative_process` — description du processus créatif (TEXT)
+- `ai_tools` — outils IA utilisés (TEXT)
+- `youtube_link` — lien YouTube
 - `video_file` — chemin vers le fichier vidéo MP4/MOV uploadé
-- `image_principale` — image de couverture
-- `sous_titres_srt` — fichier de sous-titres
-- `rgpd_accepte` — consentement RGPD (BOOLEAN)
+- `thumbnail`, `image_2`, `image_3` — images
+- `subtitles` — fichier de sous-titres
+- `rgpd_accepted` — consentement RGPD (BOOLEAN)
+- `status` — ENUM : submitted/under_review/rejected/selected/finalist
+- `user_id` — clé étrangère vers users
 
-**Modèle User** (`back/src/models/User.js`) — ajout du champ `email`.
+**Modèle User** (`back/src/models/User.js`) — champs : `first_name`, `last_name`, `email` (unique), `password`, `phone`, `mobile`, `birth_date`, `street`, `postal_code`, `city`, `country`, `biography`, `current_job`, `social_*`, `discovery_source`, `role`.
 
 **Nouveaux modèles créés :**
-- `Tag.js` — tags/étiquettes avec relation many-to-many via table `film_tag`
-- `Award.js` — prix/récompenses avec relation many-to-many via table `film_award` (supporte l'ex-aequo)
+- `Tag.js` — tags/étiquettes avec relation many-to-many via table `film_tags`
+- `Award.js` — prix/récompenses avec relation many-to-many via table `film_awards` (supporte l'ex-aequo)
 - `JuryAssignment.js` — assignation de films aux membres du jury
 - `JuryVote.js` — votes du jury (`aime`/`aime_pas` + commentaire)
 - `SiteContent.js` — contenu éditable du site (clé/valeur/type)
@@ -55,8 +68,8 @@
 ### Phase 3 — Contrôleurs et routes (Backend)
 
 **FilmController** — refactorisé :
-- `createFilm` : accepte `multipart/form-data`, vérifie le consentement RGPD, signale automatiquement les films sans vidéo (`a_discuter`)
-- `getPublicFilms` : retourne uniquement les films `retenu` et `finaliste`
+- `createFilm` : accepte `multipart/form-data`, vérifie le consentement RGPD, signale automatiquement les films sans vidéo (`under_review`)
+- `getPublicFilms` : retourne uniquement les films `selected` et `finalist`
 
 **Nouveaux contrôleurs :**
 - `TagController` — CRUD des tags
@@ -65,14 +78,15 @@
 - `SiteContentController` — lecture/mise à jour du contenu du site
 
 **AuthController** — modifié :
+- Login par email, JWT signe l'email
 - L'inscription crée toujours un utilisateur avec le rôle `PRODUCER`
-- Supporte les champs `email` et `rgpd_accepte`
+- Requiert `first_name`, `last_name`, `email`, `password`, `rgpd_accepted`
 
 **Nouvelles routes :**
 
 | Route | Description | Accès |
 |-------|-------------|-------|
-| `GET /films/public` | Films publics (retenu/finaliste) | Public |
+| `GET /films/public` | Films publics (selected/finalist) | Public |
 | `GET /films` | Tous les films | ADMIN |
 | `POST /films` | Soumettre un film (multipart) | PRODUCER, ADMIN |
 | `GET/POST/DELETE /tags` | Gestion des tags | GET public, autres ADMIN |
@@ -93,7 +107,7 @@
 ### Phase 4 — Authentification et navigation (Frontend)
 
 - **Navbar** : bouton « Connexion » supprimé, remplacé par des liens FILMS / PALMARÈS / SOUMETTRE. Liens ADMIN et MES FILMS affichés selon le rôle. Burger menu pour mobile.
-- **Inscription** (`/auth/register`) : rôle toujours PRODUCER, champs email + case RGPD obligatoire
+- **Inscription** (`/auth/register`) : rôle toujours PRODUCER, champs prénom/nom/email + case RGPD obligatoire
 - **Accès admin** (`/admin-access`) : route cachée réservée aux administrateurs
 - **Soumission** (`/soumettre`) : page avec login intégré si l'utilisateur n'est pas connecté
 

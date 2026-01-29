@@ -1,44 +1,16 @@
 import multer from "multer";
 import path from "path";
 
-const videoStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(process.cwd(), "uploads/videos"));
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
-    cb(null, uniqueName);
-  },
-});
-
-const imageStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(process.cwd(), "uploads/images"));
-  },
-  filename: (req, file, cb) => {
-    const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
-    cb(null, uniqueName);
-  },
-});
-
 const videoFilter = (req, file, cb) => {
   const allowed = [".mp4", ".mov"];
   const ext = path.extname(file.originalname).toLowerCase();
-  if (allowed.includes(ext)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Seuls les fichiers MP4 et MOV sont acceptés"), false);
-  }
+  cb(null, allowed.includes(ext));
 };
 
 const imageFilter = (req, file, cb) => {
   const allowed = [".jpg", ".jpeg", ".png", ".webp"];
   const ext = path.extname(file.originalname).toLowerCase();
-  if (allowed.includes(ext)) {
-    cb(null, true);
-  } else {
-    cb(new Error("Seuls les fichiers JPEG, PNG et WebP sont acceptés"), false);
-  }
+  cb(null, allowed.includes(ext));
 };
 
 export const uploadFilm = multer({
@@ -48,26 +20,16 @@ export const uploadFilm = multer({
       cb(null, path.join(process.cwd(), dir));
     },
     filename: (req, file, cb) => {
-      const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`;
-      cb(null, uniqueName);
+      cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${path.extname(file.originalname)}`);
     },
   }),
-  limits: { fileSize: 300 * 1024 * 1024 }, // 300MB
+  limits: { fileSize: 300 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (file.fieldname === "video_file") {
-      videoFilter(req, file, cb);
-    } else {
-      imageFilter(req, file, cb);
-    }
+    if (file.fieldname === "video_file") videoFilter(req, file, cb);
+    else imageFilter(req, file, cb);
   },
 }).fields([
   { name: "video_file", maxCount: 1 },
-  { name: "image_principale", maxCount: 1 },
-  { name: "sous_titres_srt", maxCount: 1 },
+  { name: "thumbnail", maxCount: 1 },
+  { name: "subtitles", maxCount: 1 },
 ]);
-
-export const uploadImage = multer({
-  storage: imageStorage,
-  limits: { fileSize: 10 * 1024 * 1024 },
-  fileFilter: imageFilter,
-}).single("image");

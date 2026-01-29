@@ -65,9 +65,9 @@ export default function AdminAwards() {
             {award.films?.length > 0 && (
               <div className="space-y-1">
                 {award.films.map((film) => (
-                  <div key={film.id_film} className="flex items-center justify-between bg-gray-800 rounded px-3 py-2">
-                    <span className="text-white text-sm">{film.titre}</span>
-                    <button onClick={() => removeMutation.mutate({ awardId: award.id, filmId: film.id_film })}
+                  <div key={film.id} className="flex items-center justify-between bg-gray-800 rounded px-3 py-2">
+                    <span className="text-white text-sm">{film.title}</span>
+                    <button onClick={() => removeMutation.mutate({ awardId: award.id, filmId: film.id })}
                       className="text-red-400 text-xs hover:text-red-300">Retirer</button>
                   </div>
                 ))}
@@ -82,11 +82,11 @@ export default function AdminAwards() {
           <div className="bg-gray-900 rounded-xl p-6 border border-white/10 w-full max-w-md max-h-96 overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-lg font-semibold text-white mb-4">Assigner un film</h2>
             <div className="space-y-2">
-              {films?.filter((f) => f.statut === "retenu" || f.statut === "finaliste").map((film) => (
-                <button key={film.id_film}
-                  onClick={() => assignMutation.mutate({ awardId: assignModal, filmId: film.id_film })}
+              {films?.filter((f) => f.status === "selected" || f.status === "finalist").map((film) => (
+                <button key={film.id}
+                  onClick={() => assignMutation.mutate({ awardId: assignModal, filmId: film.id })}
                   className="w-full text-left bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm">
-                  {film.titre}
+                  {film.title}
                 </button>
               ))}
             </div>

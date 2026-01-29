@@ -2,12 +2,13 @@ import { useState } from "react";
 import { Link } from "react-router";
 
 export default function Navbar() {
-  const username = localStorage.getItem("username");
+  const firstName = localStorage.getItem("first_name");
   const role = localStorage.getItem("role");
   const [menuOpen, setMenuOpen] = useState(false);
 
   function handleLogout() {
-    localStorage.removeItem("username");
+    localStorage.removeItem("first_name");
+    localStorage.removeItem("email");
     localStorage.removeItem("role");
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
@@ -19,7 +20,7 @@ export default function Navbar() {
       <Link to="/films" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white transition-colors text-sm">FILMS</Link>
       <Link to="/palmares" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white transition-colors text-sm">PALMARÈS</Link>
       <Link to="/soumettre" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white transition-colors text-sm">SOUMETTRE</Link>
-      {username ? (
+      {firstName ? (
         <>
           {role === "ADMIN" && (
             <Link to="/admin/films" onClick={() => setMenuOpen(false)} className="text-purple-400 hover:text-purple-300 transition-colors text-sm">ADMIN</Link>
@@ -27,7 +28,7 @@ export default function Navbar() {
           {role === "JURY" && (
             <Link to="/jury/mes-films" onClick={() => setMenuOpen(false)} className="text-purple-400 hover:text-purple-300 transition-colors text-sm">MES FILMS</Link>
           )}
-          <span className="text-white/60 text-sm">{username}</span>
+          <span className="text-white/60 text-sm">{firstName}</span>
           <button onClick={handleLogout} className="text-white/60 hover:text-white transition-colors text-sm">
             Déconnexion
           </button>

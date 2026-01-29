@@ -4,7 +4,7 @@ import { authApi } from "../../services/api.js";
 
 export default function AdminAccess() {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,14 +14,15 @@ export default function AdminAccess() {
     setLoading(true);
     setError("");
     try {
-      const data = await authApi.login(username, password);
+      const data = await authApi.login(email, password);
       if (data.role !== "ADMIN") {
         setError("Accès réservé aux administrateurs");
         setLoading(false);
         return;
       }
       localStorage.setItem("token", data.token);
-      localStorage.setItem("username", data.username);
+      localStorage.setItem("first_name", data.first_name);
+      localStorage.setItem("email", data.email);
       localStorage.setItem("role", data.role);
       localStorage.setItem("userId", data.id);
       navigate("/admin/films");
@@ -36,9 +37,9 @@ export default function AdminAccess() {
       <form onSubmit={handleSubmit} className="bg-gray-900 rounded-xl p-8 border border-white/10 w-full max-w-sm space-y-4">
         <h1 className="text-xl font-bold text-white text-center">Administration</h1>
         {error && <p className="text-red-400 text-sm text-center">{error}</p>}
-        <input type="text" placeholder="Identifiant" required
+        <input type="email" placeholder="Email" required
           className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-white/30"
-          value={username} onChange={(e) => setUsername(e.target.value)} />
+          value={email} onChange={(e) => setEmail(e.target.value)} />
         <input type="password" placeholder="Mot de passe" required
           className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-white/30"
           value={password} onChange={(e) => setPassword(e.target.value)} />

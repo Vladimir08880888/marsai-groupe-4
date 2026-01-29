@@ -13,8 +13,9 @@ const Tag = sequelize.define("Tag", {
     unique: true,
   },
 }, {
-  tableName: "tag",
+  tableName: "tags",
   timestamps: false,
+  freezeTableName: true,
 });
 
 export default Tag;

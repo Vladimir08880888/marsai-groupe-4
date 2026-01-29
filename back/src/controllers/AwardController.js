@@ -46,7 +46,7 @@ export const assignFilm = async (req, res) => {
   try {
     const award = await Award.findByPk(req.params.id);
     if (!award) return res.status(404).json({ error: "Award non trouvé" });
-    const film = await Film.findByPk(req.body.id_film);
+    const film = await Film.findByPk(req.body.film_id || req.body.id_film);
     if (!film) return res.status(404).json({ error: "Film non trouvé" });
     await award.addFilm(film);
     const result = await Award.findByPk(award.id, { include: [{ model: Film, as: "films" }] });

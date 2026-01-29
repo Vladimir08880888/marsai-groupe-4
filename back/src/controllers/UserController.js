@@ -1,42 +1,37 @@
 import User from "../models/User.js";
 import { hashPassword } from "../utils/password.js";
 
-// Liste
 function getUsers(req, res) {
   User.findAll().then((users) => {
     res.json(users);
   });
 }
 
-// Création
 function createUser(req, res) {
-  console.log(req);
-
   if (!req.body) {
     return res.status(400).json({ error: "Données manquantes" });
   }
 
-  const { username, password, role } = req.body;
+  const { first_name, last_name, email, password } = req.body;
 
-  if (!username || !password || !role) {
+  if (!first_name || !last_name || !email || !password) {
     return res.status(400).json({ error: "Tous les champs sont requis" });
   }
 
-  User.findOne({ where: { username } }).then(async (user) => {
-    if (user) {
-      res.json({ message: "Utilisateur déjà existant", user });
-    } else {
-      const hash = await hashPassword(password);
-      User.create({ username: username, password: hash, role: role }).then(
-        (newUser) => {
-          res.status(201).json({ message: "Utilisateur créé", newUser });
-        },
-      );
+  User.findOne({ where: { email } }).then(async (existingEmail) => {
+    if (existingEmail) {
+      return res.json({ message: "Email déjà utilisé", user: existingEmail });
     }
+
+    const hash = await hashPassword(password);
+    User.create({ first_name, last_name, email, password: hash })
+      .then((newUser) => {
+        const { password, ...safeUser } = newUser.dataValues;
+        res.status(201).json({ message: "Utilisateur créé", newUser: safeUser });
+      });
   });
 }
 
-// Suppression
 function deleteUser(req, res) {
   const { id } = req.params;
   User.destroy({ where: { id } }).then(() => {
@@ -44,14 +39,15 @@ function deleteUser(req, res) {
   });
 }
 
-// Modification
 function updateUser(req, res) {
   const { id } = req.params;
-  const { username, password, role } = req.body;
+  const { first_name, last_name, email, password, role } = req.body;
 
   User.findOne({ where: { id } }).then((user) => {
     if (user) {
-      user.username = username || user.username;
+      user.first_name = first_name || user.first_name;
+      user.last_name = last_name || user.last_name;
+      user.email = email || user.email;
       user.password = password || user.password;
       user.role = role || user.role;
 
@@ -64,7 +60,6 @@ function updateUser(req, res) {
   });
 }
 
-// Récupérer un utilisateur par ID
 function getUserById(req, res) {
   const { id } = req.params;
   User.findOne({ where: { id } }).then((user) => {
@@ -76,8 +71,8 @@ function getUserById(req, res) {
   });
 }
 
-function findUserByUsername(username) {
-  return User.findOne({ where: { username } });
+function findUserByEmail(email) {
+  return User.findOne({ where: { email } });
 }
 
 export default {
@@ -86,5 +81,5 @@ export default {
   deleteUser,
   updateUser,
   getUserById,
-  findUserByUsername,
+  findUserByEmail,
 };

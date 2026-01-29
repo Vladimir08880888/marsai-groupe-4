@@ -15,7 +15,7 @@ export default function MyFilms() {
   });
 
   const voteMutation = useMutation({
-    mutationFn: ({ id_film, vote }) => juryApi.vote(id_film, vote, comment),
+    mutationFn: ({ film_id, vote }) => juryApi.vote(film_id, vote, comment),
     onSuccess: () => {
       setVoteModal(null);
       setComment("");
@@ -44,10 +44,10 @@ export default function MyFilms() {
                   <div className="aspect-video bg-gray-800">
                     {film.video_file ? (
                       <video controls className="w-full h-full" src={`${API_URL}${film.video_file}`} />
-                    ) : film.url_youtube ? (
+                    ) : film.youtube_link ? (
                       <iframe
                         className="w-full h-full"
-                        src={film.url_youtube.replace("watch?v=", "embed/")}
+                        src={film.youtube_link.replace("watch?v=", "embed/")}
                         allowFullScreen
                       />
                     ) : (
@@ -58,9 +58,9 @@ export default function MyFilms() {
                   <div className="p-6">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h2 className="text-xl font-bold text-white">{film.titre}</h2>
-                        {film.titre_original && <p className="text-white/40 text-sm">{film.titre_original}</p>}
-                        <p className="text-white/50 text-sm mt-1">{film.langue} | {film.duree ? `${film.duree}s` : ""} | {film.type}</p>
+                        <h2 className="text-xl font-bold text-white">{film.title}</h2>
+                        {film.original_title && <p className="text-white/40 text-sm">{film.original_title}</p>}
+                        <p className="text-white/50 text-sm mt-1">{film.language} | {film.duration ? `${film.duration}s` : ""} | {film.type}</p>
                       </div>
                       {a.vote ? (
                         <span className={`px-3 py-1 rounded text-sm ${a.vote.vote === "aime" ? "bg-green-600/20 text-green-400" : "bg-red-600/20 text-red-400"}`}>
@@ -71,20 +71,20 @@ export default function MyFilms() {
                       )}
                     </div>
 
-                    {film.synopsis_original && (
-                      <p className="text-white/60 text-sm mt-3">{film.synopsis_original}</p>
+                    {film.synopsis && (
+                      <p className="text-white/60 text-sm mt-3">{film.synopsis}</p>
                     )}
 
-                    {film.processus_creatif && (
+                    {film.creative_process && (
                       <div className="mt-3">
                         <p className="text-white/40 text-xs uppercase">Processus créatif</p>
-                        <p className="text-white/50 text-sm">{film.processus_creatif}</p>
+                        <p className="text-white/50 text-sm">{film.creative_process}</p>
                       </div>
                     )}
 
                     <div className="mt-4 flex gap-3">
                       <button
-                        onClick={() => { setVoteModal(film.id_film); setComment(a.vote?.comment || ""); }}
+                        onClick={() => { setVoteModal(film.id); setComment(a.vote?.comment || ""); }}
                         className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 text-sm"
                       >
                         {a.vote ? "Modifier mon vote" : "Voter"}
@@ -106,13 +106,13 @@ export default function MyFilms() {
                 value={comment} onChange={(e) => setComment(e.target.value)} />
               <div className="flex gap-3">
                 <button
-                  onClick={() => voteMutation.mutate({ id_film: voteModal, vote: "aime" })}
+                  onClick={() => voteMutation.mutate({ film_id: voteModal, vote: "aime" })}
                   className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
                 >
                   J'aime
                 </button>
                 <button
-                  onClick={() => voteMutation.mutate({ id_film: voteModal, vote: "aime_pas" })}
+                  onClick={() => voteMutation.mutate({ film_id: voteModal, vote: "aime_pas" })}
                   className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700"
                 >
                   J'aime pas

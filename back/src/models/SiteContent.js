@@ -22,8 +22,11 @@ const SiteContent = sequelize.define("SiteContent", {
     defaultValue: "text",
   },
 }, {
-  tableName: "site_content",
+  tableName: "site_contents",
   timestamps: true,
+  createdAt: "created_at",
+  updatedAt: "updated_at",
+  freezeTableName: true,
 });
 
 export default SiteContent;

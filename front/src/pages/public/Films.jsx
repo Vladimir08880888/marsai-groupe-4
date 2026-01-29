@@ -28,20 +28,20 @@ export default function Films() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {films.map((film) => (
-              <div key={film.id_film} className="bg-gray-900 rounded-xl overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all">
+              <div key={film.id} className="bg-gray-900 rounded-xl overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all">
                 <div className="aspect-video bg-gray-800 relative">
-                  {film.image_principale ? (
-                    <img src={`${API_URL}${film.image_principale}`} alt={film.titre} className="w-full h-full object-cover" />
+                  {film.thumbnail ? (
+                    <img src={`${API_URL}${film.thumbnail}`} alt={film.title} className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-white/20">16:9</div>
                   )}
-                  {film.statut === "finaliste" && (
+                  {film.status === "finalist" && (
                     <span className="absolute top-2 right-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">FINALISTE</span>
                   )}
                 </div>
                 <div className="p-4">
-                  <h3 className="text-white font-semibold">{film.titre}</h3>
-                  <p className="text-white/50 text-sm mt-1">{film.langue || ""}</p>
+                  <h3 className="text-white font-semibold">{film.title}</h3>
+                  <p className="text-white/50 text-sm mt-1">{film.language || ""}</p>
                   {film.tags && film.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">
                       {film.tags.map((tag) => (

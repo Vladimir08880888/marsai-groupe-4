@@ -11,13 +11,13 @@ export default function Soumettre() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // Login form state
-  const [loginData, setLoginData] = useState({ username: "", password: "" });
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
 
   // Film form state
   const [filmData, setFilmData] = useState({
-    titre: "", titre_original: "", titre_anglais: "", duree: "",
-    type: "hybride", langue: "", synopsis_original: "", synopsis_anglais: "",
-    processus_creatif: "", outils: "", url_youtube: "", rgpd_accepte: false,
+    title: "", original_title: "", translated_title: "", duration: "",
+    type: "hybride", language: "", synopsis: "", synopsis_en: "",
+    creative_process: "", ai_tools: "", youtube_link: "", rgpd_accepted: false,
   });
   const [videoFile, setVideoFile] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -25,12 +25,13 @@ export default function Soumettre() {
 
   const loginMutation = useMutation({
     mutationFn: async () => {
-      const result = await authApi.login(loginData.username, loginData.password);
+      const result = await authApi.login(loginData.email, loginData.password);
       return result;
     },
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
-      localStorage.setItem("username", data.username);
+      localStorage.setItem("first_name", data.first_name);
+      localStorage.setItem("email", data.email);
       localStorage.setItem("role", data.role);
       localStorage.setItem("userId", data.id);
       setIsLoggedIn(true);
@@ -46,8 +47,8 @@ export default function Soumettre() {
         formData.append(key, value);
       });
       if (videoFile) formData.append("video_file", videoFile);
-      if (imageFile) formData.append("image_principale", imageFile);
-      if (srtFile) formData.append("sous_titres_srt", srtFile);
+      if (imageFile) formData.append("thumbnail", imageFile);
+      if (srtFile) formData.append("subtitles", srtFile);
       return filmsApi.create(formData);
     },
     onSuccess: () => setSubmitSuccess(true),
@@ -80,9 +81,9 @@ export default function Soumettre() {
             {loginError && <p className="text-red-400 text-sm mb-3">{loginError}</p>}
             <div className="space-y-3">
               <input
-                type="text" placeholder="Nom d'utilisateur"
+                type="email" placeholder="Email"
                 className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-white/30"
-                value={loginData.username} onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
+                value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
               />
               <input
                 type="password" placeholder="Mot de passe"
@@ -111,19 +112,19 @@ export default function Soumettre() {
               <div>
                 <label className="text-white/60 text-sm block mb-1">Titre *</label>
                 <input type="text" required className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                  value={filmData.titre} onChange={(e) => setFilmData({ ...filmData, titre: e.target.value })} />
+                  value={filmData.title} onChange={(e) => setFilmData({ ...filmData, title: e.target.value })} />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-white/60 text-sm block mb-1">Titre original</label>
                   <input type="text" className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                    value={filmData.titre_original} onChange={(e) => setFilmData({ ...filmData, titre_original: e.target.value })} />
+                    value={filmData.original_title} onChange={(e) => setFilmData({ ...filmData, original_title: e.target.value })} />
                 </div>
                 <div>
                   <label className="text-white/60 text-sm block mb-1">Titre anglais</label>
                   <input type="text" className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                    value={filmData.titre_anglais} onChange={(e) => setFilmData({ ...filmData, titre_anglais: e.target.value })} />
+                    value={filmData.translated_title} onChange={(e) => setFilmData({ ...filmData, translated_title: e.target.value })} />
                 </div>
               </div>
 
@@ -131,7 +132,7 @@ export default function Soumettre() {
                 <div>
                   <label className="text-white/60 text-sm block mb-1">Durée (sec)</label>
                   <input type="number" className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                    value={filmData.duree} onChange={(e) => setFilmData({ ...filmData, duree: e.target.value })} />
+                    value={filmData.duration} onChange={(e) => setFilmData({ ...filmData, duration: e.target.value })} />
                 </div>
                 <div>
                   <label className="text-white/60 text-sm block mb-1">Type</label>
@@ -144,38 +145,38 @@ export default function Soumettre() {
                 <div>
                   <label className="text-white/60 text-sm block mb-1">Langue</label>
                   <input type="text" className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                    value={filmData.langue} onChange={(e) => setFilmData({ ...filmData, langue: e.target.value })} />
+                    value={filmData.language} onChange={(e) => setFilmData({ ...filmData, language: e.target.value })} />
                 </div>
               </div>
 
               <div>
                 <label className="text-white/60 text-sm block mb-1">Synopsis</label>
                 <textarea rows={3} className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                  value={filmData.synopsis_original} onChange={(e) => setFilmData({ ...filmData, synopsis_original: e.target.value })} />
+                  value={filmData.synopsis} onChange={(e) => setFilmData({ ...filmData, synopsis: e.target.value })} />
               </div>
 
               <div>
                 <label className="text-white/60 text-sm block mb-1">Synopsis (anglais)</label>
                 <textarea rows={3} className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                  value={filmData.synopsis_anglais} onChange={(e) => setFilmData({ ...filmData, synopsis_anglais: e.target.value })} />
+                  value={filmData.synopsis_en} onChange={(e) => setFilmData({ ...filmData, synopsis_en: e.target.value })} />
               </div>
 
               <div>
                 <label className="text-white/60 text-sm block mb-1">Processus créatif</label>
                 <textarea rows={3} className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                  value={filmData.processus_creatif} onChange={(e) => setFilmData({ ...filmData, processus_creatif: e.target.value })} />
+                  value={filmData.creative_process} onChange={(e) => setFilmData({ ...filmData, creative_process: e.target.value })} />
               </div>
 
               <div>
                 <label className="text-white/60 text-sm block mb-1">Outils IA utilisés</label>
                 <textarea rows={2} className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                  value={filmData.outils} onChange={(e) => setFilmData({ ...filmData, outils: e.target.value })} />
+                  value={filmData.ai_tools} onChange={(e) => setFilmData({ ...filmData, ai_tools: e.target.value })} />
               </div>
 
               <div>
                 <label className="text-white/60 text-sm block mb-1">URL YouTube</label>
                 <input type="url" className="w-full bg-gray-800 border border-white/10 rounded-lg px-4 py-2.5 text-white"
-                  value={filmData.url_youtube} onChange={(e) => setFilmData({ ...filmData, url_youtube: e.target.value })} />
+                  value={filmData.youtube_link} onChange={(e) => setFilmData({ ...filmData, youtube_link: e.target.value })} />
               </div>
             </div>
 
@@ -204,7 +205,7 @@ export default function Soumettre() {
             <div className="bg-gray-900 rounded-xl p-6 border border-white/10">
               <label className="flex items-start gap-3 cursor-pointer">
                 <input type="checkbox" className="mt-1"
-                  checked={filmData.rgpd_accepte} onChange={(e) => setFilmData({ ...filmData, rgpd_accepte: e.target.checked })} />
+                  checked={filmData.rgpd_accepted} onChange={(e) => setFilmData({ ...filmData, rgpd_accepted: e.target.checked })} />
                 <span className="text-white/60 text-sm">
                   J'accepte que mes données personnelles soient traitées dans le cadre du festival Mars.A.I conformément au RGPD. *
                 </span>
@@ -213,7 +214,7 @@ export default function Soumettre() {
 
             <button
               type="submit"
-              disabled={submitMutation.isPending || !filmData.rgpd_accepte}
+              disabled={submitMutation.isPending || !filmData.rgpd_accepted}
               className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 disabled:opacity-50 font-semibold"
             >
               {submitMutation.isPending ? "Envoi en cours..." : "SOUMETTRE MON FILM"}

@@ -7,11 +7,11 @@ const JuryVote = sequelize.define("JuryVote", {
     primaryKey: true,
     autoIncrement: true,
   },
-  id_film: {
+  film_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  id_jury: {
+  jury_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -24,8 +24,11 @@ const JuryVote = sequelize.define("JuryVote", {
     allowNull: true,
   },
 }, {
-  tableName: "jury_vote",
+  tableName: "jury_votes",
   timestamps: true,
+  createdAt: "created_at",
+  updatedAt: "updated_at",
+  freezeTableName: true,
 });
 
 export default JuryVote;

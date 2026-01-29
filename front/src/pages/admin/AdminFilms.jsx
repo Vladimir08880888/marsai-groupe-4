@@ -3,7 +3,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { filmsApi, usersApi, juryApi } from "../../services/api.js";
 
 const API_URL = "http://localhost:3000";
-const STATUSES = ["soumis_selection", "a_discuter", "refuse", "retenu", "finaliste"];
+const STATUSES = ["submitted", "under_review", "rejected", "selected", "finalist"];
+const STATUS_LABELS = {
+  submitted: "Soumis",
+  under_review: "À discuter",
+  rejected: "Refusé",
+  selected: "Retenu",
+  finalist: "Finaliste",
+};
 
 export default function AdminFilms() {
   const queryClient = useQueryClient();
@@ -24,11 +31,11 @@ export default function AdminFilms() {
   });
 
   const assignMutation = useMutation({
-    mutationFn: ({ id_film, id_jury }) => juryApi.assign(id_film, id_jury),
+    mutationFn: ({ film_id, jury_id }) => juryApi.assign(film_id, jury_id),
     onSuccess: () => { setAssignModal(null); queryClient.invalidateQueries({ queryKey: ["admin-films"] }); },
   });
 
-  const filtered = films?.filter((f) => !filterStatus || f.statut === filterStatus) || [];
+  const filtered = films?.filter((f) => !filterStatus || f.status === filterStatus) || [];
 
   if (isLoading) return <div className="p-8 text-white/60">Chargement...</div>;
 
@@ -44,40 +51,40 @@ export default function AdminFilms() {
         {STATUSES.map((s) => (
           <button key={s} onClick={() => setFilterStatus(s)}
             className={`px-3 py-1.5 rounded text-sm ${filterStatus === s ? "bg-purple-600 text-white" : "bg-gray-800 text-white/60"}`}>
-            {s} ({films?.filter((f) => f.statut === s).length || 0})
+            {STATUS_LABELS[s]} ({films?.filter((f) => f.status === s).length || 0})
           </button>
         ))}
       </div>
 
       <div className="space-y-3">
         {filtered.map((film) => (
-          <div key={film.id_film} className="bg-gray-900 border border-white/10 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <div key={film.id} className="bg-gray-900 border border-white/10 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
             <div className="w-20 h-12 bg-gray-800 rounded overflow-hidden flex-shrink-0">
-              {film.image_principale ? (
-                <img src={`${API_URL}${film.image_principale}`} alt="" className="w-full h-full object-cover" />
+              {film.thumbnail ? (
+                <img src={`${API_URL}${film.thumbnail}`} alt="" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-white/20 text-xs">-</div>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-white font-medium truncate">{film.titre}</h3>
-              <p className="text-white/40 text-xs">ID: {film.id_film} | User: {film.id_utilisateur}</p>
+              <h3 className="text-white font-medium truncate">{film.title}</h3>
+              <p className="text-white/40 text-xs">ID: {film.id} | User: {film.user_id}</p>
             </div>
             <select
-              value={film.statut}
-              onChange={(e) => updateMutation.mutate({ id: film.id_film, data: { statut: e.target.value } })}
+              value={film.status}
+              onChange={(e) => updateMutation.mutate({ id: film.id, data: { status: e.target.value } })}
               className="bg-gray-800 border border-white/10 rounded px-2 py-1 text-white text-sm"
             >
-              {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+              {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
             </select>
             <button
-              onClick={() => setAssignModal(film.id_film)}
+              onClick={() => setAssignModal(film.id)}
               className="bg-blue-600/20 text-blue-400 px-3 py-1 rounded text-sm hover:bg-blue-600/30"
             >
               Jury
             </button>
             <button
-              onClick={() => { if (confirm("Supprimer ?")) deleteMutation.mutate(film.id_film); }}
+              onClick={() => { if (confirm("Supprimer ?")) deleteMutation.mutate(film.id); }}
               className="bg-red-600/20 text-red-400 px-3 py-1 rounded text-sm hover:bg-red-600/30"
             >
               Suppr.
@@ -94,9 +101,9 @@ export default function AdminFilms() {
               <div className="space-y-2">
                 {juryUsers.map((u) => (
                   <button key={u.id}
-                    onClick={() => assignMutation.mutate({ id_film: assignModal, id_jury: u.id })}
+                    onClick={() => assignMutation.mutate({ film_id: assignModal, jury_id: u.id })}
                     className="w-full text-left bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded">
-                    {u.username}
+                    {u.first_name} {u.last_name}
                   </button>
                 ))}
               </div>

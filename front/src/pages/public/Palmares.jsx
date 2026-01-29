@@ -34,16 +34,16 @@ export default function Palmares() {
                 {award.films && award.films.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {award.films.map((film) => (
-                      <div key={film.id_film} className="flex gap-4 bg-gray-800 rounded-lg p-3">
+                      <div key={film.id} className="flex gap-4 bg-gray-800 rounded-lg p-3">
                         <div className="w-24 h-14 bg-gray-700 rounded overflow-hidden flex-shrink-0">
-                          {film.image_principale ? (
-                            <img src={`${API_URL}${film.image_principale}`} alt={film.titre} className="w-full h-full object-cover" />
+                          {film.thumbnail ? (
+                            <img src={`${API_URL}${film.thumbnail}`} alt={film.title} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-white/20 text-xs">16:9</div>
                           )}
                         </div>
                         <div>
-                          <h3 className="text-white font-medium text-sm">{film.titre}</h3>
+                          <h3 className="text-white font-medium text-sm">{film.title}</h3>
                         </div>
                       </div>
                     ))}

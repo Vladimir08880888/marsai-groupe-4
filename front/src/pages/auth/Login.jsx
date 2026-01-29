@@ -10,7 +10,7 @@ import * as z from "zod";
 import "./Login.css";
 
 const loginSchema = z.object({
-  username: z.string(),
+  email: z.string(),
   password: z.string(),
 });
 
@@ -18,13 +18,13 @@ export function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberSession, setRememberSession] = useState(false);
 
-  if (localStorage.getItem("username")) {
+  if (localStorage.getItem("first_name")) {
     return (
       <div className="login-page">
         <div className="login-card">
           <h1 className="login-title">Déjà connecté</h1>
           <p className="login-subtitle">
-            Vous êtes connecté en tant que {localStorage.getItem("username")}
+            Vous êtes connecté en tant que {localStorage.getItem("first_name")}
           </p>
           <Link to="/" className="login-btn">
             Retour à l'accueil
@@ -45,7 +45,8 @@ export function Login() {
       return await login(data);
     },
     onSuccess: (response, variables, context) => {
-      localStorage.setItem("username", response.data?.username);
+      localStorage.setItem("first_name", response.data?.first_name);
+      localStorage.setItem("email", response.data?.email);
       localStorage.setItem("role", response.data?.role);
       localStorage.setItem("token", response.data?.token);
 
@@ -90,10 +91,10 @@ export function Login() {
         <form onSubmit={handleSubmit(onSubmit)} className="login-form">
           <input type="hidden" id="id" {...register("id")} />
 
-          {/* Username Field */}
+          {/* Email Field */}
           <div className="form-group">
-            <label htmlFor="username" className="form-label">
-              IDENTIFIANT DE SESSION
+            <label htmlFor="email" className="form-label">
+              EMAIL
             </label>
             <div className="input-wrapper">
               <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -101,11 +102,11 @@ export function Login() {
                 <path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               <input
-                id="username"
-                type="text"
+                id="email"
+                type="email"
                 placeholder="agent@marsai.io"
                 className="form-input"
-                {...register("username")}
+                {...register("email")}
                 required
               />
             </div>
@@ -114,7 +115,7 @@ export function Login() {
           {/* Password Field */}
           <div className="form-group">
             <label htmlFor="password" className="form-label">
-              CLÉ CRYPTOGRAPHIQUE
+              MOT DE PASSE
             </label>
             <div className="input-wrapper">
               <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

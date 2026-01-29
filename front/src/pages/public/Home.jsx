@@ -173,17 +173,17 @@ function Home() {
 
           <div className="films-grid">
             {films.slice(0, 3).map((film, index) => (
-              <div key={film.id_film} className="film-card">
+              <div key={film.id} className="film-card">
                 <div className="film-image" style={{ aspectRatio: "16/9" }}>
-                  {film.image_principale ? (
-                    <img src={`${API_URL}${film.image_principale}`} alt={film.titre} className="film-thumbnail" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  {film.thumbnail ? (
+                    <img src={`${API_URL}${film.thumbnail}`} alt={film.title} className="film-thumbnail" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : (
                     <div className={`film-placeholder film-placeholder-${(index % 3) + 1}`}></div>
                   )}
                 </div>
                 <div className="film-info">
-                  <h3 className="film-title">{film.titre}</h3>
-                  <p className="film-director">{film.user?.username || ""}</p>
+                  <h3 className="film-title">{film.title}</h3>
+                  <p className="film-director">{film.user?.first_name ? `${film.user.first_name} ${film.user.last_name}` : ""}</p>
                 </div>
               </div>
             ))}

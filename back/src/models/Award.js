@@ -16,8 +16,9 @@ const Award = sequelize.define("Award", {
     allowNull: true,
   },
 }, {
-  tableName: "award",
+  tableName: "awards",
   timestamps: false,
+  freezeTableName: true,
 });
 
 export default Award;

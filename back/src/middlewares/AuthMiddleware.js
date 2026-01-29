@@ -18,12 +18,12 @@ export default async function AuthMiddleware(req, res, next, roles = []) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!decoded?.username) {
+    if (!decoded?.email) {
       return res.status(401).json({ error: "Invalid Payload" });
     }
 
     const user = await User.findOne({
-      where: { username: decoded.username },
+      where: { email: decoded.email },
     });
 
     if (!user || (roles.length && !roles.includes(user.role))) {

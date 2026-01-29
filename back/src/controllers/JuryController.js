@@ -2,16 +2,16 @@ import { JuryAssignment, JuryVote, Film, User, Tag } from "../models/index.js";
 
 export const assignFilm = async (req, res) => {
   try {
-    const { id_film, id_jury } = req.body;
-    const film = await Film.findByPk(id_film);
+    const { film_id, jury_id } = req.body;
+    const film = await Film.findByPk(film_id);
     if (!film) return res.status(404).json({ error: "Film non trouvé" });
-    const jury = await User.findByPk(id_jury);
+    const jury = await User.findByPk(jury_id);
     if (!jury || jury.role !== "JURY") return res.status(400).json({ error: "Utilisateur jury invalide" });
 
-    const existing = await JuryAssignment.findOne({ where: { id_film, id_jury } });
+    const existing = await JuryAssignment.findOne({ where: { film_id, jury_id } });
     if (existing) return res.status(400).json({ error: "Déjà assigné" });
 
-    const assignment = await JuryAssignment.create({ id_film, id_jury });
+    const assignment = await JuryAssignment.create({ film_id, jury_id });
     res.status(201).json(assignment);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -34,7 +34,7 @@ export const getAssignments = async (req, res) => {
     const assignments = await JuryAssignment.findAll({
       include: [
         { model: Film, as: "film", include: [{ model: Tag, as: "tags" }] },
-        { model: User, as: "jury", attributes: ["id", "username"] },
+        { model: User, as: "jury", attributes: ["id", "first_name", "last_name", "email"] },
       ],
     });
     res.json(assignments);
@@ -46,13 +46,12 @@ export const getAssignments = async (req, res) => {
 export const getMyAssignments = async (req, res) => {
   try {
     const assignments = await JuryAssignment.findAll({
-      where: { id_jury: req.user.id },
+      where: { jury_id: req.user.id },
       include: [{ model: Film, as: "film", include: [{ model: Tag, as: "tags" }] }],
     });
 
-    // Include vote status for each assignment
     const result = await Promise.all(assignments.map(async (a) => {
-      const vote = await JuryVote.findOne({ where: { id_film: a.id_film, id_jury: req.user.id } });
+      const vote = await JuryVote.findOne({ where: { film_id: a.film_id, jury_id: req.user.id } });
       return { ...a.toJSON(), vote: vote ? vote.toJSON() : null };
     }));
 
@@ -64,11 +63,10 @@ export const getMyAssignments = async (req, res) => {
 
 export const vote = async (req, res) => {
   try {
-    const { id_film, vote: voteValue, comment } = req.body;
-    const id_jury = req.user.id;
+    const { film_id, vote: voteValue, comment } = req.body;
+    const jury_id = req.user.id;
 
-    // Check assignment
-    const assignment = await JuryAssignment.findOne({ where: { id_film, id_jury } });
+    const assignment = await JuryAssignment.findOne({ where: { film_id, jury_id } });
     if (!assignment) return res.status(403).json({ error: "Film non assigné" });
 
     if (!["aime", "aime_pas"].includes(voteValue)) {
@@ -76,7 +74,7 @@ export const vote = async (req, res) => {
     }
 
     const [juryVote, created] = await JuryVote.findOrCreate({
-      where: { id_film, id_jury },
+      where: { film_id, jury_id },
       defaults: { vote: voteValue, comment },
     });
 
@@ -95,7 +93,7 @@ export const getVotes = async (req, res) => {
     const votes = await JuryVote.findAll({
       include: [
         { model: Film, as: "film" },
-        { model: User, as: "jury", attributes: ["id", "username"] },
+        { model: User, as: "jury", attributes: ["id", "first_name", "last_name", "email"] },
       ],
     });
     res.json(votes);
