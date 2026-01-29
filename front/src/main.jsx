@@ -13,6 +13,7 @@ import { Login } from "./pages/auth/Login.jsx";
 import { Register } from "./pages/auth/Register.jsx";
 import { RoleGuard } from "./middlewares/RoleGuard.jsx";
 import Videos from "./pages/admin/Videos.jsx";
+import Users from "./pages/admin/Users.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,8 +31,8 @@ createRoot(document.getElementById("root")).render(
           {/* Routes publiques */}
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/register" element={<Register />} />
+            <Route path="auth/login" element={<Login />} />
+            <Route path="auth/register" element={<Register />} />
           </Route>
 
           {/* Routes privées */}
@@ -41,6 +42,7 @@ createRoot(document.getElementById("root")).render(
              // </RoleGuard> 
               } >
             <Route index element={<Dashboard />} />
+            <Route path="users" element={<Users />} />
             <Route path="videos" element={<Videos />} />
           </Route>
         </Routes>
