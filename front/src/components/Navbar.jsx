@@ -7,13 +7,17 @@ import callendrier from "../assets/navbar_svg/callendrier.svg"
 import user from "../assets/navbar_svg/user.svg"
 
 export default function Navbar() {
-  const username = localStorage.getItem("username");
+  const navigate = useNavigate();
+  const firstName = localStorage.getItem("first_name") || "Utilisateur";
+
+  const isLoggedIn = !!localStorage.getItem("token"); 
 
   function handleLogout() {
-    localStorage.removeItem("username");
+    localStorage.removeItem("first_name");
+    localStorage.removeItem("email");
     localStorage.removeItem("role");
     localStorage.removeItem("token");
-    window.location.reload();
+    navigate("/");
   }
 
   return (

@@ -16,24 +16,25 @@ function createUser(req, res) {
     return res.status(400).json({ error: "Données manquantes" });
   }
 
-  const { username, password, role } = req.body;
+  const { first_name, last_name, email, password,} = req.body;
 
-  if (!username || !password || !role) {
-    return res.status(400).json({ error: "Tous les champs sont requis" });
+if (!first_name || !last_name || !email || !password ) {
+  return res.status(400).json({ error: "Tous les champs sont requis" });
+}
+
+// Vérifie si email déjà utilisé
+User.findOne({ where: { email } }).then(async (existingEmail) => {
+  if (existingEmail) {
+    return res.json({ message: "Email déjà utilisé", user: existingEmail });
   }
 
-  User.findOne({ where: { username } }).then(async (user) => {
-    if (user) {
-      res.json({ message: "Utilisateur déjà existant", user });
-    } else {
-      const hash = await hashPassword(password);
-      User.create({ username: username, password: hash, role: role }).then(
-        (newUser) => {
-          res.status(201).json({ message: "Utilisateur créé", newUser });
-        },
-      );
-    }
-  });
+  const hash = await hashPassword(password);
+  User.create({ first_name, last_name, email, password: hash })
+      .then((newUser) => {
+        const { password, ...safeUser } = newUser.dataValues;
+        res.status(201).json({ message: "Utilisateur créé", newUser: safeUser });
+      });
+});
 }
 
 // Suppression
@@ -47,11 +48,13 @@ function deleteUser(req, res) {
 // Modification
 function updateUser(req, res) {
   const { id } = req.params;
-  const { username, password, role } = req.body;
+  const { first_name, last_name, email, password, role } = req.body;
 
   User.findOne({ where: { id } }).then((user) => {
     if (user) {
-      user.username = username || user.username;
+      user.first_name = first_name || user.first_name;
+      user.last_name = last_name || user.last_name;
+      user.email = email || user.email;
       user.password = password || user.password;
       user.role = role || user.role;
 
@@ -76,9 +79,10 @@ function getUserById(req, res) {
   });
 }
 
-function findUserByUsername(username) {
-  return User.findOne({ where: { username } });
+function findUserByEmail(email) {
+  return User.findOne({ where: { email } });
 }
+
 
 export default {
   getUsers,
@@ -86,5 +90,5 @@ export default {
   deleteUser,
   updateUser,
   getUserById,
-  findUserByUsername,
+  findUserByEmail,
 };

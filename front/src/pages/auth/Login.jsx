@@ -1,5 +1,4 @@
 import { Link, useNavigate } from "react-router";
-
 import { login } from "../../api/auth.js";
 import { useMutation } from "@tanstack/react-query";
 
@@ -8,23 +7,12 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 const loginSchema = z.object({
-  username: z.string(),
-  password: z.string(),
+  email: z.string().email("Email invalide"),
+  password: z.string().min(1, "Mot de passe requis"),
 });
 
 export function Login() {
-  if (localStorage.getItem("username")) {
-    return (
-      <>
-        <h1 className="text-2xl">
-          You are already logged in as {localStorage.getItem("username")}
-        </h1>
-        <Link to="/">Go to Home</Link>
-      </>
-    );
-  }
-
-  let navigate = useNavigate();
+  const navigate = useNavigate();
 
   const { register, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema),
@@ -34,9 +22,9 @@ export function Login() {
     mutationFn: async (data) => {
       return await login(data);
     },
-    onSuccess: (response, variables, context) => {
-      // If you are logged
-      localStorage.setItem("username", response.data?.username);
+    onSuccess: (response) => {
+      localStorage.setItem("first_name", response.data.first_name);
+      localStorage.setItem("email", response.data?.email);
       localStorage.setItem("role", response.data?.role);
       localStorage.setItem("token", response.data?.token);
 
@@ -52,49 +40,74 @@ export function Login() {
           break;
       }
     },
-    onError: (error, variables, context) => {
-      alert(error.response?.data?.error);
+    onError: (error) => {
+      alert(error.response?.data?.error || "Erreur lors de la connexion");
     },
   });
 
-  function onSubmit(data) {
-    return loginMutation.mutate(data);
+  const isLoggedIn = !!localStorage.getItem("email");
+
+  if (isLoggedIn) {
+    return (
+      <>
+        <h1 className="text-2xl">
+          You are already logged in as {localStorage.getItem("email")}
+        </h1>
+        <Link to="/">Return to homepage</Link>
+      </>
+    );
   }
+
+  const onSubmit = (data) => {
+    loginMutation.mutate(data);
+  };
+
   return (
     <>
       {/* <h1 className="text-2xl">Login</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input type="hidden" id="id" {...register("id")} />
-        <label
-          htmlFor="username"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Username
-        </label>
-        <input
-          id="username"
-          type="text"
-          placeholder="Votre nom d'utilisateur"
-          {...register("username")}
-          required
-        />
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <label
+            htmlFor="email"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"         
+            placeholder="your@email.com"
+            className="border p-2 rounded w-full"
+            {...register("email")}
+            required
+          />
+        </div>
 
-        <label
-          htmlFor="password"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Votre mot de passe"
-          {...register("password")}
-          required
-        />
+        <div>
+          <label
+            htmlFor="password"
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          >
+             Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            className="border p-2 rounded w-full"
+            {...register("password")}
+            required
+          />
+        </div>
 
-        <button type="submit">Login</button>
+        <button
+          type="submit"
+          disabled={loginMutation.isPending}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+        >
+          {loginMutation.isPending ? "Connecting..." : "Log in"}
+        </button>
       </form>
 
       <Link to="/auth/register">No account yet? Register</Link> */}
@@ -150,4 +163,4 @@ export function Login() {
       
     </>
   );
-}
+} 
