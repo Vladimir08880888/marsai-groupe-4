@@ -11,55 +11,61 @@ const Film = sequelize.define("Film", {
     type: DataTypes.STRING(255),
     allowNull: false,
   },
-  traduction: {
+  titre_original: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    defaultValue: "",
+  },
+  titre_anglais: {
     type: DataTypes.STRING(255),
     allowNull: true,
     defaultValue: "",
   },
   duree: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.INTEGER,
     allowNull: true,
-    defaultValue: "",
   },
-  synopsis: {
-    type: DataTypes.STRING(255),
+  type: {
+    type: DataTypes.ENUM("hybride", "total_ia"),
     allowNull: true,
-    defaultValue: "",
   },
-  langue_principale: {
+  langue: {
     type: DataTypes.STRING(100),
     allowNull: true,
     defaultValue: "",
   },
+  synopsis_original: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
   synopsis_anglais: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
-    defaultValue: "",
-  },
-  lien_youtube: {
-    type: DataTypes.STRING(255),
-    allowNull: true,
-    defaultValue: "",
-  },
-  sous_titre: {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  outils_ia: {
+  processus_creatif: {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  vignette: {
+  outils: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  url_youtube: {
     type: DataTypes.STRING(255),
     allowNull: true,
     defaultValue: "",
   },
-  image2: {
+  video_file: {
     type: DataTypes.STRING(255),
     allowNull: true,
     defaultValue: "",
   },
-  image3: {
+  image_principale: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    defaultValue: "",
+  },
+  sous_titres_srt: {
     type: DataTypes.STRING(255),
     allowNull: true,
     defaultValue: "",
@@ -68,6 +74,11 @@ const Film = sequelize.define("Film", {
     type: DataTypes.ENUM("soumis_selection", "a_discuter", "refuse", "retenu", "finaliste"),
     allowNull: false,
     defaultValue: "soumis_selection",
+  },
+  rgpd_accepte: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
   },
   id_utilisateur: {
     type: DataTypes.INTEGER,

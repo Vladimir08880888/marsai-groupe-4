@@ -1,98 +1,115 @@
-import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { filmsApi } from "../../services/api.js";
+import { filmsApi, contentApi } from "../../services/api.js";
+import { Link } from "react-router";
+import { useState, useEffect } from "react";
 import "./Home.css";
 
+const API_URL = "http://localhost:3000";
+
+function Countdown({ targetDate }) {
+  const [timeLeft, setTimeLeft] = useState({});
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const diff = new Date(targetDate) - new Date();
+      if (diff <= 0) { setTimeLeft({ j: 0, h: 0, m: 0, s: 0 }); return; }
+      setTimeLeft({
+        j: Math.floor(diff / 86400000),
+        h: Math.floor((diff % 86400000) / 3600000),
+        m: Math.floor((diff % 3600000) / 60000),
+        s: Math.floor((diff % 60000) / 1000),
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  return (
+    <div className="flex gap-4">
+      {Object.entries(timeLeft).map(([k, v]) => (
+        <div key={k} className="text-center">
+          <span className="text-3xl font-bold text-white">{v}</span>
+          <span className="text-white/40 text-xs block uppercase">{k}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function Home() {
-  // Fetch films from API - only finalistes
-  const { data: filmsData, isLoading, error } = useQuery({
-    queryKey: ["films", "finaliste"],
-    queryFn: () => filmsApi.getByStatus("finaliste"),
+  const { data: filmsData } = useQuery({
+    queryKey: ["films", "public"],
+    queryFn: filmsApi.getPublic,
   });
 
-  // Fallback data if no films in database
-  const defaultFilms = [
-    { id_film: 1, titre: "PROTOCOL ALPHA", synopsis: "", id_utilisateur: 1 },
-    { id_film: 2, titre: "NEURAL DREAM", synopsis: "", id_utilisateur: 2 },
-    { id_film: 3, titre: "CYBER MARSEILLE", synopsis: "", id_utilisateur: 3 },
-  ];
+  const { data: siteContent } = useQuery({
+    queryKey: ["site-content"],
+    queryFn: contentApi.getAll,
+  });
 
-  const films = filmsData?.length > 0 ? filmsData : defaultFilms;
+  const films = filmsData || [];
+  const c = siteContent || {};
+  const phase = c.festival_phase?.value || "inscription";
+  const sponsors = (() => {
+    try { return JSON.parse(c.sponsors?.value || "[]"); } catch { return []; }
+  })();
 
   return (
     <>
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero" style={c.banner_bg?.value ? { backgroundImage: `url(${c.banner_bg.value})`, backgroundSize: "cover", backgroundPosition: "center" } : {}}>
         <div className="hero-overlay"></div>
         <div className="hero-content">
-          <div className="badge">
-            <svg className="badge-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L13.09 8.26L19 7L14.74 11.27L21 12L14.74 12.73L19 17L13.09 15.74L12 22L10.91 15.74L5 17L9.26 12.73L3 12L9.26 11.27L5 7L10.91 8.26L12 2Z" fill="currentColor"/>
-            </svg>
-            <span>LE PROTOCOLE TEMPOREL 2026</span>
-          </div>
-
           <h1 className="logo-title">
-            MARS<span className="gradient-text">AI</span>
+            {c.banner_title?.value || <>MARS<span className="gradient-text">AI</span></>}
           </h1>
 
           <h2 className="tagline">
-            IMAGINEZ DES<span className="highlight">FUTURS</span> SOUHAITABLES
+            {c.banner_subtitle?.value || <>IMAGINEZ DES<span className="highlight">FUTURS</span> SOUHAITABLES</>}
           </h2>
 
           <p className="subtitle">
             Le festival de courts-métrages de 60 secondes réalisés par IA.
           </p>
 
-          <p className="immersion-text">
-            2 jours d'immersion au cœur de Marseille.
-          </p>
+          {/* KPIs + Countdown */}
+          <div className="flex items-center gap-8 justify-center my-8 flex-wrap">
+            <div className="text-center">
+              <span className="text-3xl font-bold text-purple-400">{c.kpi_films_count?.value || films.length || "0"}</span>
+              <span className="text-white/40 text-xs block">FILMS</span>
+            </div>
+            <div className="text-center">
+              <span className="text-3xl font-bold text-green-400">{c.kpi_prize_fund?.value || "---"}</span>
+              <span className="text-white/40 text-xs block">PRIX</span>
+            </div>
+            {c.countdown_date?.value && <Countdown targetDate={c.countdown_date.value} />}
+          </div>
 
           <div className="cta-buttons">
-            <button className="btn-primary">
-              VOIR LES FILMS
-              <svg className="btn-arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-            <button className="btn-secondary">
-              MON ESPACE AI <span className="plus">+</span>
-            </button>
+            {phase === "inscription" && (
+              <Link to="/soumettre" className="btn-primary">
+                INSCRIRE MON FILM
+                <svg className="btn-arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </Link>
+            )}
+            {phase === "vote" && (
+              <Link to="/films" className="btn-primary">
+                VOIR LES FILMS
+                <svg className="btn-arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </Link>
+            )}
+            {phase === "palmares" && (
+              <Link to="/palmares" className="btn-primary">
+                VOIR LE PALMARÈS
+                <svg className="btn-arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </Link>
+            )}
+            {!["inscription", "vote", "palmares"].includes(phase) && (
+              <Link to="/soumettre" className="btn-primary">
+                INSCRIRE MON FILM
+                <svg className="btn-arrow" viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </Link>
+            )}
           </div>
-        </div>
-      </section>
-
-      {/* Immersion Section */}
-      <section className="immersion-section">
-        <div className="immersion-container">
-          <div className="immersion-label">
-            <span className="immersion-label-line"></span>
-            <span className="immersion-label-text">IMMERSION TOTALE</span>
-            <span className="immersion-label-line"></span>
-          </div>
-
-          <h2 className="immersion-title">
-            LE PROTOCOLE<br />TEMPOREL
-          </h2>
-
-          <div className="stats-grid">
-            <div className="stat-item">
-              <span className="stat-value stat-green">2 MOIS</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value stat-emerald">50 FILMS</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value stat-pink">WEB 3.0</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-value stat-cyan">J4</span>
-            </div>
-          </div>
-
-          <button className="btn-aventure">
-            REJOINDRE L'AVENTURE
-          </button>
         </div>
       </section>
 
@@ -107,41 +124,24 @@ function Home() {
           <div className="objectives-grid">
             <div className="objective-card">
               <div className="objective-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21Z" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16Z" stroke="currentColor" strokeWidth="1.5"/>
-                </svg>
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5"/></svg>
               </div>
               <h3 className="objective-name">L'HUMAIN AU CENTRE</h3>
-              <p className="objective-description">
-                Mettre l'humain au cœur de la création pour ne pas perdre l'émotion.
-              </p>
+              <p className="objective-description">Mettre l'humain au cœur de la création pour ne pas perdre l'émotion.</p>
             </div>
-
             <div className="objective-card">
               <div className="objective-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </div>
               <h3 className="objective-name">CHALLENGE CRÉATIF</h3>
-              <p className="objective-description">
-                Challenger la créativité grâce à un format ultra-court de 60s.
-              </p>
+              <p className="objective-description">Challenger la créativité grâce à un format ultra-court de 60s.</p>
             </div>
-
             <div className="objective-card">
               <div className="objective-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M2 12H22" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M12 2C14.5013 4.73835 15.9228 8.29203 16 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8 12C8.07725 8.29203 9.49872 4.73835 12 2Z" stroke="currentColor" strokeWidth="1.5"/>
-                </svg>
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M2 12H22" stroke="currentColor" strokeWidth="1.5"/><path d="M12 2C14.5 4.74 16 8.29 16 12C16 15.71 14.5 19.26 12 22C9.5 19.26 8 15.71 8 12C8 8.29 9.5 4.74 12 2Z" stroke="currentColor" strokeWidth="1.5"/></svg>
               </div>
               <h3 className="objective-name">FUTURS SOUHAITABLES</h3>
-              <p className="objective-description">
-                Explorer les futurs désirables via les technologies émergentes.
-              </p>
+              <p className="objective-description">Explorer les futurs désirables via les technologies émergentes.</p>
             </div>
           </div>
         </div>
@@ -150,13 +150,8 @@ function Home() {
       {/* Films Section */}
       <section className="films-section">
         <div className="films-container">
-          {/* Header */}
           <div className="films-header">
             <div className="films-header-left">
-              <div className="films-label">
-                <span className="label-line"></span>
-                <span className="label-text">LE PROJET MARS.A.I</span>
-              </div>
               <h2 className="films-title">
                 FILMS EN<br />
                 <span className="films-title-gradient">COMPÉTITION</span>
@@ -167,137 +162,35 @@ function Home() {
               </p>
             </div>
             <div className="films-header-right">
-              <button className="btn-selection">
+              <Link to="/films" className="btn-selection">
                 <span>VOIR LA SÉLECTION</span>
                 <div className="btn-selection-arrow">
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </div>
-              </button>
+              </Link>
             </div>
           </div>
 
-          {/* Films Grid */}
           <div className="films-grid">
             {films.slice(0, 3).map((film, index) => (
               <div key={film.id_film} className="film-card">
-                <div className="film-image">
-                  {film.vignette ? (
-                    <img src={film.vignette} alt={film.titre} className="film-thumbnail" />
+                <div className="film-image" style={{ aspectRatio: "16/9" }}>
+                  {film.image_principale ? (
+                    <img src={`${API_URL}${film.image_principale}`} alt={film.titre} className="film-thumbnail" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : (
                     <div className={`film-placeholder film-placeholder-${(index % 3) + 1}`}></div>
                   )}
                 </div>
                 <div className="film-info">
-                  <h3 className="film-title">
-                    {film.titre?.split(" ").slice(0, 1).join(" ")}<br />
-                    {film.titre?.split(" ").slice(1).join(" ") || film.traduction}
-                  </h3>
-                  <p className="film-director">DIR. {film.realisateur || "MARS.AI"}</p>
+                  <h3 className="film-title">{film.titre}</h3>
+                  <p className="film-director">{film.user?.username || ""}</p>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-      {/* Night Section */}
-      <section className="night-section">
-        <div className="night-container">
-          <div className="night-content">
-            <div className="night-badge">SOIRÉE DE CLÔTURE</div>
-            <h2 className="night-title">
-              <span className="night-title-outline">MARS.A.I</span>
-              <span className="night-title-bold">NIGHT</span>
-            </h2>
-            <p className="night-description">
-              Fête Électro mêlant IA et futurs souhaitables.<br />
-              Une expérience immersive sonore et visuelle.
-            </p>
-          </div>
 
-          <div className="night-card">
-            <div className="night-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M12 7V12L15 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-            <button className="night-card-btn">RÉSERVER</button>
-          </div>
-        </div>
-      </section>
-
-      {/* Conferences Section */}
-      <section className="conferences-section">
-        <div className="conferences-container">
-          <div className="conferences-content">
-            <h2 className="conferences-title">
-              DEUX JOURNÉES DE<br />
-              <span className="conferences-title-gradient">CONFÉRENCES GRATUITES</span>
-            </h2>
-
-            <ul className="conferences-list">
-              <li>Débats engagés sur l'éthique et le future</li>
-              <li>Confrontations d'idées entre artistes et tech</li>
-              <li>Interrogations stimulantes sur la création</li>
-            </ul>
-
-            <button className="btn-agenda">
-              <svg className="btn-agenda-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M3 10H21" stroke="currentColor" strokeWidth="1.5"/>
-                <path d="M8 2V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                <path d="M16 2V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-              </svg>
-              AGENDA COMPLET
-            </button>
-          </div>
-
-          <div className="events-grid">
-            <div className="event-card event-card-light">
-              <div className="event-icon event-icon-purple">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M5 4L19 12L5 20V4Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3 className="event-name">PROJECTIONS</h3>
-              <p className="event-description">
-                Diffusion sur écran géant en présence des réalisateurs.
-              </p>
-            </div>
-
-            <div className="event-card event-card-dark">
-              <div className="event-icon event-icon-pink">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="9" cy="7" r="3" stroke="currentColor" strokeWidth="1.5"/>
-                  <circle cx="15" cy="7" r="3" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M3 21V19C3 16.7909 4.79086 15 7 15H11C13.2091 15 15 16.7909 15 19V21" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M15 15H17C19.2091 15 21 16.7909 21 19V21" stroke="currentColor" strokeWidth="1.5"/>
-                </svg>
-              </div>
-              <h3 className="event-name">WORKSHOPS</h3>
-              <p className="event-description">
-                Sessions pratiques pour maîtriser les outils IA.
-              </p>
-            </div>
-
-            <div className="event-card event-card-dark">
-              <div className="event-icon event-icon-green">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="12" cy="8" r="5" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M12 13V21" stroke="currentColor" strokeWidth="1.5"/>
-                  <path d="M9 18L12 21L15 18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <h3 className="event-name">AWARDS</h3>
-              <p className="event-description">
-                Cérémonie de clôture récompensant l'audace.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
       {/* Sponsors Section */}
       <section className="sponsors-section">
         <div className="sponsors-container">
@@ -310,11 +203,21 @@ function Home() {
             ILS SOUTIENNENT <span className="sponsors-title-gradient">LE FUTUR</span>
           </h2>
           <div className="sponsors-grid">
-            {[...Array(12)].map((_, i) => (
+            {sponsors.length > 0 ? sponsors.map((s, i) => (
               <div key={i} className="sponsor-card">
-                <span className="sponsor-placeholder">SPONSOR</span>
+                {s.image_url ? (
+                  <img src={s.image_url} alt={s.name || ""} style={{ maxWidth: "100%", maxHeight: "60px", objectFit: "contain" }} />
+                ) : (
+                  <span className="sponsor-placeholder">{s.name || "SPONSOR"}</span>
+                )}
               </div>
-            ))}
+            )) : (
+              [...Array(6)].map((_, i) => (
+                <div key={i} className="sponsor-card">
+                  <span className="sponsor-placeholder">SPONSOR</span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -323,10 +226,7 @@ function Home() {
       <section className="location-section">
         <div className="location-container">
           <div className="location-badge">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 21C12 21 5 13.5 5 9C5 5.13401 8.13401 2 12 2C15.866 2 19 5.13401 19 9C19 13.5 12 21 12 21Z" stroke="currentColor" strokeWidth="1.5"/>
-              <circle cx="12" cy="9" r="3" stroke="currentColor" strokeWidth="1.5"/>
-            </svg>
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 5 13.5 5 9C5 5.13 8.13 2 12 2C15.87 2 19 5.13 19 9C19 13.5 12 21 12 21Z" stroke="currentColor" strokeWidth="1.5"/><circle cx="12" cy="9" r="3" stroke="currentColor" strokeWidth="1.5"/></svg>
             LE LIEU
           </div>
 
@@ -345,37 +245,9 @@ function Home() {
               <span className="location-access">ACCÈS TRAM T2/T3 ARRÊT ARENC LE SILO</span>
             </div>
           </div>
-
-          <div className="venues-grid">
-            <div className="venue-card">
-              <h3 className="venue-name">SALLE DES SUCRES</h3>
-              <p className="venue-description">
-                Futur sanctuaire des conférences et de la remise des prix de Mars.A.I. Un espace majestueux alliant patrimoine et technologie.
-              </p>
-            </div>
-            <div className="venue-card">
-              <h3 className="venue-name">SALLE PLAZA</h3>
-              <p className="venue-description">
-                L'épicentre du festival : accueil, animations, workshops et restauration. Le point de rencontre de tous les participants.
-              </p>
-            </div>
-          </div>
-
-          <div className="location-map">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2903.889!2d5.3659!3d43.3108!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12c9c0b5b5b5b5b5%3A0x0!2sLa%20Plateforme%2C%20Marseille!5e0!3m2!1sfr!2sfr!4v1234567890"
-              width="100%"
-              height="400"
-              style={{ border: 0, borderRadius: '1rem' }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="La Plateforme Marseille"
-            ></iframe>
-          </div>
         </div>
       </section>
-</>
+    </>
   );
 }
 
