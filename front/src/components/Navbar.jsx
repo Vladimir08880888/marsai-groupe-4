@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Button from "./Button";
 import search from "../assets/navbar_svg/search.svg"
 import home from "../assets/navbar_svg/home.svg"
@@ -43,9 +43,9 @@ export default function Navbar() {
         </svg>
       </div>
       <div>
-        {username ? (
+        {firstName ? (
           <>
-            <span className="mr-4">Hello, {username}</span>
+            <span className="mr-4">Hello, {firstName}</span>
             <button onClick={handleLogout}>Logout</button>
           </>
         ) : (
