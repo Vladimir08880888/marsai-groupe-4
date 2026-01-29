@@ -52,13 +52,13 @@ export function Login() {
 
       switch (response.data?.role) {
         case "ADMIN":
-          navigate("/admin");
+          window.location.href = "/admin/films";
           break;
         case "JURY":
-          navigate("/");
+          window.location.href = "/jury/mes-films";
           break;
         default:
-          navigate("/");
+          window.location.href = "/";
           break;
       }
     },

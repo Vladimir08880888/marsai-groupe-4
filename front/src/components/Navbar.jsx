@@ -19,7 +19,9 @@ export default function Navbar() {
     <>
       <Link to="/films" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white transition-colors text-sm">FILMS</Link>
       <Link to="/palmares" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white transition-colors text-sm">PALMARÈS</Link>
-      <Link to="/soumettre" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white transition-colors text-sm">SOUMETTRE</Link>
+      {role !== "ADMIN" && role !== "JURY" && (
+        <Link to="/soumettre" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white transition-colors text-sm">SOUMETTRE</Link>
+      )}
       {firstName ? (
         <>
           {role === "ADMIN" && (

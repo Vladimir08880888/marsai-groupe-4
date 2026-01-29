@@ -25,7 +25,7 @@ export default function AdminAccess() {
       localStorage.setItem("email", data.email);
       localStorage.setItem("role", data.role);
       localStorage.setItem("userId", data.id);
-      navigate("/admin/films");
+      window.location.href = "/admin/films";
     } catch (err) {
       setError(err.message);
     }

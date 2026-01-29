@@ -34,8 +34,15 @@ export default function Soumettre() {
       localStorage.setItem("email", data.email);
       localStorage.setItem("role", data.role);
       localStorage.setItem("userId", data.id);
-      setIsLoggedIn(true);
-      setLoginError("");
+      if (data.role === "ADMIN") {
+        window.location.href = "/admin/films";
+        return;
+      }
+      if (data.role === "JURY") {
+        window.location.href = "/jury/mes-films";
+        return;
+      }
+      window.location.reload();
     },
     onError: (err) => setLoginError(err.message),
   });
