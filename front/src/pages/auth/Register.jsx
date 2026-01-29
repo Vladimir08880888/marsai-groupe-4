@@ -67,7 +67,7 @@ export function Register() {
 
   return (
     <>
-      <h1 className="text-2xl">Register</h1>
+      {/* <h1 className="text-2xl">Register</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label>Prénom</label>
         <input type="text" {...register("first_name")} required />
@@ -92,7 +92,8 @@ export function Register() {
         <button type="submit">Register</button>
       </form>
 
-      <Link to="/auth/login">Already have an account? Login</Link>
+      <Link to="/auth/login">Already have an account? Login</Link> */}
+
     </>
   );
 }

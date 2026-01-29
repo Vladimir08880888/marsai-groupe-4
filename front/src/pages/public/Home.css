@@ -2,9 +2,14 @@
   max-width: 1920px;
   margin: 0 auto;
  
-
+  
   font-family: "Arimo", sans-serif;
 
+}
+
+::selection {
+  background-color: #ff00ff; /* фон выделения */
+  color: #ffffff; /* цвет текста при выделении */
 }
 
 .logo {

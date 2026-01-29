@@ -1,8 +1,8 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import Button from "./Button";
 import search from "../assets/navbar_svg/search.svg"
 import home from "../assets/navbar_svg/home.svg"
-import win from "../assets/navbar_svg/win.svg"
+import win from "../assets/navbar_svg/win3.svg"
 import callendrier from "../assets/navbar_svg/callendrier.svg"
 import user from "../assets/navbar_svg/user.svg"
 
@@ -53,23 +53,7 @@ export default function Navbar() {
     //     )}
     //   </div>
     // </div>
-<section className="bg-black p-[20px]">
-  <div className="flex bg-black text-white h-[50px] rounded-[17px] justify-between items-center px-[24px]">
-    <span className="flex"><h2>MARS</h2><h2>AI</h2></span>
-
-    <span className="flex gap-[32px]">
-        <img src={search} alt="" />
-        <img src={home} alt="" />
-        <img src={win} alt="" />
-        <img src={callendrier} alt="" />
-        <img src={user} alt="" />
-    </span>
-    <span>
-      <button>CONNEXION</button>
-      <button>INSCRIPTON</button>
-    </span>
-  </div>
-</section>
+ 
 
         
   );
