@@ -18,36 +18,34 @@ function getUploadsbyId(req,res){
   })
 }
 
-async function createUpload(req, res) {
-  try {
-    const { title } = req.body;
-    const videoFile = req.file; 
-
-    if (!videoFile) {
-      return res.status(400).json({ error: "Aucune vidéo envoyée" });
-    }
-
-    // Exemple : sauvegarde en base
-    const newFilm = await Upload.create({
-      title,
-      user_id: req.user.id,          
-      youtube_link: "",              
-    });
-
-    res.status(201).json({
-      message: "Vidéo soumise avec succès",
-      film: newFilm,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erreur serveur" });
+function createUpload(req, res) {
+  if (!req.body) {
+    return res.status(400).json({ error: "Données manquantes" });
   }
+
+  const { title, description } = req.body;
+
+  if (!title || !description) {
+    return res.status(400).json({ error: "Tous les champs sont requis" });
+  }
+
+  Video.findOne({ where: { title } }).then((video) => {
+    if (video) {
+      res.json(video);
+    } else {
+      Video.create({ title: title, description: description }).then(
+        (newVideo) => {
+          res.status(201).json(newVideo);
+        },
+      );
+    }
+  });
 }
 
 
   function updateUpload(req,res){
     const {id} = req.params
-
+  }
 
 
  function deleteUpload(req,res){
@@ -56,5 +54,6 @@ async function createUpload(req, res) {
     res.status(204).json({message:"Uploads supprimé"});
   })
  }
+
 
 export default { getUploads,getUploadsbyId, createUpload, deleteUpload };
