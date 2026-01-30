@@ -10,6 +10,7 @@ import Films from "./pages/public/Films.jsx";
 import Palmares from "./pages/public/Palmares.jsx";
 import Soumettre from "./pages/public/Soumettre.jsx";
 import Agenda from "./pages/public/Agenda.jsx";
+import Contact from "./pages/public/Contact.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import PublicLayout from "./layouts/PublicLayout.jsx";
 import { Login } from "./pages/auth/Login.jsx";
@@ -42,6 +43,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="palmares" element={<Palmares />} />
             <Route path="soumettre" element={<Soumettre />} />
             <Route path="agenda" element={<Agenda />} />
+            <Route path="contact" element={<Contact />} />
             <Route path="auth/login" element={<Login />} />
             <Route path="auth/register" element={<Register />} />
           </Route>
