@@ -94,7 +94,7 @@ async function createUpload(req, res) {
       image_3: image_3 || null,
       status: "submitted",
       user_id: userId,
-      // video_path: videoFile.path, // optionnel si tu veux conserver le chemin temporaire
+      video_path: videoFile.path,
     });
 
     res.status(201).json({
@@ -108,7 +108,6 @@ async function createUpload(req, res) {
   }
 }
 
-// Mise à jour (inchangée)
 async function updateUpload(req, res) {
   try {
     const { id } = req.params;
@@ -135,7 +134,6 @@ async function updateUpload(req, res) {
   }
 }
 
-// Suppression (inchangée)
 async function deleteUpload(req, res) {
   try {
     const { id } = req.params;

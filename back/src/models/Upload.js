@@ -79,6 +79,10 @@ const Upload = sequelize.define("Upload", {
     onDelete: "CASCADE",     
     onUpdate: "CASCADE",
   },
+  video_path: {
+  type: DataTypes.STRING(255),
+  allowNull: false,
+},
 }, {
   timestamps: true,          
   tableName: "films",         
