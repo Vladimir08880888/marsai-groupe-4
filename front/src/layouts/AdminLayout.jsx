@@ -1,41 +1,21 @@
 import { NavLink, Outlet } from "react-router";
-import Navbar from "../components/Navbar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import Navbar from "@/components/Navbar";
+import AdminSidebar from "@/components/admin/AdminSideBar";
 
-export default function AdminLayout() {
-return (
-	<div>
-		<Navbar />
-	<aside>
-		
-		<ul>
-
-			<li>
-				<img src="" alt="" />
-				<NavLink to="">Overview</NavLink>
-			</li>
-			<li>
-				<img src="" alt="" />
-				<NavLink to="videos">Gestion films</NavLink>
-			</li>
-			<li>
-				<img src="" alt="" />
-				<NavLink to="jury">Gestion Jury</NavLink>
-			</li>
-			<li>
-				<img src="" alt="" />
-				<NavLink to="leaderboards">Leaderboard</NavLink>
-			</li>
-			<li>
-				<img src="" alt="" />
-				<NavLink to="events">Evenements</NavLink>
-			</li>
-
-		</ul>
-
-	</aside>
-	<main>
-		<Outlet />
-	</main>
-	</div>
-);
+export default function AdminLayout({ children }) {
+  return (
+	<>
+    <SidebarProvider>
+      <AdminSidebar />
+	  
+      <SidebarInset>
+        
+        <main className="flex-1 p-4 md:p-6 " >{children}
+			<Outlet />
+		</main>
+      </SidebarInset>
+    </SidebarProvider>
+	</>
+  )
 }

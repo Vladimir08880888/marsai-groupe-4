@@ -13,6 +13,7 @@ import { RoleGuard } from "./middlewares/RoleGuard.jsx";
 import Videos from "./pages/admin/Videos.jsx";
 import Users from "./pages/admin/Users.jsx";
 import Jury from "./pages/admin/Jury.jsx";
+import Events from "./pages/admin/Events";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,7 +44,8 @@ createRoot(document.getElementById("root")).render(
             <Route index element={<Dashboard />} />
             <Route path="users" element={<Users />} />
             <Route path="videos" element={<Videos />} />
-            <Route path="jury" element={<Jury />} />
+            <Route path="jurys" element={<Jury />} />
+            <Route path="events" element={<Events />} />
           </Route>
         </Routes>
       </QueryClientProvider>
