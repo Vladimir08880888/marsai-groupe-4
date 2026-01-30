@@ -9,6 +9,8 @@ import {
   Clapperboard,
   HatGlasses,
   CalendarCheck,
+  ArrowLeftFromLine,
+  LogOut,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router";
 
@@ -25,6 +27,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import handleLogout from "@/utils/helpers";
 
 const navItems = [
   { title: "Overview", url: "/admin", icon: LayoutDashboard },
@@ -86,11 +89,19 @@ export default function AdminSidebar() {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Settings">
-              <NavLink to="/admin/settings">
-                <Settings className="size-4" />
-                <span>Settings</span>
+            <SidebarMenuButton asChild tooltip="Back Home">
+              <NavLink to="/">
+                <ArrowLeftFromLine className="size-4" />
+                <span>Back Home</span>
               </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Back Home">
+              <button onClick={handleLogout}>
+                  <LogOut className="size-4" />
+                  <span>Log out</span>
+              </button>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
