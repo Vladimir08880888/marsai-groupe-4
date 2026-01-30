@@ -1,6 +1,6 @@
-// controllers/UploadController.js
 import Upload from "../models/Upload.js";
 import { videoDuration } from "@numairawan/video-duration";
+import fs from "fs/promises";
 
 function getUploads(req, res) {
   Upload.findAll()
@@ -43,16 +43,30 @@ async function createUpload(req, res) {
       return res.status(400).json({ error: "Aucune vidéo envoyée" });
     }
 
-    // Vérification durée avec video-duration
-    const durationSeconds = await videoDuration(videoFile.path);
-    const MAX_DURATION = 60; // 1 minute
+    let durationSeconds = 0;
+    try {
+      durationSeconds = await videoDuration(videoFile.path);
+      console.log("Durée lue :", durationSeconds); 
+    } catch (err) {
+      console.error("Erreur lecture durée :", err);
+      durationSeconds = 0; // fallback
+    }
+
+    const MAX_DURATION = 60; 
 
     if (durationSeconds > MAX_DURATION) {
-      // Pas de suppression manuelle ici → multer gère le cleanup à la fin de la requête
       return res.status(400).json({
         error: `La vidéo est trop longue (${Math.round(durationSeconds)}s). Maximum autorisé : ${MAX_DURATION} secondes.`,
       });
     }
+
+    const videosDir = "uploads/videos";
+    const fileExt = path.extname(videoFile.originalname); // .mp4, .mov, etc.
+    const finalFileName = `${newFilm.id || Date.now()}-${Date.now()}${fileExt}`;
+    const finalPath = path.join(videosDir, finalFileName);
+
+    await fs.mkdir(videosDir, { recursive: true });
+
 
     const {
       title,
@@ -72,7 +86,6 @@ async function createUpload(req, res) {
       return res.status(400).json({ error: "Le titre est obligatoire" });
     }
 
-    // Formatage de la durée en "mm:ss"
     const formattedDuration = `${Math.floor(durationSeconds / 60)
       .toString()
       .padStart(2, "0")}:${Math.floor(durationSeconds % 60)

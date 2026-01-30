@@ -34,17 +34,14 @@ uploadRouter.use((req, res, next) => {
 });
 
 
-// GET tous les films 
 uploadRouter.get("/", (req, res, next) => {
   AuthMiddleware(req, res, next, ["ADMIN", "JURY"]);
 }, UploadController.getUploads);
 
-// GET un film 
 uploadRouter.get("/:id", (req, res, next) => {
   AuthMiddleware(req, res, next, ["ADMIN", "JURY", "PRODUCER"]);
 }, UploadController.getUploadbyId);
 
-// POST upload 
 uploadRouter.post(
   "/",
   (req, res, next) => {
@@ -54,12 +51,10 @@ uploadRouter.post(
   UploadController.createUpload
 );
 
-// PUT modification
 uploadRouter.put("/:id", (req, res, next) => {
   AuthMiddleware(req, res, next, ["ADMIN", "PRODUCER"]);
 }, UploadController.updateUpload);
 
-// DELETE
 uploadRouter.delete("/:id", (req, res, next) => {
   AuthMiddleware(req, res, next, ["ADMIN", "PRODUCER"]);
 }, UploadController.deleteUpload);

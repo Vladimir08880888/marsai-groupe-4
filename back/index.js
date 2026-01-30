@@ -3,10 +3,14 @@ import express from "express";
 import cors from "cors";
 import router from "./src/routes/index.js";
 import { configDotenv } from "dotenv";
+import path from "path";
 
 configDotenv(); // Charger les variables d'environnement depuis le fichier .env
 
 const app = express(); // Créer une application Express
+
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(cors({ origin: "*" ,
    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
