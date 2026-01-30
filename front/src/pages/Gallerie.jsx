@@ -80,24 +80,6 @@ export default function GalerieDesFilmsPage() {
   return (
     <div className="min-h-screen bg-black text-white font-sans p-4">
       {/* Header */}
-      <header className="flex justify-between bg-[#000000] max-w-[800px] mx-auto border border-white/30 rounded-[40px] px-6 py-4 mt-4">
-        <div className="font-extrabold tracking-wide">
-          <span className="font-extrabold tracking-wide">MARS</span>
-          <span className="bg-gradient-to-r from-[#ff4fd8] to-[#7b2cff] bg-clip-text text-transparent">AI</span>
-        </div>
-
-        <nav className="flex items-center gap-2 opacity-90">
-          <button>Search</button>
-          <button>Home</button>
-          <button>Trophy</button>
-          <button>Profile</button>
-        </nav>
-
-        <div className="flex gap-2">
-          <button>Connexion</button>
-          <button>Inscription</button>
-        </div>
-      </header>
 
       {/* Title */}
       <main className="mx-auto max-w-[1180px] px-6 pb-10 pt-10">
