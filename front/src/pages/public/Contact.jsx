@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Train, Car, MapPin } from "lucide-react";
+
 export default function Contact() {
   return (
     <div className="bg-black text-white min-h-screen flex flex-col items-center px-6 py-16">
@@ -10,37 +12,43 @@ export default function Contact() {
       </h1>
 
       {/* Блоки с информацией */}
-      <div className="max-w-xl w-full space-y-8 mb-12">
-        
-        <div className="flex items-start gap-4">
-          <div className="bg-blue-600/20 p-4 rounded-xl text-2xl">🚆</div>
-          <div>
-            <h3 className="text-xl font-semibold">Transports en commun</h3>
-            <p className="text-gray-400">Tram T2 / T3 – Arrêt Arenc Le Silo.</p>
-            <p className="text-gray-400">Métro M2 – Station Désirée Clary.</p>
-          </div>
-        </div>
+     <div className="max-w-xl w-full space-y-8 mb-12">
+  
+  <div className="flex items-start gap-4">
+    <div className="bg-blue-600/20 p-4 rounded-xl">
+      <Train className="text-blue-400" size={28} />
+    </div>
+    <div>
+      <h3 className="text-xl font-semibold">Transports en commun</h3>
+      <p className="text-gray-400">Tram T2 / T3 – Arrêt Arenc Le Silo.</p>
+      <p className="text-gray-400">Métro M2 – Station Désirée Clary.</p>
+    </div>
+  </div>
 
-        <div className="flex items-start gap-4">
-          <div className="bg-green-600/20 p-4 rounded-xl text-2xl">🚗</div>
-          <div>
-            <h3 className="text-xl font-semibold">Voiture</h3>
-            <p className="text-gray-400">Autoroute A55 – Sortie 2.</p>
-            <p className="text-gray-400">Parking Indigo Quai du Lazaret à 200m.</p>
-          </div>
-        </div>
+  <div className="flex items-start gap-4">
+    <div className="bg-green-600/20 p-4 rounded-xl">
+      <Car className="text-green-400" size={28} />
+    </div>
+    <div>
+      <h3 className="text-xl font-semibold">Voiture</h3>
+      <p className="text-gray-400">Autoroute A55 – Sortie 2.</p>
+      <p className="text-gray-400">Parking Indigo Quai du Lazaret à 200m.</p>
+    </div>
+  </div>
 
-        <div className="flex items-start gap-4">
-          <div className="bg-purple-600/20 p-4 rounded-xl text-2xl">📍</div>
-          <div>
-            <h3 className="text-xl font-semibold">Adresse</h3>
-            <p className="text-gray-400">
-              155 Rue Peyssonnel, 13002 Marseille (Entrée principale)
-            </p>
-          </div>
-        </div>
+  <div className="flex items-start gap-4">
+    <div className="bg-purple-600/20 p-4 rounded-xl">
+      <MapPin className="text-purple-400" size={28} />
+    </div>
+    <div>
+      <h3 className="text-xl font-semibold">Adresse</h3>
+      <p className="text-gray-400">
+        155 Rue Peyssonnel, 13002 Marseille (Entrée principale)
+      </p>
+    </div>
+  </div>
 
-      </div>
+</div>
 
       {/* КАРТА ПО ЦЕНТРУ КВАДРАТОМ */}
       <div className="w-[500px] h-[500px] rounded-3xl overflow-hidden shadow-2xl">
