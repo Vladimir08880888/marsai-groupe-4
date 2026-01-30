@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router";
 import Button from "./Button";
 import search from "../assets/navbar_svg/search.svg"
 import home from "../assets/navbar_svg/home.svg"
-import win from "../assets/navbar_svg/win.svg"
+import win from "../assets/navbar_svg/win3.svg"
 import callendrier from "../assets/navbar_svg/callendrier.svg"
 import user from "../assets/navbar_svg/user.svg"
 
