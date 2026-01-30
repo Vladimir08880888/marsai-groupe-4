@@ -35,7 +35,9 @@ export default function Navbar() {
             Déconnexion
           </button>
         </>
-      ) : null}
+      ) : (
+        <Link to="/auth/login" onClick={() => setMenuOpen(false)} className="text-white/80 hover:text-white transition-colors text-sm">CONNEXION</Link>
+      )}
     </>
   );
 
