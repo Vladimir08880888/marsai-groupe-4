@@ -1,6 +1,6 @@
 // controllers/UploadController.js
 import Upload from "../models/Upload.js";
-import getVideoDuration from "@numairawan/video-duration";
+import { videoDuration } from "@numairawan/video-duration";
 
 function getUploads(req, res) {
   Upload.findAll()
@@ -30,10 +30,10 @@ function getUploadbyId(req, res) {
 
 async function createUpload(req, res) {
   try {
-    const userId = req.user.id; // ← doit venir de ton middleware AuthMiddleware
+    const userId = req.user.id;
     const role = req.user.role;
 
-    if (role !== "PARTICIPANT" && role !== "ADMIN") {
+    if (role !== "PRODUCER" && role !== "ADMIN") {
       return res.status(403).json({ error: "Seuls les participants et admins peuvent uploader" });
     }
 
@@ -44,8 +44,7 @@ async function createUpload(req, res) {
     }
 
     // Vérification durée avec video-duration
-    const durationSeconds = await getVideoDuration(videoFile.path);
-
+    const durationSeconds = await videoDuration(videoFile.path);
     const MAX_DURATION = 60; // 1 minute
 
     if (durationSeconds > MAX_DURATION) {
@@ -55,7 +54,6 @@ async function createUpload(req, res) {
       });
     }
 
-    // Si OK → création en base
     const {
       title,
       translated_title,

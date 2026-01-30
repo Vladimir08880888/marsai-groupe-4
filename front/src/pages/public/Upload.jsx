@@ -81,14 +81,15 @@ export default function Upload() {
       formData.append("video", videoFile); // ← le fichier validé
       // Ajoute d'autres champs si besoin : formData.append("synopsis", synopsis);
 
-      const response = await fetch("http://localhost:3000/uploads", { // ← ton endpoint
+      const response = await fetch("http://localhost:3000/upload", { // ← ton endpoint
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`, // ton JWT
         },
         body: formData,
+        
       });
-
+console.log(response);
       const data = await response.json();
 
       if (!response.ok) {

@@ -1,6 +1,6 @@
 export function UploadRoleGuard ({ children }) {
   const userRole = localStorage.getItem("role");
-  if (userRole === "PARTICIPANT") {
+  if (userRole === "PRODUCER") {
     return children;
   } else {
     return <div>Access Denied</div>;

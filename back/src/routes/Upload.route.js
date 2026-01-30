@@ -30,7 +30,7 @@ const upload = multer({
 const uploadRouter = express.Router();
 
 uploadRouter.use((req, res, next) => {
-  AuthMiddleware(req, res, next, ["ADMIN", "JURY", "PARTICIPANT"]);
+  AuthMiddleware(req, res, next, ["ADMIN", "JURY", "PRODUCER"]);
 });
 
 
@@ -41,14 +41,14 @@ uploadRouter.get("/", (req, res, next) => {
 
 // GET un film 
 uploadRouter.get("/:id", (req, res, next) => {
-  AuthMiddleware(req, res, next, ["ADMIN", "JURY", "PARTICIPANT"]);
+  AuthMiddleware(req, res, next, ["ADMIN", "JURY", "PRODUCER"]);
 }, UploadController.getUploadbyId);
 
 // POST upload 
 uploadRouter.post(
   "/",
   (req, res, next) => {
-    AuthMiddleware(req, res, next, ["PARTICIPANT", "ADMIN"]);
+    AuthMiddleware(req, res, next, ["PRODUCER", "ADMIN"]);
   },
   upload.single("video"), // ← ICI ! multer est appliqué uniquement sur POST
   UploadController.createUpload
@@ -56,12 +56,12 @@ uploadRouter.post(
 
 // PUT modification
 uploadRouter.put("/:id", (req, res, next) => {
-  AuthMiddleware(req, res, next, ["ADMIN", "PARTICIPANT"]);
+  AuthMiddleware(req, res, next, ["ADMIN", "PRODUCER"]);
 }, UploadController.updateUpload);
 
 // DELETE
 uploadRouter.delete("/:id", (req, res, next) => {
-  AuthMiddleware(req, res, next, ["ADMIN", "PARTICIPANT"]);
+  AuthMiddleware(req, res, next, ["ADMIN", "PRODUCER"]);
 }, UploadController.deleteUpload);
 
-export default uploadRouter;
+export default uploadRouter; 
