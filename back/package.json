@@ -23,7 +23,8 @@
     "multer": "^2.0.2",
     "mysql": "^2.18.1",
     "mysql2": "^3.16.1",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
