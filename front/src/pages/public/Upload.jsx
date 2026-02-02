@@ -1,6 +1,45 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-const MAX_SECONDS = 60; // durée max autorisée
+const MAX_SECONDS = 60;
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 Mo
+const ACCEPTED_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"];
+
+const uploadSchema = z.object({
+  title: z.string()
+    .min(3, "Le titre doit faire au moins 3 caractères")
+    .max(255, "Le titre est trop long (max 255 caractères)"),
+  translated_title: z.string()
+    .max(255, "Le titre traduit est trop long (max 255 caractères)")
+    .optional(),
+  synopsis: z.string()
+    .max(255, "Le synopsis est trop long (max 255 caractères)"),
+  language: z.string()
+    .max(100, "Le langage est trop long (max 100 caractères)"),
+  synopsis_en: z.string()
+    .max(255, "Le synopsis en anglais est trop long (max 255 caractères)")
+    .optional(),
+  ai_tools: z.string()
+    .max(255, "Les outils IA sont trop longs (max 255 caractères)"),
+  thumbnail: z.string(),
+  Image_2: z.string(),
+  Image_3: z.string(),
+  video: z.any()
+    .refine((file) => file instanceof File, "Veuillez sélectionner une vidéo")
+    .refine((file) => file.size <= MAX_FILE_SIZE, "La vidéo ne doit pas dépasser 500 Mo")
+    .refine((file) => ACCEPTED_VIDEO_TYPES.includes(file.type), "Format non autorisé (MP4, MOV, WebM seulement)")
+    .refine(async (file) => {
+      if (!(file instanceof File)) return false;
+      try {
+        const duration = await getVideoDuration(file);
+        return duration <= MAX_SECONDS;
+      } catch {
+        return false;
+      }
+    }, `La vidéo ne doit pas dépasser ${MAX_SECONDS} secondes`),
+});
 
 function getVideoDuration(file) {
   return new Promise((resolve, reject) => {
@@ -27,125 +66,112 @@ function getVideoDuration(file) {
 }
 
 export default function Upload() {
-  const [error, setError] = useState(null);
-  const [duration, setDuration] = useState(null);
-  const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
+  const [serverError, setServerError] = useState(null);
 
-  async function handleFileChange(e) {
-    setError(null);
-    setDuration(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+    setValue,
+    trigger,
+  } = useForm({
+    resolver: zodResolver(uploadSchema),
+    defaultValues: {
+      title: "",
+      translated_title: "",
+      synopsis:"",
+      language: "",
+      synopsis_en: "",
+      subtitles:"",
+      ai_tools: "",
+      thumbnail: "",
+      Image_2: "",
+      Image_3: "",
+      video: null,
+    },
+  });
 
-    const selectedFile = e.target.files?.[0];
-    if (!selectedFile) return;
+  const videoFile = watch("video");
 
-    try {
-      const d = await getVideoDuration(selectedFile);
-
-      if (d > MAX_SECONDS) {
-        setError(
-          `Vidéo trop longue (${Math.ceil(d)}s). Maximum autorisé : ${MAX_SECONDS}s`
-        );
-        return;
-      }
-
-      setDuration(d);
-      setVideoFile(selectedFile);
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  const [videoFile, setVideoFile] = useState(null);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-
-    if (!videoFile) {
-      setError("Choisissez une vidéo d'abord");
-      return;
-    }
-
-    if (!title.trim()) {
-      setError("Le titre est obligatoire");
-      return;
-    }
-
+  const onSubmit = async (data) => {
     setLoading(true);
-    setError(null);
+    setServerError(null);
 
     try {
       const formData = new FormData();
-      formData.append("title", title);
-      formData.append("video", videoFile); // ← le fichier validé
+      formData.append("title", data.title);
+      formData.append("video", data.video);
 
-      const response = await fetch("http://localhost:3000/uploads", { // ← ton endpoint
+      const response = await fetch("http://localhost:3000/uploads", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // ton JWT
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: formData,
-        
       });
-console.log(response);
-      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Erreur lors de l'upload");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erreur lors de l'upload");
       }
 
       alert("Vidéo uploadée avec succès !");
-      // Reset form
-      setTitle("");
-      setVideoFile(null);
-      setDuration(null);
-      e.target.reset();
+      reset();
     } catch (err) {
-      setError(err.message);
+      setServerError(err.message);
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div style={{ maxWidth: 500, margin: "0 auto", padding: "20px" }}>
       <h2>Upload vidéo (max 1 minute)</h2>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Titre */}
         <div style={{ marginBottom: "16px" }}>
           <label>Titre de la vidéo</label>
           <input
             type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            {...register("title")}
             placeholder="Mon court métrage..."
-            required
             style={{ width: "100%", padding: "8px", marginTop: "4px" }}
           />
+          {errors.title && <p style={{ color: "red", marginTop: "4px" }}>{errors.title.message}</p>}
         </div>
 
+        {/* Vidéo */}
         <div style={{ marginBottom: "16px" }}>
           <label>Vidéo (MP4, MOV, WebM)</label>
           <input
             type="file"
-            accept="video/mp4,video/quicktime,video/webm"
-            onChange={handleFileChange}
-            required
+            accept={ACCEPTED_VIDEO_TYPES.join(",")}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              setValue("video", file, { shouldValidate: true }); // ← déclenche Zod
+              trigger("video"); // force re-validation
+            }}
             style={{ width: "100%", padding: "8px", marginTop: "4px" }}
           />
+          {errors.video && <p style={{ color: "red", marginTop: "4px" }}>{errors.video.message}</p>}
         </div>
 
-        {duration !== null && (
+        {/* Aperçu fichier */}
+        {videoFile && (
           <p style={{ color: "green" }}>
-            Durée : {Math.ceil(duration)} secondes (OK)
+            Fichier sélectionné : {videoFile.name}
           </p>
         )}
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+        {serverError && <p style={{ color: "red" }}>{serverError}</p>}
 
         <button
           type="submit"
-          disabled={loading || !videoFile || !title.trim()}
+          disabled={loading}
           style={{
             padding: "10px 20px",
             background: loading ? "#ccc" : "#28a745",
