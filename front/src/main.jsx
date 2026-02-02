@@ -16,6 +16,7 @@ import GalerieDesFilmsPage from "./pages/Gallerie.jsx";
 import Videos from "./pages/admin/Videos.jsx";
 import Agenda from "./pages/Agenda.jsx"
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
