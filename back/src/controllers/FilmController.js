@@ -1,4 +1,5 @@
 import { Film, User, Tag } from "../models/index.js";
+import { videoDuration } from "@numairawan/video-duration";
 
 export const getAllFilms = async (req, res) => {
   try {
@@ -64,7 +65,25 @@ export const createFilm = async (req, res) => {
 
     if (req.files) {
       if (req.files.video_file?.[0]) {
-        data.video_file = `/uploads/videos/${req.files.video_file[0].filename}`;
+        const videoFile = req.files.video_file[0];
+        data.video_file = `/uploads/videos/${videoFile.filename}`;
+
+        // Check video duration (max 60 seconds)
+        try {
+          const durationInfo = await videoDuration(videoFile.path);
+          const durationSeconds = durationInfo.seconds || (durationInfo.duration / durationInfo.timeScale) || 0;
+          const MAX_DURATION = 60;
+          if (durationSeconds > MAX_DURATION) {
+            return res.status(400).json({
+              error: `La vidéo est trop longue (${Math.round(durationSeconds)}s). Maximum autorisé : ${MAX_DURATION} secondes.`,
+            });
+          }
+          if (durationSeconds > 0) {
+            data.duration = Math.round(durationSeconds);
+          }
+        } catch (err) {
+          console.error("Erreur lecture durée vidéo :", err);
+        }
       }
       if (req.files.thumbnail?.[0]) {
         data.thumbnail = `/uploads/images/${req.files.thumbnail[0].filename}`;

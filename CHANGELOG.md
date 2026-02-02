@@ -154,6 +154,32 @@
 
 ---
 
+### Phase 8 — Intégration des branches d'équipe
+
+**Validation de durée vidéo (Backend)** — intégration depuis `4-upload-videos` :
+- Vérification automatique de la durée lors de l'upload via `@numairawan/video-duration`
+- Limite max : 60 secondes — erreur renvoyée si dépassée
+- La durée est extraite et sauvegardée dans le champ `duration` du modèle Film
+
+**Admin sidebar amélioré (Frontend)** — intégration depuis `12-admin-dashboard` :
+- Icônes Lucide pour chaque section (Clapperboard, Users, Trophy, FileText)
+- Bouton « Retour au site » pour revenir sur le frontend
+- Bouton « Déconnexion » avec nettoyage complet du localStorage
+- Logo MARS AI avec gradient dans le header du sidebar
+
+**Navbar redesignée (Frontend)** — intégration depuis `18-css-navbar` :
+- Nouveau style « pill » (barre arrondie avec fond semi-transparent et bordure)
+- Icônes de navigation centrées (Search, Home, Trophy, Calendar, User)
+- Bouton gradient « INSCRIPTION » à droite
+- Liens vers `/agenda` et `/contact` ajoutés
+- Menu mobile mis à jour avec le même style arrondi
+
+**Page Contact** — déjà intégrée depuis `20-page-contact` :
+- Informations d'accès (transports, voiture, adresse)
+- Carte Google Maps intégrée (iframe)
+
+---
+
 ### Responsive design
 
 - Burger menu sur mobile (< 768px)
