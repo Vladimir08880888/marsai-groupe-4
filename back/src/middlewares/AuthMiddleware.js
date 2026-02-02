@@ -22,9 +22,10 @@ export default async function AuthMiddleware(req, res, next, roles = []) {
       return res.status(401).json({ error: "Invalid Payload" });
     }
 
-    const user = await User.findOne({
-      where: { email: decoded.email },
-    });
+   const user = await User.findOne({
+  where: { email: decoded.email },
+});
+
 
     if (!user || (roles.length && !roles.includes(user.role))) {
       return res.status(401).json({
