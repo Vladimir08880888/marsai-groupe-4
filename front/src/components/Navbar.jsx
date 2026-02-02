@@ -11,7 +11,7 @@ export default function Navbar() {
   const navigate = useNavigate();
   const firstName = localStorage.getItem("first_name") || "Utilisateur";
 
-  const isLoggedIn = !!localStorage.getItem("token"); 
+  const isLoggedIn = !!localStorage.getItem("token");
 
   function handleLogout() {
     localStorage.removeItem("first_name");
@@ -22,8 +22,11 @@ export default function Navbar() {
   }
 
   return (
+
   
   <section className="bg-black p-[20px]">
+
+
       {" "}
       <div className="flex bg-white/5 text-white border border-white/10 h-[50px] rounded-[30px] justify-between items-center px-[24px] h-[66px]">
         {" "}
