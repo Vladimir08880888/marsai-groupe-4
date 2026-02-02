@@ -9,6 +9,6 @@ const router = express.Router();
 router.use("/auth", authRouter);
 router.use("/users", userRouter);
 router.use("/videos", videoRouter);
-router.use("/upload", uploadRouter);
+router.use("/uploads", uploadRouter);
 
 export default router;

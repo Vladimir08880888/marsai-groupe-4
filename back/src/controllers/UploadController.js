@@ -1,6 +1,7 @@
 import Upload from "../models/Upload.js";
 import { videoDuration } from "@numairawan/video-duration";
 import fs from "fs/promises";
+import path from "path";
 
 function getUploads(req, res) {
   Upload.findAll()
@@ -30,6 +31,7 @@ function getUploadbyId(req, res) {
 
 async function createUpload(req, res) {
   try {
+    await fs.mkdir("uploads/videos", { recursive: true });
     const userId = req.user.id;
     const role = req.user.role;
 
@@ -44,13 +46,17 @@ async function createUpload(req, res) {
     }
 
     let durationSeconds = 0;
-    try {
-      durationSeconds = await videoDuration(videoFile.path);
-      console.log("Durée lue :", durationSeconds); 
-    } catch (err) {
-      console.error("Erreur lecture durée :", err);
-      durationSeconds = 0; // fallback
-    }
+try {
+  const durationInfo = await videoDuration(videoFile.path);
+  console.log("Info durée complète :", durationInfo);
+
+  // Prends la bonne valeur : seconds ou duration / timeScale
+  durationSeconds = durationInfo.seconds || (durationInfo.duration / durationInfo.timeScale) || 0;
+  console.log("Durée corrigée en secondes :", durationSeconds);
+} catch (err) {
+  console.error("Erreur lecture durée :", err);
+  durationSeconds = 0;
+}
 
     const MAX_DURATION = 60; 
 
@@ -60,13 +66,13 @@ async function createUpload(req, res) {
       });
     }
 
-    const videosDir = "uploads/videos";
-    const fileExt = path.extname(videoFile.originalname); // .mp4, .mov, etc.
-    const finalFileName = `${newFilm.id || Date.now()}-${Date.now()}${fileExt}`;
-    const finalPath = path.join(videosDir, finalFileName);
+    // Formatage sécurisé
+    const formattedDuration = durationSeconds > 0
+      ? `${Math.floor(durationSeconds / 60).toString().padStart(2, "0")}:${Math.floor(durationSeconds % 60).toString().padStart(2, "0")}`
+      : "00:00";
 
-    await fs.mkdir(videosDir, { recursive: true });
-
+    
+    
 
     const {
       title,
@@ -86,11 +92,13 @@ async function createUpload(req, res) {
       return res.status(400).json({ error: "Le titre est obligatoire" });
     }
 
-    const formattedDuration = `${Math.floor(durationSeconds / 60)
-      .toString()
-      .padStart(2, "0")}:${Math.floor(durationSeconds % 60)
-      .toString()
-      .padStart(2, "0")}`;
+    // Déplacement vers dossier permanent AVANT création (on utilise un ID temporaire)
+    const fileExt = path.extname(videoFile.originalname);
+    const tempId = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const finalFileName = `${tempId}${fileExt}`;
+    const finalPath = path.join("uploads", "videos", finalFileName);
+    
+    await fs.rename(videoFile.path, finalPath);
 
     const newFilm = await Upload.create({
       title,
@@ -107,7 +115,7 @@ async function createUpload(req, res) {
       image_3: image_3 || null,
       status: "submitted",
       user_id: userId,
-      video_path: videoFile.path,
+      video_path: finalPath,
     });
 
     res.status(201).json({

@@ -50,7 +50,6 @@ export default function Upload() {
       }
 
       setDuration(d);
-      // Optionnel : stocke le fichier validé dans un state
       setVideoFile(selectedFile);
     } catch (err) {
       setError(err.message);
@@ -79,9 +78,8 @@ export default function Upload() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("video", videoFile); // ← le fichier validé
-      // Ajoute d'autres champs si besoin : formData.append("synopsis", synopsis);
 
-      const response = await fetch("http://localhost:3000/upload", { // ← ton endpoint
+      const response = await fetch("http://localhost:3000/uploads", { // ← ton endpoint
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`, // ton JWT
