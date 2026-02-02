@@ -56,7 +56,6 @@ async function updateUser(req, res) {
       user.last_name = last_name || user.last_name;
       user.email = email || user.email;
       
-      // Hash the password if it's being updated
       if (password) {
         user.password = await hashPassword(password);
       }
