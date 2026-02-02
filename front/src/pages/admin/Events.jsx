@@ -1,10 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getStats } from "../../api/jury.js";
-
 function Events(){
-
-    return
-
+    return <div>Events</div>
 }
 
 export default Events;
