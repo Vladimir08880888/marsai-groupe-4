@@ -18,6 +18,7 @@ import Contact from "./pages/public/Contact.jsx";
 import Film from "./pages/public/Film.jsx";
 
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
