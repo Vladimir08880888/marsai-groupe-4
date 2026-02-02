@@ -1,18 +1,40 @@
 import { Link, useNavigate } from "react-router";
+import { useState } from "react";
+
 import { login } from "../../api/auth.js";
 import { useMutation } from "@tanstack/react-query";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import "./Login.css";
 
 const loginSchema = z.object({
-  email: z.string().email("Email invalide"),
-  password: z.string().min(1, "Mot de passe requis"),
+  email: z.string(),
+  password: z.string(),
 });
 
 export function Login() {
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberSession, setRememberSession] = useState(false);
+
+  if (localStorage.getItem("first_name")) {
+    return (
+      <div className="login-page">
+        <div className="login-card">
+          <h1 className="login-title">Déjà connecté</h1>
+          <p className="login-subtitle">
+            Vous êtes connecté en tant que {localStorage.getItem("first_name")}
+          </p>
+          <Link to="/" className="login-btn">
+            Retour à l'accueil
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  let navigate = useNavigate();
 
   const { register, handleSubmit } = useForm({
     resolver: zodResolver(loginSchema),
@@ -22,145 +44,143 @@ export function Login() {
     mutationFn: async (data) => {
       return await login(data);
     },
-    onSuccess: (response) => {
-      localStorage.setItem("first_name", response.data.first_name);
+    onSuccess: (response, variables, context) => {
+      localStorage.setItem("first_name", response.data?.first_name);
       localStorage.setItem("email", response.data?.email);
       localStorage.setItem("role", response.data?.role);
       localStorage.setItem("token", response.data?.token);
 
       switch (response.data?.role) {
         case "ADMIN":
-          navigate("/admin");
+          window.location.href = "/admin/films";
           break;
         case "JURY":
-          navigate("/");
+          window.location.href = "/jury/mes-films";
           break;
         default:
-          navigate("/");
+          window.location.href = "/";
           break;
       }
     },
-    onError: (error) => {
-      alert(error.response?.data?.error || "Erreur lors de la connexion");
+    onError: (error, variables, context) => {
+      alert(error.response?.data?.error);
     },
   });
 
-  const isLoggedIn = !!localStorage.getItem("email");
-
-  if (isLoggedIn) {
-    return (
-      <>
-        <h1 className="text-2xl">
-          You are already logged in as {localStorage.getItem("email")}
-        </h1>
-        <Link to="/">Return to homepage</Link>
-      </>
-    );
+  function onSubmit(data) {
+    return loginMutation.mutate(data);
   }
 
-  const onSubmit = (data) => {
-    loginMutation.mutate(data);
-  };
-
   return (
-    <>
-      {/* <h1 className="text-2xl">Login</h1>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label
-            htmlFor="email"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"         
-            placeholder="your@email.com"
-            className="border p-2 rounded w-full"
-            {...register("email")}
-            required
-          />
+    <div className="login-page">
+      <div className="login-card">
+        {/* Icon */}
+        <div className="login-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M10 17L15 12L10 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M15 12H3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
 
-        <div>
-          <label
-            htmlFor="password"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-             Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            className="border p-2 rounded w-full"
-            {...register("password")}
-            required
-          />
-        </div>
+        {/* Title */}
+        <h1 className="login-title">CONNEXION</h1>
+        <p className="login-subtitle">PROTOCOLE D'ACCÈS MARSAI</p>
 
-        <button
-          type="submit"
-          disabled={loginMutation.isPending}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {loginMutation.isPending ? "Connecting..." : "Log in"}
-        </button>
-      </form>
+        {/* Form */}
+        <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+          <input type="hidden" id="id" {...register("id")} />
 
-      <Link to="/auth/register">No account yet? Register</Link> */}
-
-      <section className="bg-black text-white py-[90px]">
-        <div className="flex flex-col max-w-[500px] my-0 mx-auto p-[56px] items-center uppercase bg-black/70 border border-white/10 rounded-[24px] shadow-[0_0_30px_rgba(173,70,255,0.1)]">
-
-            <img className="bg-white/5 mb-[24px] border border-white/10 p-6 w-fit w-[96px] h-[96px] rounded-[32px] " src="/src/assets/login_svg/Icon.svg" alt="" />
-        
-        
-
-          <h2 className="text-center text-[48px] mb-[11px] font-bold inline-block inline-block bg-[linear-gradient(to_top,rgba(152,16,250,0.6)_35%,rgba(43,127,255,1)_60%)] bg-clip-text text-transparent tracking-[-2.4px]">CONNEXION</h2>
-          <h2 className="text-center text-[10px] mb-[44px] tracking-[3px] text-white/50 font-bold">Protocole d'accès marsAI</h2>
-
-          <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">Identifiant de Session</h2>
-         
-
-          <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full mb-[24px]">
-          <img className="flex items-center px-[15px]" src="/src/assets/login_svg/Icon (2).svg" alt="" />
-               <input placeholder="agent@marsai.io" className="w-full h-[76px] outline-none  placeholder-white/10" type="email " />
-          </div>
-          <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">Clé Cryptographique</h2>
-          <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full">
-          <img className="flex items-center px-[15px]" src="/src/assets/login_svg/Icon (2).svg" alt="" />
-               <input placeholder="●●●●●●" className="w-full h-[76px] outline-none  placeholder-white/10" type="email " />
-          </div>
-
-          <div className="flex text-[10px]  items-center w-full py-[32px] gap-[10px] tracking-[1px]">
-            <label className="mb-[1px] bg-black/40 inline-block w-[20px] h-[20px] border-1 border-white/10 rounded-[100%] cursor-pointer peer">
-              <input type="checkbox" className="hidden peer" />
-              <div className="rounded-[100%] hidden peer-checked:block w-full h-full bg-blue-500"></div>
+          {/* Email Field */}
+          <div className="form-group">
+            <label htmlFor="email" className="form-label">
+              EMAIL
             </label>
-
-            
-            <h2 className="mr-auto tracking-[1px]">Maintenir session</h2>
-            <h2 className="text-[#51A2FF] tracking-[2px]">Reset ?</h2>
-            
-
-            
+            <div className="input-wrapper">
+              <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M22 6L12 13L2 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <input
+                id="email"
+                type="email"
+                placeholder="agent@marsai.io"
+                className="form-input"
+                {...register("email")}
+                required
+              />
+            </div>
           </div>
 
-          <button className="flex justify-center items-center gap-[17px] font-bold w-full bg-white text-black rounded-[28px] tracking-[2.75px] uppercase text-[11px] h-[76px] trackincg-[2.75px] mb-[75px]"> <img src="/src/assets/login_svg/Icon (3).svg" alt="" /> <h2>Initialiser Flux</h2></button>
-
-          <div className="flex items-end  w-full gap-[15px] justify-center">
-              <h2 className="text-[11px] white-[80px] tracking-[2.2px]">Nouveau Voyageur ?</h2>
-              <h2 className="text-[16px] capitalize tracking-[2.2px] mb-[-3px]">Générer Identité</h2>
+          {/* Password Field */}
+          <div className="form-group">
+            <label htmlFor="password" className="form-label">
+              MOT DE PASSE
+            </label>
+            <div className="input-wrapper">
+              <svg className="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+                <path d="M7 11V7C7 4.23858 9.23858 2 12 2C14.7614 2 17 4.23858 17 7V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="form-input"
+                {...register("password")}
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5"/>
+                  </svg>
+                )}
+              </button>
             </div>
-        </div>
-        
-      </section>
+          </div>
 
+          {/* Options Row */}
+          <div className="form-options">
+            <label className="checkbox-wrapper">
+              <input
+                type="checkbox"
+                checked={rememberSession}
+                onChange={(e) => setRememberSession(e.target.checked)}
+              />
+              <span className="checkbox-label">MAINTENIR SESSION</span>
+            </label>
+            <a href="#" className="reset-link">RESET ?</a>
+          </div>
 
-      
-    </>
+          {/* Submit Button */}
+          <button type="submit" className="login-btn" disabled={loginMutation.isPending}>
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            {loginMutation.isPending ? "CONNEXION..." : "INITIALISER FLUX"}
+          </button>
+        </form>
+
+        {/* Divider */}
+        <div className="login-divider"></div>
+
+        {/* Register Link */}
+        <p className="register-prompt">
+          NOUVEAU VOYAGEUR ? <Link to="/auth/register" className="register-link">Générer Identité</Link>
+        </p>
+      </div>
+    </div>
   );
-} 
+}

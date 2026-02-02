@@ -6,18 +6,22 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "./index.css";
 import Home from "./pages/public/Home.jsx";
-import Dashboard from "./pages/admin/Dashboard.jsx";
+import Films from "./pages/public/Films.jsx";
+import Palmares from "./pages/public/Palmares.jsx";
+import Soumettre from "./pages/public/Soumettre.jsx";
+import Agenda from "./pages/public/Agenda.jsx";
+import Contact from "./pages/public/Contact.jsx";
 import AdminLayout from "./layouts/AdminLayout.jsx";
 import PublicLayout from "./layouts/PublicLayout.jsx";
 import { Login } from "./pages/auth/Login.jsx";
 import { Register } from "./pages/auth/Register.jsx";
+import AdminAccess from "./pages/auth/AdminAccess.jsx";
+import AdminFilms from "./pages/admin/AdminFilms.jsx";
+import AdminContent from "./pages/admin/AdminContent.jsx";
+import AdminJury from "./pages/admin/AdminJury.jsx";
+import AdminAwards from "./pages/admin/AdminAwards.jsx";
+import MyFilms from "./pages/jury/MyFilms.jsx";
 import { RoleGuard } from "./middlewares/RoleGuard.jsx";
-import GalerieDesFilmsPage from "./pages/Gallerie.jsx";
-import Videos from "./pages/admin/Videos.jsx";
-import Contact from "./pages/public/Contact.jsx";
-import Film from "./pages/public/Film.jsx";
-
-
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,21 +39,44 @@ createRoot(document.getElementById("root")).render(
           {/* Routes publiques */}
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
-            <Route path="/gallerie" element={<GalerieDesFilmsPage />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/auth/login" element={<Login />} />
-            <Route path="/auth/register" element={<Register />} />
-            <Route path="/films/:id" element={<Film />} />
+            <Route path="films" element={<Films />} />
+            <Route path="palmares" element={<Palmares />} />
+            <Route path="soumettre" element={<Soumettre />} />
+            <Route path="agenda" element={<Agenda />} />
+            <Route path="contact" element={<Contact />} />
+            <Route path="auth/login" element={<Login />} />
+            <Route path="auth/register" element={<Register />} />
           </Route>
 
-          {/* Routes privées */}
-          <Route path="admin" element={ <AdminLayout />
-             // <RoleGuard allowedRoles={["ADMIN"]}>
-             //   <AdminLayout />
-             // </RoleGuard> 
-              } >
-            <Route index element={<Dashboard />} />
-            <Route path="videos" element={<Videos />} />
+          {/* Admin access (hidden route) */}
+          <Route path="admin-access" element={<AdminAccess />} />
+
+          {/* Admin routes */}
+          <Route
+            path="admin"
+            element={
+              <RoleGuard allowedRoles={["ADMIN"]}>
+                <AdminLayout />
+              </RoleGuard>
+            }
+          >
+            <Route index element={<AdminFilms />} />
+            <Route path="films" element={<AdminFilms />} />
+            <Route path="jury" element={<AdminJury />} />
+            <Route path="awards" element={<AdminAwards />} />
+            <Route path="content" element={<AdminContent />} />
+          </Route>
+
+          {/* Jury routes */}
+          <Route path="/" element={<PublicLayout />}>
+            <Route
+              path="jury/mes-films"
+              element={
+                <RoleGuard allowedRoles={["JURY"]}>
+                  <MyFilms />
+                </RoleGuard>
+              }
+            />
           </Route>
         </Routes>
       </QueryClientProvider>

@@ -1,28 +1,35 @@
-import "dotenv/config";
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import router from "./src/routes/index.js";
 import { configDotenv } from "dotenv";
 
-configDotenv(); // Charger les variables d'environnement depuis le fichier .env
+// Import models to initialize associations
+import "./src/models/index.js";
 
-const app = express(); // Créer une application Express
+configDotenv();
 
-app.use(cors({ origin: "*" ,
-   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-})); // Autoriser les requêtes CORS de toutes origines
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const app = express();
+
+app.use(cors({ origin: "*" }));
 app.use(express.json());
 
-const PORT = process.env.PORT || 3000; // Définir le port du serveur
+// Static file serving for uploads
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.json({ message: "MarsAI API is running" });
+});
 
 app.use("/", router);
 
-// Démarrer le serveur
 app.listen(PORT, () => {
   console.log("-----------------------------");
-  console.log("--        L'ARBITRE        --");
+  console.log("--        MARS.A.I         --");
   console.log("-----------------------------");
-
   console.log(`Le serveur est lancé sur http://localhost:${PORT}`);
 });
