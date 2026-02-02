@@ -1,13 +1,34 @@
 import { useEffect, useState } from "react";
-
-import { deleteUser, getUsers, updateUser, getRoles } from "../../api/users.js";
+import { deleteUser, getUsers, updateUser, getRoles, createUser } from "../../api/users.js";
 import { useMutation } from "@tanstack/react-query";
-
-import { createUser } from "../../api/users.js";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { 
+  flexRender, 
+  getCoreRowModel, 
+  useReactTable,
+  getSortedRowModel,
+} from "@tanstack/react-table";
+import { 
+  Table, 
+  TableBody, 
+  TableCell, 
+  TableHead, 
+  TableHeader, 
+  TableRow 
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import FormField from "@/components/FormField";
 
 
 const registerSchema = z.object({
@@ -40,6 +61,8 @@ function Users() {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [modeEdit, setModeEdit] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [sorting, setSorting] = useState([]);
 
   useEffect(() => {
     getUsers().then((data) => {
@@ -114,6 +137,7 @@ function Users() {
       setValue("facebook_url", user.facebook_url);
       setValue("tiktok_ur", user.tiktok_ur);
       setValue("discovery_source", user.discovery_source);
+      setIsDialogOpen(true);
       setValue("role", user.role);
       setModeEdit(true);
     }
@@ -141,6 +165,7 @@ function Users() {
       setValue("tiktok_ur", "");
       setValue("discovery_source", "");
       setValue("role", "");
+      setIsDialogOpen(false);
       setModeEdit(false);
     }
 
@@ -148,210 +173,229 @@ function Users() {
       console.log(updateUser);
       updateMutation.mutate(updatedUser);
     }
-    
 
+  // Define table columns
+  const columns = [
+    {
+      accessorKey: "first_name",
+      header: "Prénom",
+    },
+    {
+      accessorKey: "last_name", 
+      header: "Nom",
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+    },
+    {
+      accessorKey: "role",
+      header: "Rôle",
+      cell: ({ row }) => (
+        <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+          {row.getValue("role")}
+        </span>
+      ),
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const user = row.original;
+        return (
+          <div className="flex gap-2 justify-end">
+            <Button 
+              variant="outline"
+              size="sm"
+              onClick={() => handleEdit(user)}
+            >
+              Modifier
+            </Button>
+            <Button 
+              variant="destructive"
+              size="sm"
+              onClick={() => handleDelete(user.id)}
+            >
+              Supprimer
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
 
+  const table = useReactTable({
+    data: users,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+  });
 
   return (
     <section className="container mx-auto px-4 py-8">
-      <div className="bg-black rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Liste des utilisateurs</h2>
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">Liste des utilisateurs</h2>
+          <Dialog open={isDialogOpen && !modeEdit} onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) handleReset();
+          }}>
+            <DialogTrigger asChild>
+              <Button>Créer un utilisateur</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Créer un utilisateur</DialogTitle>
+                <DialogDescription>
+                  Remplissez les informations pour créer un nouvel utilisateur
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <input type="hidden" id="id" {...register("id")} />
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField label="Prénom" id="first_name" register={register} required />
+                  <FormField label="Nom" id="last_name" register={register} required />
+                  <FormField label="Email" id="email" type="email" register={register} required />
+                  <FormField label="Mot de passe" id="password" type="password" register={register} required />
+                  <FormField label="Mobile" id="mobile" register={register} />
+                  <FormField label="Téléphone" id="phone" register={register} />
+                  <FormField label="Date de naissance" id="birth_date" type="date" register={register} />
+                  <FormField label="Rue" id="street" register={register} />
+                  <FormField label="Code postal" id="postal_code" register={register} />
+                  <FormField label="Ville" id="city" register={register} />
+                  <FormField label="Pays" id="country" register={register} />
+                  <FormField label="Emploi actuel" id="current_job" register={register} />
+                </div>
+
+                <FormField label="Biographie" id="biography" type="textarea" register={register} />
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField label="Portfolio URL" id="portfolio_url" type="url" register={register} />
+                  <FormField label="YouTube URL" id="youtube_url" type="url" register={register} />
+                  <FormField label="Instagram URL" id="instagram_url" type="url" register={register} />
+                  <FormField label="LinkedIn URL" id="linkedin_url" type="url" register={register} />
+                  <FormField label="Facebook URL" id="facebook_url" type="url" register={register} />
+                  <FormField label="TikTok URL" id="tiktok_ur" type="url" register={register} />
+                  <FormField label="Source de découverte" id="discovery_source" register={register} />
+                  <FormField label="Rôle" id="role" type="select" register={register} options={roles} />
+                </div>
+
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={handleReset}>
+                    Annuler
+                  </Button>
+                  <Button type="submit">
+                    Créer un utilisateur
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
         {users.length > 0 ? (
-          <div className="space-y-3">
-            {users.map((user) => (
-              <div key={user.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className="flex gap-4 items-center flex-1">
-                  <h3 className="font-semibold text-gray-900">{user.first_name} {user.last_name}</h3>
-                  <p className="text-gray-600">{user.email}</p>
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">{user.role}</span>
-                </div>
-                <div className="flex gap-2">
-                  <button 
-                    onClick={() => handleEdit(user)}
-                    className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-                  >
-                    Modifier
-                  </button>
-                  <button 
-                    onClick={() => handleDelete(user.id)}
-                    className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
-                  >
-                    Supprimer
-                  </button>
-                </div>
-              </div>
-            ))}
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                      Aucun utilisateur trouvé.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
         ) : (
           <div className="text-center py-8 text-gray-500">Aucun utilisateur trouvé.</div>
         )}
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl text-white font-bold mb-6">
-          {modeEdit ? "Modifier un utilisateur" : "Créer un utilisateur"}
-        </h2>
-        <form
-          onSubmit={modeEdit ? handleSubmit(onUpdate) : handleSubmit(onSubmit)}
-          className="space-y-4"
-        >
-          <input type="hidden" id="id" {...register("id")} />
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="first_name" className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-              <input id="first_name" type="text" {...register("first_name")} required 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
+      {/* Edit Modal */}
+      <Dialog open={isDialogOpen && modeEdit} onOpenChange={(open) => {
+        setIsDialogOpen(open);
+        if (!open) handleReset();
+      }}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Modifier un utilisateur</DialogTitle>
+            <DialogDescription>
+              Modifiez les informations de l'utilisateur
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit(onUpdate)} className="space-y-4">
+            <input type="hidden" id="id" {...register("id")} />
             
-            <div>
-              <label htmlFor="last_name" className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-              <input id="last_name" type="text" {...register("last_name")} required 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField label="Prénom" id="first_name" register={register} required />
+              <FormField label="Nom" id="last_name" register={register} required />
+              <FormField label="Email" id="email" type="email" register={register} required />
+              <FormField label="Mot de passe" id="password" type="password" register={register} required />
+              <FormField label="Mobile" id="mobile" register={register} />
+              <FormField label="Téléphone" id="phone" register={register} />
+              <FormField label="Date de naissance" id="birth_date" type="date" register={register} />
+              <FormField label="Rue" id="street" register={register} />
+              <FormField label="Code postal" id="postal_code" register={register} />
+              <FormField label="Ville" id="city" register={register} />
+              <FormField label="Pays" id="country" register={register} />
+              <FormField label="Emploi actuel" id="current_job" register={register} />
             </div>
-            
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input id="email" type="email" {...register("email")} required 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-              <input id="password" type="password" {...register("password")} required 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="mobile" className="block text-sm font-medium text-gray-700 mb-1">Mobile</label>
-              <input id="mobile" type="text" {...register("mobile")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-              <input id="phone" type="text" {...register("phone")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="birth_date" className="block text-sm font-medium text-gray-700 mb-1">Date de naissance</label>
-              <input id="birth_date" type="date" {...register("birth_date")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="street" className="block text-sm font-medium text-gray-700 mb-1">Rue</label>
-              <input id="street" type="text" {...register("street")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="postal_code" className="block text-sm font-medium text-gray-700 mb-1">Code postal</label>
-              <input id="postal_code" type="text" {...register("postal_code")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
-              <input id="city" type="text" {...register("city")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">Pays</label>
-              <input id="country" type="text" {...register("country")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="current_job" className="block text-sm font-medium text-gray-700 mb-1">Emploi actuel</label>
-              <input id="current_job" type="text" {...register("current_job")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-          </div>
 
-          <div>
-            <label htmlFor="biography" className="block text-sm font-medium text-gray-700 mb-1">Biographie</label>
-            <textarea id="biography" {...register("biography")} rows="4"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="portfolio_url" className="block text-sm font-medium text-gray-700 mb-1">Portfolio URL</label>
-              <input id="portfolio_url" type="url" {...register("portfolio_url")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
+            <FormField label="Biographie" id="biography" type="textarea" register={register} />
             
-            <div>
-              <label htmlFor="youtube_url" className="block text-sm font-medium text-gray-700 mb-1">YouTube URL</label>
-              <input id="youtube_url" type="url" {...register("youtube_url")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField label="Portfolio URL" id="portfolio_url" type="url" register={register} />
+              <FormField label="YouTube URL" id="youtube_url" type="url" register={register} />
+              <FormField label="Instagram URL" id="instagram_url" type="url" register={register} />
+              <FormField label="LinkedIn URL" id="linkedin_url" type="url" register={register} />
+              <FormField label="Facebook URL" id="facebook_url" type="url" register={register} />
+              <FormField label="TikTok URL" id="tiktok_ur" type="url" register={register} />
+              <FormField label="Source de découverte" id="discovery_source" register={register} />
+              <FormField label="Rôle" id="role" type="select" register={register} options={roles} />
             </div>
-            
-            <div>
-              <label htmlFor="instagram_url" className="block text-sm font-medium text-gray-700 mb-1">Instagram URL</label>
-              <input id="instagram_url" type="url" {...register("instagram_url")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="linkedin_url" className="block text-sm font-medium text-gray-700 mb-1">LinkedIn URL</label>
-              <input id="linkedin_url" type="url" {...register("linkedin_url")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="facebook_url" className="block text-sm font-medium text-gray-700 mb-1">Facebook URL</label>
-              <input id="facebook_url" type="url" {...register("facebook_url")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="tiktok_ur" className="block text-sm font-medium text-gray-700 mb-1">TikTok URL</label>
-              <input id="tiktok_ur" type="url" {...register("tiktok_ur")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="discovery_source" className="block text-sm font-medium text-gray-700 mb-1">Source de découverte</label>
-              <input id="discovery_source" type="text" {...register("discovery_source")} 
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-            </div>
-            
-            <div>
-              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
-              <select id="role" {...register("role")} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" >
-                <option value="">Sélectionner un rôle</option>
-                {roles.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
 
-          <div className="flex gap-3 pt-4">
-            {modeEdit && (
-              <button 
-                type="button" 
-                onClick={handleReset}
-                className="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-              >
-                Annuler la modification
-              </button>
-            )}
-            <button 
-              type="submit"
-              className="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
-            >
-              {modeEdit ? "Mettre à jour" : "Créer un utilisateur"}
-            </button>
-          </div>
-        </form>
-      </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={handleReset}>
+                Annuler
+              </Button>
+              <Button type="submit">
+                Mettre à jour
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
