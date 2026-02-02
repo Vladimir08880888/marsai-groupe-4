@@ -15,6 +15,7 @@ import { RoleGuard } from "./middlewares/RoleGuard.jsx";
 import GalerieDesFilmsPage from "./pages/Gallerie.jsx";
 import Videos from "./pages/admin/Videos.jsx";
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
