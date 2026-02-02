@@ -46,16 +46,21 @@ function deleteUser(req, res) {
 }
 
 // Modification
-function updateUser(req, res) {
+async function updateUser(req, res) {
   const { id } = req.params;
   const { first_name, last_name, email, password, role } = req.body;
 
-  User.findOne({ where: { id } }).then((user) => {
+  User.findOne({ where: { id } }).then(async (user) => {
     if (user) {
       user.first_name = first_name || user.first_name;
       user.last_name = last_name || user.last_name;
       user.email = email || user.email;
-      user.password = password || user.password;
+      
+      // Hash the password if it's being updated
+      if (password) {
+        user.password = await hashPassword(password);
+      }
+      
       user.role = role || user.role;
 
       user.save().then((updatedUser) => {
@@ -84,6 +89,12 @@ function findUserByEmail(email) {
 }
 
 
+function getRoles(req, res) {
+  const roles = User.rawAttributes.role.values;
+  res.json(roles);
+}
+
+
 export default {
   getUsers,
   createUser,
@@ -91,4 +102,5 @@ export default {
   updateUser,
   getUserById,
   findUserByEmail,
+  getRoles,
 };

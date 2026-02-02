@@ -6,6 +6,7 @@ import win from "../assets/navbar_svg/win3.svg";
 import callendrier from "../assets/navbar_svg/callendrier.svg";
 import user from "../assets/navbar_svg/user.svg";
 
+
 export default function Navbar() {
   const navigate = useNavigate();
   const firstName = localStorage.getItem("first_name") || "Utilisateur";
@@ -24,6 +25,7 @@ export default function Navbar() {
 
   
   <section className="bg-black p-[20px]">
+
 
       {" "}
       <div className="flex bg-white/5 text-white border border-white/10 h-[50px] rounded-[30px] justify-between items-center px-[24px] h-[66px]">
