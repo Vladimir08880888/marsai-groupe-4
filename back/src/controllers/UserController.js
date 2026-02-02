@@ -84,6 +84,12 @@ function findUserByEmail(email) {
 }
 
 
+function getRoles(req, res) {
+  const roles = User.rawAttributes.role.values;
+  res.json(roles);
+}
+
+
 export default {
   getUsers,
   createUser,
@@ -91,4 +97,5 @@ export default {
   updateUser,
   getUserById,
   findUserByEmail,
+  getRoles,
 };

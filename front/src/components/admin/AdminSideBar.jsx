@@ -98,7 +98,7 @@ export default function AdminSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Back Home">
-              <button onClick={handleLogout}>
+              <button onClick={handleLogout} className="hover:cursor-pointer">
                   <LogOut className="size-4" />
                   <span>Log out</span>
               </button>
