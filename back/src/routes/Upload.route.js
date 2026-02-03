@@ -6,7 +6,11 @@ import path from "path";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/videos/"); 
+    if (file.fieldname === "video") {
+      cb(null, "uploads/videos/");
+    } else {
+      cb(null, "uploads/images/");
+    }
   },
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -14,17 +18,30 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({
-  storage,
-  limits: { fileSize: 500 * 1024 * 1024 }, 
-  fileFilter: (req, file, cb) => {
-    const allowedTypes = ["video/mp4", "video/quicktime", "video/webm"];
-    if (allowedTypes.includes(file.mimetype)) {
+const fileFilter = (req, file, cb) => {
+  if (file.fieldname === "video") {
+    const allowed = ["video/mp4", "video/quicktime", "video/webm"];
+    if (allowed.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Format non autorisé. Seules les vidéos MP4, MOV, WebM sont acceptées."), false);
+      cb(new Error("Format vidéo non autorisé (MP4, MOV, WebM seulement)"), false);
     }
-  },
+  } else if (["thumbnail", "image_2", "image_3"].includes(file.fieldname)) {
+    const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Format image non autorisé (jpg, png, webp, gif seulement)"), false);
+    }
+  } else {
+    cb(new Error("Champ non autorisé"), false);
+  }
+};
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 500 * 1024 * 1024 },
+  fileFilter,
 });
 
 const uploadRouter = express.Router();
@@ -44,13 +61,15 @@ uploadRouter.get("/:id", (req, res, next) => {
 
 uploadRouter.post(
   "/",
-  (req, res, next) => {
-    AuthMiddleware(req, res, next, ["PRODUCER", "ADMIN"]);
-  },
-  upload.single("video"), // ← ICI ! multer est appliqué uniquement sur POST
+  (req, res, next) => AuthMiddleware(req, res, next, ["PRODUCER", "ADMIN"]),
+  upload.fields([
+    { name: "video", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
+    { name: "image_2", maxCount: 1 },
+    { name: "image_3", maxCount: 1 },
+  ]),
   UploadController.createUpload
 );
-
 uploadRouter.put("/:id", (req, res, next) => {
   AuthMiddleware(req, res, next, ["ADMIN", "PRODUCER"]);
 }, UploadController.updateUpload);

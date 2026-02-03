@@ -31,6 +31,7 @@ function getUploadbyId(req, res) {
 
 async function createUpload(req, res) {
   try {
+    await fs.mkdir("uploads/images", { recursive: true });
     await fs.mkdir("uploads/videos", { recursive: true });
     const userId = req.user.id;
     const role = req.user.role;
@@ -39,7 +40,10 @@ async function createUpload(req, res) {
       return res.status(403).json({ error: "Seuls les participants et admins peuvent uploader" });
     }
 
-    const videoFile = req.file; // ← reçu par multer.single("video")
+    const videoFile   = req.files?.video?.[0];
+    const thumbnailFile = req.files?.thumbnail?.[0];
+    const image2File  = req.files?.image_2?.[0];
+    const image3File  = req.files?.image_3?.[0];
 
     if (!videoFile) {
       return res.status(400).json({ error: "Aucune vidéo envoyée" });
@@ -101,22 +105,21 @@ try {
     await fs.rename(videoFile.path, finalPath);
 
     const newFilm = await Upload.create({
-      title,
-      translated_title: translated_title || null,
-      duration: formattedDuration,
-      synopsis: synopsis || null,
-      language: language || null,
-      synopsis_en: synopsis_en || null,
-      youtube_link: youtube_link || null,
-      subtitles: subtitles || null,
-      ai_tools: ai_tools || null,
-      thumbnail: thumbnail || null,
-      image_2: image_2 || null,
-      image_3: image_3 || null,
-      status: "submitted",
-      user_id: userId,
-      video_path: finalPath,
-    });
+  title,
+  translated_title: req.body.translated_title || null,
+  synopsis: req.body.synopsis || null,
+  language: req.body.language || null,
+  synopsis_en: req.body.synopsis_en || null,
+  youtube_link: req.body.youtube_link || null,
+  ai_tools: req.body.ai_tools || null,
+  subtitles: req.body.subtitles || null,
+  thumbnail: thumbnailFile ? thumbnailFile.path : null,
+  image_2: image2File ? image2File.path : null,
+  image_3: image3File ? image3File.path : null,
+  status: "submitted",
+  user_id: userId,
+  video_path: videoFile.path,
+  });
 
     res.status(201).json({
       message: "Film soumis avec succès",
