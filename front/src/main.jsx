@@ -19,7 +19,7 @@ import Jury from "./pages/admin/Jury.jsx";
 import Events from "./pages/admin/Events";
 import Contact from "./pages/public/Contact.jsx";
 import Film from "./pages/public/Film.jsx";
-
+import Evennements from "./pages/Evennements.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,6 +38,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
             <Route path="/gallerie" element={<GalerieDesFilmsPage />} />
+            <Route path="/evennements" element={<Evennements />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
