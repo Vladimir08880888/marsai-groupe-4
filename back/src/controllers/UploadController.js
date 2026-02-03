@@ -31,8 +31,10 @@ function getUploadbyId(req, res) {
 
 async function createUpload(req, res) {
   try {
+
     await fs.mkdir("uploads/images", { recursive: true });
     await fs.mkdir("uploads/videos", { recursive: true });
+
     const userId = req.user.id;
     const role = req.user.role;
 
@@ -40,29 +42,24 @@ async function createUpload(req, res) {
       return res.status(403).json({ error: "Seuls les participants et admins peuvent uploader" });
     }
 
-    const videoFile   = req.files?.video?.[0];
-    const thumbnailFile = req.files?.thumbnail?.[0];
-    const image2File  = req.files?.image_2?.[0];
-    const image3File  = req.files?.image_3?.[0];
+    const videoFile = req.files?.video?.[0];
 
     if (!videoFile) {
       return res.status(400).json({ error: "Aucune vidéo envoyée" });
     }
 
+    let durationInfo = {};
     let durationSeconds = 0;
-try {
-  const durationInfo = await videoDuration(videoFile.path);
-  console.log("Info durée complète :", durationInfo);
+    try {
+      durationInfo = await videoDuration(videoFile.path);
+      console.log("Durée lue :", durationInfo);
+      durationSeconds = durationInfo.seconds || (durationInfo.duration / durationInfo.timeScale) || 0;
+    } catch (err) {
+      console.error("Erreur lecture durée :", err);
+      durationSeconds = 0;
+    }
 
-  // Prends la bonne valeur : seconds ou duration / timeScale
-  durationSeconds = durationInfo.seconds || (durationInfo.duration / durationInfo.timeScale) || 0;
-  console.log("Durée corrigée en secondes :", durationSeconds);
-} catch (err) {
-  console.error("Erreur lecture durée :", err);
-  durationSeconds = 0;
-}
-
-    const MAX_DURATION = 60; 
+    const MAX_DURATION = 60;
 
     if (durationSeconds > MAX_DURATION) {
       return res.status(400).json({
@@ -70,13 +67,9 @@ try {
       });
     }
 
-    // Formatage sécurisé
     const formattedDuration = durationSeconds > 0
       ? `${Math.floor(durationSeconds / 60).toString().padStart(2, "0")}:${Math.floor(durationSeconds % 60).toString().padStart(2, "0")}`
-      : "00:00";
-
-    
-    
+      : null; // ou "00:00" si tu préfères
 
     const {
       title,
@@ -96,30 +89,27 @@ try {
       return res.status(400).json({ error: "Le titre est obligatoire" });
     }
 
-    // Déplacement vers dossier permanent AVANT création (on utilise un ID temporaire)
-    const fileExt = path.extname(videoFile.originalname);
-    const tempId = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const finalFileName = `${tempId}${fileExt}`;
-    const finalPath = path.join("uploads", "videos", finalFileName);
-    
-    await fs.rename(videoFile.path, finalPath);
+    const thumbnailFile = req.files?.thumbnail?.[0];
+    const image2File = req.files?.image_2?.[0];
+    const image3File = req.files?.image_3?.[0];
 
     const newFilm = await Upload.create({
-  title,
-  translated_title: req.body.translated_title || null,
-  synopsis: req.body.synopsis || null,
-  language: req.body.language || null,
-  synopsis_en: req.body.synopsis_en || null,
-  youtube_link: req.body.youtube_link || null,
-  ai_tools: req.body.ai_tools || null,
-  subtitles: req.body.subtitles || null,
-  thumbnail: thumbnailFile ? thumbnailFile.path : null,
-  image_2: image2File ? image2File.path : null,
-  image_3: image3File ? image3File.path : null,
-  status: "submitted",
-  user_id: userId,
-  video_path: videoFile.path,
-  });
+      title,
+      translated_title: translated_title || null,
+      duration: formattedDuration,
+      synopsis: synopsis || null,
+      language: language || null,
+      synopsis_en: synopsis_en || null,
+      youtube_link: youtube_link || null,
+      subtitles: subtitles || null,
+      ai_tools: ai_tools || null,
+      thumbnail: thumbnailFile ? thumbnailFile.path : null,
+      image_2: image2File ? image2File.path : null,
+      image_3: image3File ? image3File.path : null,
+      status: "submitted",
+      user_id: userId,
+      video_path: videoFile.path,
+    });
 
     res.status(201).json({
       message: "Film soumis avec succès",
