@@ -19,7 +19,7 @@ import Jury from "./pages/admin/Jury.jsx";
 import Events from "./pages/admin/Events";
 import Contact from "./pages/public/Contact.jsx";
 import Film from "./pages/public/Film.jsx";
-
+import Upload from "./pages/public/Upload.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +42,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
             <Route path="/films/:id" element={<Film />} />
+            <Route path="/upload" element={<Upload />} />
           </Route>
 
           {/* Routes privées */}
