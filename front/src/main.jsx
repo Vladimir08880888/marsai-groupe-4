@@ -45,10 +45,9 @@ createRoot(document.getElementById("root")).render(
           </Route>
 
           {/* Routes privées */}
-          <Route path="admin" element={ <AdminLayout />
-             // <RoleGuard allowedRoles={["ADMIN"]}>
-             //   <AdminLayout />
-             // </RoleGuard> 
+          <Route path="admin" element={ <RoleGuard allowedRoles={["ADMIN"]}>
+            <AdminLayout />
+            </RoleGuard> 
               } >
             <Route index element={<Dashboard />} />
             <Route path="users" element={<Users />} />

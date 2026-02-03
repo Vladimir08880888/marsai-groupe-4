@@ -5,6 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import handleLogout from "@/utils/helpers.js";
+import { LogOut } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -53,6 +55,10 @@ export function Login() {
         <h1 className="text-2xl">
           You are already logged in as {localStorage.getItem("first_name")}
         </h1>
+        <button onClick={handleLogout} className="hover:cursor-pointer">
+                  <LogOut className="size-4" />
+                  <span>Log out</span>
+        </button>
         <Link to="/">Return to homepage</Link>
       </>
     );
