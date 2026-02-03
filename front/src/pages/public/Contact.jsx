@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { Train, Car, MapPin } from "lucide-react";
-import { CalendarDays, Clock } from "lucide-react";
+import { Train, Car, MapPin, CalendarDays, Clock, Navigation } from "lucide-react";
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -100,7 +99,14 @@ const todaySchedule = schedules[todayKey] || schedules["2026-06-13"];
   </div>
 </section>
 
-      <h1 className="text-4xl font-bold mb-12 text-center">ACCÈS</h1>
+    <div className="flex flex-col items-center mb-12">
+  <div className="flex items-center gap-3">
+    <Navigation className="text-blue-400" size={26} />
+    <h1 className="text-4xl font-bold">ACCÈS</h1>
+  </div>
+  <div className="w-24 h-0.5 bg-blue-400 mt-2 rounded-full"></div>
+</div>
+
 
       {/* БЛОКИ С ИНФОРМАЦИЕЙ */}
       <div className="max-w-xl w-full space-y-10 mb-16">
