@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Train, Car, MapPin } from "lucide-react";
+import { CalendarDays, Clock } from "lucide-react";
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -24,8 +25,80 @@ export default function Contact() {
     window.location.href = `mailto:tonemail@example.com?subject=${subject}&body=${body}`;
   };
 
+  const today = new Date();
+
+const formattedDate = today.toLocaleDateString("fr-FR", {
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+}).toUpperCase();
+
+const schedules = {
+
+  
+  "2026-06-13": [
+    { time: "09:30", tag: "SOCIAL", title: "Accueil & Café Networking" },
+    { time: "10:30", tag: "KEYNOTE", title: "Conférence d'ouverture : L'IA au service du Cinéma" },
+    { time: "13:00", tag: "BREAK", title: "Déjeuner Libre" },
+    { time: "14:30", tag: "CINÉMA", title: "Projection Sélection Officielle" },
+    { time: "16:30", tag: "TALK", title: "Table Ronde : Futurs Souhaitables" },
+    { time: "19:00", tag: "AWARDS", title: "Grand Prix & Cérémonie de Clôture" },
+    { time: "21:00", tag: "PARTY", title: "MARS.AI Night - DJ Set Immersif" },
+  ],
+};
+const tagColors = {
+  SOCIAL: "text-green-400",
+  KEYNOTE: "text-purple-400",
+  BREAK: "text-gray-400",
+  CINÉMA: "text-pink-400",
+  TALK: "text-white",
+  AWARDS: "text-yellow-400",
+  PARTY: "text-blue-400",
+};
+
+
+const todayKey = today.toISOString().split("T")[0];
+const todaySchedule = schedules[todayKey] || schedules["2026-06-13"];
+
   return (
     <div className="bg-black text-white min-h-screen flex flex-col items-center px-6 py-16">
+
+{/* HERO + PROGRAMME */}
+<section className="w-full max-w-4xl mb-20">
+  <div className="flex items-center gap-3 text-pink-500 mb-4">
+    <CalendarDays size={18} />
+    <span className="uppercase tracking-widest text-sm">Infos pratiques</span>
+  </div>
+
+  <h1 className="text-5xl font-bold">{formattedDate}</h1>
+  <h2 className="text-3xl text-pink-500 font-semibold mb-8">MARSEILLE</h2>
+
+  <div className="flex items-center gap-3 mb-6 mt-10">
+    <Clock className="text-pink-500" />
+    <h3 className="text-xl font-semibold">Programme des conférences</h3>
+  </div>
+
+  <div className="space-y-4">
+    {todaySchedule.map((item, index) => (
+   <div
+  key={index}
+  className="bg-white/5 backdrop-blur-md rounded-2xl p-5 flex items-center gap-6 border border-white/10"
+>
+  <div className={`text-2xl font-bold w-20 ${tagColors[item.tag] || "text-pink-400"}`}>
+    {item.time}
+  </div>
+
+  <div>
+    <div className={`text-xs tracking-widest ${tagColors[item.tag] || "text-pink-400"}`}>
+      {item.tag}
+    </div>
+    <div className="text-lg">{item.title}</div>
+  </div>
+</div>
+
+    ))}
+  </div>
+</section>
 
       <h1 className="text-4xl font-bold mb-12 text-center">ACCÈS</h1>
 
