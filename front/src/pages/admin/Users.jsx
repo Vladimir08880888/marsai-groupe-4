@@ -256,7 +256,7 @@ function Users() {
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <input type="hidden" id="id" {...register("id")} />
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-2">
                   <FormField label="Prénom" id="first_name" register={register} required />
                   <FormField label="Nom" id="last_name" register={register} required />
                   <FormField label="Email" id="email" type="email" register={register} required />
