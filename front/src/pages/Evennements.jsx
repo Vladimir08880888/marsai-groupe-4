@@ -1,5 +1,6 @@
 import React from 'react'
 import CardEvennements from '../components/CardEvennements.jsx'
+import { Search } from "lucide-react";
 
 const DataEvennements = {
   id: 1,
@@ -16,7 +17,7 @@ const DataEvennements = {
 
 function Evennements() {
   return (
-    <section>
+    <section className='bg-black text-white'>
 
         <div className='flex'>
             <h2>V</h2>
@@ -32,32 +33,37 @@ function Evennements() {
 
         </div>
 
-        <div>
+        <div className='flex gap-[16px]'>
             
-            <div>
-                <h2>L</h2>
+            <div className='flex items-center '>
+                <Search size={20}  className="text-white/20 px-[20px]" />
                 <input placeholder='Rechercher par titre ou lieu' type="search" name="" id="" />
             </div>
 
-            <button>TOUS</button>
+            <button className='bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]'>TOUS</button>
 
-            <button>SCREENIGN</button>
+            <button className='bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]'>SCREENIGN</button>
 
-            <button>WORKSHOP</button>
+            <button className='bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]'>WORKSHOP</button>
 
-            <button>MASTERCLASS</button>
+            <button className='bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]'>MASTERCLASS</button>
 
-            <button>CONCERT</button>
+            <button className='bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]'>CONCERT</button>
 
-            <button>PARTY</button>
+            <button className='bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]'>PARTY</button>
 
         </div>
 
 
 
 
-        <div className='bg-black'>
+        <div className='bg-black grid grid-cols-3 p-[24px] gap-[32px]'>
 
+            <CardEvennements data={DataEvennements}/>
+            <CardEvennements data={DataEvennements}/>
+            <CardEvennements data={DataEvennements}/>
+            <CardEvennements data={DataEvennements}/>
+            <CardEvennements data={DataEvennements}/>
             <CardEvennements data={DataEvennements}/>
         </div>
         
