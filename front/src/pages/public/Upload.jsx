@@ -33,7 +33,11 @@ const uploadSchema = z.object({
     .optional()
     .or(z.literal("")),
   ai_tools: z.string().max(1000, "Les outils IA sont trop longs").optional(),
-  subtitles: z.string().max(2000, "Les sous-titres sont trop longs").optional(),
+  subtitles: z.any()
+    .refine((val) => !val || val instanceof File, "Veuillez selectionner un fichier de sous-titres")
+    .refine((val) => !val || val.size <= 2 * 1024 * 1024, "Fichier de sous-titres trop lourd (max 2 Mo)")
+    .refine((val) => !val || val.name.toLowerCase().endsWith(".srt"),"Seul le format .srt est autoriser")
+    .optional(),
   thumbnail: z
     .any()
     .refine(
@@ -141,6 +145,7 @@ export default function Upload() {
     formState: { errors },
     reset,
     setValue,
+    watch,
   } = useForm({
     resolver: zodResolver(uploadSchema),
     defaultValues: {
@@ -172,7 +177,7 @@ export default function Upload() {
       formData.append("synopsis_en", data.synopsis_en || "");
       formData.append("youtube_link", data.youtube_link || "");
       formData.append("ai_tools", data.ai_tools || "");
-      formData.append("subtitles", data.subtitles || "");
+      if (data.subtitles) formData.append("subtitles", data.subtitles);
       if (data.thumbnail) formData.append("thumbnail", data.thumbnail);
       if (data.image_2) formData.append("image_2", data.image_2);
       if (data.image_3) formData.append("image_3", data.image_3);
@@ -276,16 +281,30 @@ export default function Upload() {
         </div>
 
         {/* Sous-titres */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Sous-titres (optionnel)</label>
-          <textarea
-            {...register("subtitles")}
-            rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="Sous-titres ou notes supplémentaires"
-          />
-          {errors.subtitles && <p className="mt-1 text-sm text-red-600">{errors.subtitles.message}</p>}
-        </div>
+       <div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Sous-titres (.srt) (optionnel)
+  </label>
+  <input
+    type="file"
+    accept=".srt"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setValue("subtitles", file, { shouldValidate: true });
+      }
+    }}
+    className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition cursor-pointer"
+  />
+  {errors.subtitles && (
+    <p className="mt-1 text-sm text-red-600">{errors.subtitles.message}</p>
+  )}
+  {watch("subtitles") && (
+    <p className="mt-2 text-sm text-green-600">
+      Fichier sélectionné : {watch("subtitles").name}
+    </p>
+  )}
+</div>
 
         {/* Vidéo */}
         <div>

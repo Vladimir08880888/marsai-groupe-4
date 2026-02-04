@@ -80,9 +80,6 @@ async function createUpload(req, res) {
       youtube_link,
       subtitles,
       ai_tools,
-      thumbnail,
-      image_2,
-      image_3,
     } = req.body;
 
     if (!title) {
@@ -92,6 +89,8 @@ async function createUpload(req, res) {
     const thumbnailFile = req.files?.thumbnail?.[0];
     const image2File = req.files?.image_2?.[0];
     const image3File = req.files?.image_3?.[0];
+    const subtitlesFile = req.files?.subtitles?.[0];
+    
 
     const newFilm = await Upload.create({
       title,
@@ -101,7 +100,7 @@ async function createUpload(req, res) {
       language: language || null,
       synopsis_en: synopsis_en || null,
       youtube_link: youtube_link || null,
-      subtitles: subtitles || null,
+      subtitles: subtitlesFile ? subtitlesFile.path : null,
       ai_tools: ai_tools || null,
       thumbnail: thumbnailFile ? thumbnailFile.path : null,
       image_2: image2File ? image2File.path : null,

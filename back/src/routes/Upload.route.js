@@ -33,6 +33,13 @@ const fileFilter = (req, file, cb) => {
     } else {
       cb(new Error("Format image non autorisé (jpg, png, webp, gif seulement)"), false);
     }
+  } else if (file.fieldname === "subtitles") {
+    const allowed = ["text/plain"];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Format de sous-titres non autorisé (.srt seulement)"), false);
+    }
   } else {
     cb(new Error("Champ non autorisé"), false);
   }
@@ -67,6 +74,7 @@ uploadRouter.post(
     { name: "thumbnail", maxCount: 1 },
     { name: "image_2", maxCount: 1 },
     { name: "image_3", maxCount: 1 },
+    { name : "subtitles", maxCount: 1 },
   ]),
   UploadController.createUpload
 );
