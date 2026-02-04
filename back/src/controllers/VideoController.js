@@ -6,22 +6,31 @@ import User from "../models/User.js";
 async function getVideos(req, res) {
 
  try {
-    const videos = await Video.findAll({ 
+    const page = Math.max(parseInt(req.query.page ?? "1", 10), 1);
+    const limit = Math.max(parseInt(req.query.limit ?? "6", 10), 1);
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await Video.findAndCountAll({
       where: { youtube_link: { [Op.ne]: null } },
       include: [{
         model: User,
-        as: 'user',
-        attributes: ['id', 'first_name', 'last_name', 'email']
-      }]
+        as: "user",
+        attributes: ["id", "first_name", "last_name", "email"],
+      }],
+      limit,
+      offset,
+      order: [["id"]],
     });
-    const videoCount = await Video.count({ where: { youtube_link: { [Op.ne]: null } } });
 
-    const stats = {
-      totalVideos: videoCount,
-      showVideos: videos
-    };
+    const totalPages = Math.max(Math.ceil(count / limit), 1);
 
-    res.json(stats);
+    res.json({
+      showVideos: rows,
+      totalVideos: count,
+      currentPage: page,
+      totalPages,
+      limit,
+    });
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch stats" });
   }

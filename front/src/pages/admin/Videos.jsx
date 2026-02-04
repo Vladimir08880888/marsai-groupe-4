@@ -1,15 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
 import { getVideos } from "../../api/videos.js";
+import { useState } from "react";
 
 //shadcn components
 import { YouTubePlayer, YouTubePlayerControls } from "@/components/ui/youtube-video-player.jsx";
 
-
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 function Videos() {
+
+	const [currentPage, setCurrentPage] = useState(1);
+  	const limit = 6;
+
   const { isPending, isError, data, error } = useQuery({
-    queryKey: ["films"],
-    queryFn: getVideos,
+    queryKey: ["films", currentPage, limit],
+    queryFn: () => getVideos(currentPage, limit),
+	keepPreviousData: true,
   });
 
   if (isPending) {
@@ -20,55 +33,72 @@ function Videos() {
     return <div>Une erreur est survenue : {error.message}</div>;
   }
 
-  return data.data.showVideos.length > 0 ? (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 p-8 max-w-7xl mx-auto">
-      {data.data.showVideos.map((video) => (
-        <div key={video.id || video.title}>
-			<h2 className="text-2xl font-bold">{video.title}</h2>
+
+console.log(data)
+    return data.data.showVideos.length > 0 ? (
+    <>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 p-8 max-w-7xl mx-auto">
+        {data.data.showVideos.map((video) => (
+          <div key={video.id || video.title}>
+            <h2 className="text-2xl font-bold">{video.title}</h2>
+
             <YouTubePlayer
-              	videoId={video.youtube_link}
+              videoId={video.youtube_link}
               title={video.title}
-              customThumbnail={video.thumbnail ? `http://localhost:3000/images/${video.thumbnail}` : "http://localhost:3000/images/thumbnail-placeholder.png"}
+              customThumbnail={
+                video.thumbnail
+                  ? `http://localhost:3000/images/${video.thumbnail}`
+                  : "http://localhost:3000/images/thumbnail-placeholder.png"
+              }
               defaultExpanded={false}
-              // Container styling
               className="mb-8"
-              containerClassName="border-2 border-gradient rounded-xl overflow-hidden shadow-lg"
-              expandedClassName="border-none shadow-2xl"
-              // Thumbnail styling
-              thumbnailClassName="bg-gradient-to-br from-blue-500/20 to-purple-500/20"
-              thumbnailImageClassName="opacity-80 transition-opacity hover:opacity-100"
-              // Play button styling
-              playButtonClassName="bg-white/90 hover:bg-white border-2 border-blue-500 shadow-lg"
-              playIconClassName="text-blue-500 fill-blue-500"
-              // Title styling
-              titleClassName="text-white font-bold text-lg drop-shadow-lg"
-              // Controls styling
-              controlsClassName="right-3 top-3"
-              expandButtonClassName="bg-black/50 hover:bg-black/70 border border-white/20"
-              // Modal styling
-              backdropClassName="bg-black/60 backdrop-blur-md"
-              playerClassName="bg-black rounded-lg"
             />
-			<YouTubePlayerControls
-				videoId={video.youtube_link}
-				expanded={false}
-				playing={false}
-				isHovered={true}
-				onToggleExpand={() => {
-				}}
-				controlsClassName="custom-controls"
-				expandButtonClassName="custom-expand-btn"
-				/>
-			<div>
-				<p><strong>Propriétaire:</strong> {video.user ? `${video.user.first_name} ${video.user.last_name}` : 'N/A'}</p>
-				<p><strong>Email:</strong> {video.user?.email || 'N/A'}</p>
-				<p>{video.synopsis}</p>
-				<label>{video.ai_tools}</label>
-				<label><small>{video.created_at}</small></label>
-			</div>
-        </div>
-      ))}
-    </div>
+
+            <div>
+              <p>
+                <strong>Propriétaire:</strong>{" "}
+                {video.user ? `${video.user.first_name} ${video.user.last_name}` : "N/A"}
+              </p>
+              <p><strong>Email:</strong> {video.user?.email || "N/A"}</p>
+              <p>{video.synopsis}</p>
+              <label>{video.ai_tools}</label>
+              <label><small>{video.created_at}</small></label>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {data.data.totalPages > 1 && (
+        <Pagination className="pb-10">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+
+            {Array.from({ length: data.data.totalPages }, (_, i) => i + 1).map((page) => (
+              <PaginationItem key={page}>
+                <PaginationLink
+                  onClick={() => setCurrentPage(page)}
+                  isActive={currentPage === page}
+                >
+                  {page}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setCurrentPage((p) => Math.min(p + 1, data.data.totalPages))}
+                className={currentPage === data.data.totalPagesages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
+    </>
   ) : (
     <div>Aucune vidéo à afficher.</div>
   );
