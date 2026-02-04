@@ -16,10 +16,7 @@ const __dirname = path.dirname(__filename);
 app.use("/", express.static(path.join(__dirname, "uploads")));
 
 
-app.use(cors({ origin: "*" ,
-   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-})); // Autoriser les requêtes CORS de toutes origines
+app.use(cors()); // Autoriser les requêtes CORS de toutes origines
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000; // Définir le port du serveur

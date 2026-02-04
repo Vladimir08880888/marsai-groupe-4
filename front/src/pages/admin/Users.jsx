@@ -120,27 +120,27 @@ function Users() {
       setValue("first_name", user.first_name);
       setValue("last_name", user.last_name);
       setValue("password", user.password);
-      setValue("mobile", user.mobile) || "0606060606";
+      setValue("mobile", user.mobile || "0606060606");
       setValue("email", user.email);
-      setValue("phone", user.phone);
-      setValue("birth_date", user.birth_date) || "01/01/1999";
-      setValue("street", user.street)  || "street";
-      setValue("postal_code", user.postal_code)  || "06060";
-      setValue("city", user.city) || "Cannes";
-      setValue("country", user.country) || "France";
-      setValue("biography", user.biography) || "Something";
-      setValue("current_job", user.current_job) || "Unemployed";
-      setValue("portfolio_url", user.portfolio_url) || "https://google.com";
-      setValue("youtube_url", user.youtube_url) || "https://google.com";
-      setValue("instagram_url", user.instagram_url) || "https://google.com";
-      setValue("linkedin_url", user.linkedin_url) || "https://google.com";
-      setValue("facebook_url", user.facebook_url) || "https://google.com";
-      setValue("tiktok_ur", user.tiktok_ur) || "https://google.com";
-      setValue("discovery_source", user.discovery_source) || "https://google.com";
+      setValue("phone", user.phone || "0606060606");
+      setValue("birth_date", user.birth_date || "01/01/1999");
+      setValue("street", user.street || "street");
+      setValue("postal_code", user.postal_code || "06060");
+      setValue("city", user.city || "Cannes");
+      setValue("country", user.country || "France");
+      setValue("biography", user.biography || "Something");
+      setValue("current_job", user.current_job || "Unemployed");
+      setValue("portfolio_url", user.portfolio_url || "https://google.com");
+      setValue("youtube_url", user.youtube_url || "https://google.com");
+      setValue("instagram_url", user.instagram_url || "https://google.com");
+      setValue("linkedin_url", user.linkedin_url || "https://google.com");
+      setValue("facebook_url", user.facebook_url || "https://google.com");
+      setValue("tiktok_ur", user.tiktok_ur || "https://google.com");
+      setValue("discovery_source", user.discovery_source || "https://google.com");
       setIsDialogOpen(true);
       setValue("role", user.role);
       setModeEdit(true);
-    }
+  }
 
     function handleReset() {
       setValue("id", undefined);
