@@ -12,14 +12,15 @@ import PublicLayout from "./layouts/PublicLayout.jsx";
 import { Login } from "./pages/auth/Login.jsx";
 import { Register } from "./pages/auth/Register.jsx";
 import { RoleGuard } from "./middlewares/RoleGuard.jsx";
-import GalerieDesFilmsPage from "./pages/Gallerie.jsx";
+import GalerieDesFilmsPage from "./pages/public/Gallerie.jsx";
 import Videos from "./pages/admin/Videos.jsx";
 import Users from "./pages/admin/Users.jsx";
 import Jury from "./pages/admin/Jury.jsx";
 import Events from "./pages/admin/Events";
 import Contact from "./pages/public/Contact.jsx";
 import Film from "./pages/public/Film.jsx";
-
+import Palmares from "./pages/public/Palmares.jsx";
+import Agenda from "./pages/public/Agenda.jsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,6 +43,8 @@ createRoot(document.getElementById("root")).render(
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
             <Route path="/films/:id" element={<Film />} />
+            <Route path="/palmares" element={<Palmares />} />
+            <Route path="/agenda" element={<Agenda />} />
           </Route>
 
           {/* Routes privées */}
