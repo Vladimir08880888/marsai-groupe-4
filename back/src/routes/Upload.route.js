@@ -8,8 +8,12 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (file.fieldname === "video") {
       cb(null, "uploads/videos/");
-    } else {
+    } else if (["thumbnail", "image_2", "image_3"].includes(file.fieldname)) {
       cb(null, "uploads/images/");
+    } else if (file.fieldname === "subtitles") {
+      cb(null, "uploads/subtitles/");
+    } else {
+      cb(new Error("Champ non géré"), false);
     }
   },
   filename: (req, file, cb) => {
@@ -19,30 +23,33 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = (req, file, cb) => {
+  // --- Vidéos ---
   if (file.fieldname === "video") {
     const allowed = ["video/mp4", "video/quicktime", "video/webm"];
     if (allowed.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Format vidéo non autorisé (MP4, MOV, WebM seulement)"), false);
+      return cb(null, true);
     }
-  } else if (["thumbnail", "image_2", "image_3"].includes(file.fieldname)) {
+    return cb(new Error("Format vidéo non autorisé (MP4, MOV, WebM seulement)"), false);
+  }
+
+  // --- Images ---
+  if (["thumbnail", "image_2", "image_3"].includes(file.fieldname)) {
     const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (allowed.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Format image non autorisé (jpg, png, webp, gif seulement)"), false);
+      return cb(null, true);
     }
-  } else if (file.fieldname === "subtitles") {
-    const allowed = ["text/plain"];
-    if (allowed.includes(file.mimetype)) {
-      cb(null, true);
-    } else {
-      cb(new Error("Format de sous-titres non autorisé (.srt seulement)"), false);
-    }
-  } else {
-    cb(new Error("Champ non autorisé"), false);
+    return cb(new Error("Format image non autorisé (jpg, png, webp, gif seulement)"), false);
   }
+
+  // --- Sous-titres (.srt) ---
+  if (file.fieldname === "subtitles") {
+    if (file.originalname.toLowerCase().endsWith('.srt')) {
+      return cb(null, true);
+    }
+    return cb(new Error("Format de sous-titres non autorisé (.srt seulement)"), false);
+  }
+
+  return cb(new Error("Champ non autorisé"), false);
 };
 
 const upload = multer({

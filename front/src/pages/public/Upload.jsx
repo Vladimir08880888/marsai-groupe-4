@@ -177,7 +177,7 @@ export default function Upload() {
       formData.append("synopsis_en", data.synopsis_en || "");
       formData.append("youtube_link", data.youtube_link || "");
       formData.append("ai_tools", data.ai_tools || "");
-      if (data.subtitles) formData.append("subtitles", data.subtitles);
+      formData.append("subtitles", data.subtitles);
       if (data.thumbnail) formData.append("thumbnail", data.thumbnail);
       if (data.image_2) formData.append("image_2", data.image_2);
       if (data.image_3) formData.append("image_3", data.image_3);

@@ -32,6 +32,7 @@ function getUploadbyId(req, res) {
 async function createUpload(req, res) {
   try {
 
+    await fs.mkdir("uploads/subtitles", { recursive: true });
     await fs.mkdir("uploads/images", { recursive: true });
     await fs.mkdir("uploads/videos", { recursive: true });
 
@@ -78,7 +79,6 @@ async function createUpload(req, res) {
       language,
       synopsis_en,
       youtube_link,
-      subtitles,
       ai_tools,
     } = req.body;
 
