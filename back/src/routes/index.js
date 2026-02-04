@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.use("/auth", authRouter);
 router.use("/users", userRouter);
-router.use("/videos", videoRouter);
+router.use("/films", videoRouter);
 router.use("/uploads", uploadRouter);
 router.use("/overview", overviewRouter);
 
