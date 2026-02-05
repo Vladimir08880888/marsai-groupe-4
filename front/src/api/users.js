@@ -26,4 +26,9 @@ async function getUserById(id) {
   // http://localhost:3000/users/1; fetch method GET
 }
 
-export { getUsers, createUser, updateUser, deleteUser, getUserById };
+async function getRoles() {
+  return await instance.get("users/roles");
+  // http://localhost:3000/users/roles; fetch method GET
+}
+
+export { getUsers, createUser, updateUser, deleteUser, getUserById, getRoles };
