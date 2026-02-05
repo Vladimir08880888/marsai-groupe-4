@@ -1,6 +1,8 @@
 import React from 'react'
 import CardEvennements from '../components/CardEvennements.jsx'
 import { Search } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
+import { Plus } from "lucide-react";
 
 const DataEvennements = {
   id: 1,
@@ -19,25 +21,38 @@ function Evennements() {
   return (
     <section className='bg-black text-white'>
 
-        <div className='flex'>
-            <h2>V</h2>
-            <h2>RETOUR AU DASHBOARD</h2>
+       
+
+
+<div className='flex items-end p-[24px]'>
+
+ <div className='w-full  '>
+                <h2 className='bg-[linear-gradient(to_top,rgba(255,255,250,0.5)_35%,rgba(255,255,255,0.9)_70%)] font-bold tracking-[-2.4px] text-[48px] bg-clip-text text-transparent uppercase'>Gestion des Événements</h2>
+
+        <h2 className='text-white/40 text-[14px] uppercase tracking-[1.4px] '>Contrôle du protocole marsAI 2026</h2>
+            </div>
+
+            <button className=' h-[48px] rounded-[16px] bg-white text-black tracking-[1.2px] px-[13px] text-[12px] uppercase font-bold whitespace-nowrap flex items-center gap-[8px]'>
+                <Plus size={20}/>
+                creer un evenement
+            </button>
+</div>
+
+           
+        
+
+
+
+
+        <div className='w-full h-[170px] px-[24px]'>
+
         </div>
 
-        <h2>Gestion des Événements</h2>
-
-        <h2>Contrôle du protocole marsAI 2026</h2>
-
-
-        <div className='w-full h-[100px]'>
-
-        </div>
-
-        <div className='flex gap-[16px]'>
+        <div className='flex gap-[16px] px-[24px] flex-wrap'>
             
-            <div className='flex items-center '>
-                <Search size={20}  className="text-white/20 px-[20px]" />
-                <input placeholder='Rechercher par titre ou lieu' type="search" name="" id="" />
+            <div className='flex items-center bg-white/2 text-[14px] border border-white/10 rounded-[16px] text-white/40 tracking-[0px] h-[54px] px-[20px]'>
+                <Search size={20}  className="text-white/20 mr-[20px]" />
+                <input className='w-[200px] placeholder-white/30 outline-none' placeholder='Rechercher par titre ou lieu...' type="search" name="" id="" />
             </div>
 
             <button className='bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]'>TOUS</button>
