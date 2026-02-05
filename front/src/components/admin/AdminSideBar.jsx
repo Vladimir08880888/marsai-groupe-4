@@ -28,6 +28,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import handleLogout from "@/utils/helpers";
+import { ThemeToggle } from "../ThemeToggle";
 
 const navItems = [
   { title: "Overview", url: "/admin", icon: LayoutDashboard },
@@ -96,6 +97,13 @@ export default function AdminSidebar() {
                 <ArrowLeftFromLine className="size-4" />
                 <span>Back Home</span>
               </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Toggle Theme">
+              <div className="flex items-center w-full">
+                <ThemeToggle />
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>

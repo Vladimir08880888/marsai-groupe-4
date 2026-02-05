@@ -1,4 +1,6 @@
 import { NavLink, useNavigate } from "react-router";
+import { ThemeToggle } from './ThemeToggle';
+
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -118,7 +120,10 @@ export default function Navbar() {
             </NavLink>
           </div>
         </div>
-        {/* RIGHT: EMPTY FOR CENTERING*/}
+        {/* RIGHT: THEME TOGGLE */}
+          <div className="flex justify-end">
+            <ThemeToggle />
+          </div>
         <div />
       </div>
     </section>
