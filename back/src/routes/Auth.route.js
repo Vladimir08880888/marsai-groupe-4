@@ -7,6 +7,4 @@ authRouter.post("/login", AuthController.login);
 
 authRouter.post("/register", AuthController.register);
 
-authRouter.post("/checkToken", AuthController.checkToken);
-
 export default authRouter;

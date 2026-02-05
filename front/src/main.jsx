@@ -17,6 +17,7 @@ import Jury from "./pages/admin/Jury.jsx";
 import Events from "./pages/admin/Events";
 import Contact from "./pages/public/Contact.jsx";
 import Film from "./pages/public/Film.jsx";
+import Evennements from "./pages/Evennements.jsx";
 import Upload from "./pages/public/Upload";
 import Palmares from "./pages/public/Palmares.jsx";
 import Agenda from "./pages/public/Agenda.jsx";
@@ -39,6 +40,7 @@ createRoot(document.getElementById("root")).render(
           <Route path="/" element={<PublicLayout />}>
             <Route index element={<Home />} />
             <Route path="/gallerie" element={<GalerieDesFilmsPage />} />
+            <Route path="/evennements" element={<Evennements />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
