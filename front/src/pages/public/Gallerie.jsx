@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import FilmCard from "../components/FilmCard";
+import FilmCard from "../../components/FilmCard";
 
 export default function GalerieDesFilmsPage() {
   const [typeIA, setTypeIA] = useState("");
@@ -32,7 +32,7 @@ export default function GalerieDesFilmsPage() {
     <div className="min-h-screen bg-black text-white font-sans p-4">
       <main className="mx-auto max-w-[1180px] px-6 pb-10 pt-10">
         {/* Title */}
-        <section className="mb-8">
+        <section className="mb-36">
           <h1 className="m-0 text-[56px] leading-[0.95] font-black tracking-[-1.5px]">
             LA GALERIE <br />
             DES{" "}
