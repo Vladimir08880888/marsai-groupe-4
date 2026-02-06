@@ -36,4 +36,35 @@ function register(req, res) {
   // Envoi d'email
 }
 
-export default { login, register };
+function checkToken(req, res) {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(401).json({ error: "No token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Find user by email from decoded token
+    User.findOne({ where: { email: decoded.email } })
+      .then((user) => {
+        if (!user) {
+          return res.status(401).json({ error: "User not found" });
+        }
+
+        return res.status(200).json({
+          email: user.email,
+          first_name: user.first_name,
+          role: user.role,
+        });
+      })
+      .catch((error) => {
+        return res.status(500).json({ error: "Database error" });
+      });
+  } catch (error) {
+    return res.status(401).json({ error: "Invalid token" });
+  }
+}
+
+export default { login, register, checkToken };

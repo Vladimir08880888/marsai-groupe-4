@@ -7,7 +7,7 @@ import {
   BarChart3,
   Package,
   Clapperboard,
-  HatGlasses,
+  Glasses,
   CalendarCheck,
   ArrowLeftFromLine,
   LogOut,
@@ -33,7 +33,7 @@ import { ThemeToggle } from "../ThemeToggle";
 const navItems = [
   { title: "Overview", url: "/admin", icon: LayoutDashboard },
   { title: "Gestion Users", url: "/admin/users", icon: Users },
-  { title: "Jury", url: "/admin/jurys", icon: HatGlasses },
+  { title: "Jury", url: "/admin/jurys", icon: Glasses },
   { title: "Gestion Films", url: "/admin/videos", icon: Clapperboard },
   { title: "Evenements", url: "/admin/events", icon: CalendarCheck },
 ]
@@ -104,13 +104,6 @@ export default function AdminSidebar() {
                 <ArrowLeftFromLine className="size-4" />
                 <span>Back Home</span>
               </NavLink>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild tooltip="Toggle Theme">
-              <div className="flex items-center w-full">
-                <ThemeToggle />
-              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
