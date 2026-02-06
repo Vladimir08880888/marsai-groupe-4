@@ -46,7 +46,7 @@ export default function FilmCard({ film }) {
             </span>
           </div>
 {/* Placeholder pour l'image du film */}
-          <div className="aspect-[3/4] w-full" />
+          <div className="aspect-3/4 w-full" />
         </article>
 
         <div className="mt-6">
