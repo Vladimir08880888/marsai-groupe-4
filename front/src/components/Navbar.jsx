@@ -3,7 +3,6 @@ import { ThemeToggle } from './ThemeToggle';
 
 
 export default function Navbar() {
-  const navigate = useNavigate();
   const isLoggedIn = !!localStorage.getItem("token");
 
   const calendarPath = isLoggedIn ? "/admin/events" : "/auth/login";
