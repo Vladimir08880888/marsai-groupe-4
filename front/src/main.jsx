@@ -18,7 +18,7 @@ import Events from "./pages/admin/Events";
 import Contact from "./pages/public/Contact.jsx";
 import Film from "./pages/public/Film.jsx";
 import Evennements from "./pages/Evennements.jsx";
-import Upload from "./pages/public/Upload";
+import Upload from "./pages/public/Upload.jsx";
 import Palmares from "./pages/public/Palmares.jsx";
 import Agenda from "./pages/public/Agenda.jsx";
 

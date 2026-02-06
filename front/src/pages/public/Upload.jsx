@@ -2,102 +2,47 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import ConfirmModal from "@/components/ConfirmModal";
 
 const MAX_SECONDS = 60;
-const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500 Mo
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5 Mo
+const MAX_FILE_SIZE = 500 * 1024 * 1024;
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const ACCEPTED_VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm"];
 
 const uploadSchema = z.object({
-  title: z
-    .string()
-    .min(3, "Le titre doit faire au moins 3 caractères")
-    .max(255, "Le titre est trop long (max 255 caractères)"),
-  translated_title: z
-    .string()
-    .max(255, "Le titre traduit est trop long")
+  title: z.string().min(3).max(255),
+  translated_title: z.string().max(255).optional(),
+  synopsis: z.string().max(2000).optional(),
+  language: z.string().max(100).optional(),
+  synopsis_en: z.string().max(2000).optional(),
+  youtube_link: z.string().url().optional().or(z.literal("")),
+  ai_tools: z.string().max(1000).optional(),
+  subtitles: z.any()
+    .refine((val) => !val || val instanceof File, "Veuillez sélectionner un fichier .srt")
+    .refine((val) => !val || val.name.toLowerCase().endsWith(".srt"), "Seul le format .srt est autorisé")
     .optional(),
-  synopsis: z
-    .string()
-    .max(2000, "Le synopsis est trop long (max 2000 caractères)")
+  thumbnail: z.any()
+    .refine((val) => !val || val instanceof File, "Veuillez sélectionner une image")
+    .refine((val) => !val || val.size <= MAX_IMAGE_SIZE, "Max 5 Mo")
+    .refine((val) => !val || ACCEPTED_IMAGE_TYPES.includes(val.type), "jpg, png, webp, gif")
     .optional(),
-  language: z.string().max(100, "La langue est trop longue").optional(),
-  synopsis_en: z
-    .string()
-    .max(2000, "Le synopsis en anglais est trop long")
+  image_2: z.any()
+    .refine((val) => !val || val instanceof File, "Veuillez sélectionner une image")
+    .refine((val) => !val || val.size <= MAX_IMAGE_SIZE, "Max 5 Mo")
+    .refine((val) => !val || ACCEPTED_IMAGE_TYPES.includes(val.type), "jpg, png, webp, gif")
     .optional(),
-  youtube_link: z
-    .string()
-    .url("Lien YouTube invalide")
-    .optional()
-    .or(z.literal("")),
-  ai_tools: z.string().max(1000, "Les outils IA sont trop longs").optional(),
-  subtitles: z.string().max(2000, "Les sous-titres sont trop longs").optional(),
-  thumbnail: z
-    .any()
-    .refine(
-      (val) => !val || val instanceof File,
-      "Veuillez sélectionner une image pour le thumbnail",
-    )
-    .refine(
-      (val) => !val || val.size <= MAX_IMAGE_SIZE,
-      "Thumbnail trop lourd (max 5 Mo)",
-    )
-    .refine(
-      (val) =>
-        !val ||
-        ACCEPTED_IMAGE_TYPES.includes(val.type),
-      "Format thumbnail non autorisé (jpg, png, webp, gif)",
-    )
+  image_3: z.any()
+    .refine((val) => !val || val instanceof File, "Veuillez sélectionner une image")
+    .refine((val) => !val || val.size <= MAX_IMAGE_SIZE, "Max 5 Mo")
+    .refine((val) => !val || ACCEPTED_IMAGE_TYPES.includes(val.type), "jpg, png, webp, gif")
     .optional(),
-  image_2: z
-    .any()
-    .refine(
-      (val) => !val || val instanceof File,
-      "Veuillez sélectionner une image",
-    )
-    .refine(
-      (val) => !val || val.size <= MAX_IMAGE_SIZE,
-      "Image 2 trop lourde (max 5 Mo)",
-    )
-    .refine(
-      (val) =>
-        !val ||
-        ACCEPTED_IMAGE_TYPES.includes(val.type),
-      "Format image 2 non autorisé",
-    )
-    .optional(),
-  image_3: z
-    .any()
-    .refine(
-      (val) => !val || val instanceof File,
-      "Veuillez sélectionner une image",
-    )
-    .refine(
-      (val) => !val || val.size <= MAX_IMAGE_SIZE,
-      "Image 3 trop lourde (max 5 Mo)",
-    )
-    .refine(
-      (val) =>
-        !val ||
-        ACCEPTED_IMAGE_TYPES.includes(val.type),
-      "Format image 3 non autorisé",
-    )
-    .optional(),
-  video: z
-    .any()
+  video: z.any()
     .refine((val) => val instanceof File, "Veuillez sélectionner une vidéo")
-    .refine(
-      (val) => val.size <= MAX_FILE_SIZE,
-      "La vidéo ne doit pas dépasser 500 Mo",
-    )
-    .refine(
-      (val) => ACCEPTED_VIDEO_TYPES.includes(val.type),
-      "Format non autorisé (MP4, MOV, WebM seulement)",
-    )
+    .refine((val) => val.size <= MAX_FILE_SIZE, "Max 500 Mo")
+    .refine((val) => ACCEPTED_VIDEO_TYPES.includes(val.type), "MP4, MOV, WebM seulement")
     .refine(async (val) => {
-      if (!(val instanceof File)) return false;
+      if (!val || !(val instanceof File)) return true; // ← null → OK (champ optionnel)
       try {
         const duration = await getVideoDuration(val);
         return duration <= MAX_SECONDS;
@@ -111,22 +56,17 @@ function getVideoDuration(file) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const video = document.createElement("video");
-
     video.preload = "metadata";
     video.src = url;
 
     video.onloadedmetadata = () => {
       URL.revokeObjectURL(url);
-      if (Number.isFinite(video.duration)) {
-        resolve(video.duration);
-      } else {
-        reject(new Error("Durée non lisible"));
-      }
+      resolve(video.duration);
     };
 
     video.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error("Fichier vidéo invalide"));
+      reject(new Error("Fichier invalide"));
     };
   });
 }
@@ -134,12 +74,15 @@ function getVideoDuration(file) {
 export default function Upload() {
   const [loading, setLoading] = useState(false);
   const [serverError, setServerError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempData, setTempData] = useState(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
     setValue,
   } = useForm({
     resolver: zodResolver(uploadSchema),
@@ -151,7 +94,7 @@ export default function Upload() {
       synopsis_en: "",
       youtube_link: "",
       ai_tools: "",
-      subtitles: "",
+      subtitles: null,
       thumbnail: null,
       image_2: null,
       image_3: null,
@@ -159,24 +102,30 @@ export default function Upload() {
     },
   });
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
+    setTempData(data);
+    setIsModalOpen(true);
+  };
+
+  const confirmSubmit = async () => {
+    setIsModalOpen(false);
     setLoading(true);
     setServerError(null);
 
     try {
       const formData = new FormData();
-      formData.append("title", data.title);
-      formData.append("translated_title", data.translated_title || "");
-      formData.append("synopsis", data.synopsis || "");
-      formData.append("language", data.language || "");
-      formData.append("synopsis_en", data.synopsis_en || "");
-      formData.append("youtube_link", data.youtube_link || "");
-      formData.append("ai_tools", data.ai_tools || "");
-      formData.append("subtitles", data.subtitles || "");
-      if (data.thumbnail) formData.append("thumbnail", data.thumbnail);
-      if (data.image_2) formData.append("image_2", data.image_2);
-      if (data.image_3) formData.append("image_3", data.image_3);
-      formData.append("video", data.video);
+      formData.append("title", tempData.title);
+      formData.append("translated_title", tempData.translated_title || "");
+      formData.append("synopsis", tempData.synopsis || "");
+      formData.append("language", tempData.language || "");
+      formData.append("synopsis_en", tempData.synopsis_en || "");
+      formData.append("youtube_link", tempData.youtube_link || "");
+      formData.append("ai_tools", tempData.ai_tools || "");
+      if (tempData.subtitles) formData.append("subtitles", tempData.subtitles);
+      if (tempData.thumbnail) formData.append("thumbnail", tempData.thumbnail);
+      if (tempData.image_2) formData.append("image_2", tempData.image_2);
+      if (tempData.image_3) formData.append("image_3", tempData.image_3);
+      formData.append("video", tempData.video);
 
       const response = await fetch("http://localhost:3000/uploads", {
         method: "POST",
@@ -191,7 +140,7 @@ export default function Upload() {
         throw new Error(errorData.error || "Erreur lors de l'upload");
       }
 
-      alert("Vidéo uploadée avec succès !");
+      alert("Tout a été envoyé avec succès !");
       reset();
     } catch (err) {
       setServerError(err.message);
@@ -200,9 +149,15 @@ export default function Upload() {
     }
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-white rounded-2xl shadow-2xl space-y-8">
-      <h2 className="text-3xl font-bold text-gray-900 text-center">Upload Vidéo</h2>
+    <div className="max-w-4xl mx-auto p-8 bg-white rounded-2xl shadow-2xl">
+      <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+        Upload Vidéo & Images
+      </h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Titre */}
@@ -276,16 +231,30 @@ export default function Upload() {
         </div>
 
         {/* Sous-titres */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Sous-titres (optionnel)</label>
-          <textarea
-            {...register("subtitles")}
-            rows={4}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-            placeholder="Sous-titres ou notes supplémentaires"
-          />
-          {errors.subtitles && <p className="mt-1 text-sm text-red-600">{errors.subtitles.message}</p>}
-        </div>
+       <div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Sous-titres (.srt) (optionnel)
+  </label>
+  <input
+    type="file"
+    accept=".srt"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setValue("subtitles", file, { shouldValidate: true });
+      }
+    }}
+    className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-3 file:px-6 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition cursor-pointer"
+  />
+  {errors.subtitles && (
+    <p className="mt-1 text-sm text-red-600">{errors.subtitles.message}</p>
+  )}
+  {watch("subtitles") && (
+    <p className="mt-2 text-sm text-green-600">
+      Fichier sélectionné : {watch("subtitles").name}
+    </p>
+  )}
+</div>
 
         {/* Vidéo */}
         <div>
@@ -349,10 +318,25 @@ export default function Upload() {
 
         {serverError && <p className="text-red-600 font-medium">{serverError}</p>}
 
-        <button type="submit" disabled={loading}>
+        {serverError && <p className="text-red-600 font-medium text-center">{serverError}</p>}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full py-4 px-8 rounded-xl text-white font-semibold text-lg transition-all
+            ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 shadow-md hover:shadow-lg"}`}
+        >
           {loading ? "Envoi en cours..." : "Uploader"}
         </button>
       </form>
+
+
+      <ConfirmModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onConfirm={confirmSubmit}
+        data={tempData}
+      />
     </div>
   );
 }
