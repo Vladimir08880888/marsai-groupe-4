@@ -12,7 +12,6 @@ export default function AccessDeniedPage() {
  <Navbar />
     <div className="min-h-screen bg-black text-white font-sans">
     
-
       <main className="mx-auto max-w-[1180px] px-6 py-16">
         <section className="rounded-[28px] border border-white/10 bg-white/5 p-8 shadow-[0_24px_80px_rgba(0,0,0,0.55)] backdrop-blur-md md:p-12">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/40 px-4 py-2 text-[11px] font-black tracking-widest text-white/80">
@@ -30,7 +29,6 @@ export default function AccessDeniedPage() {
           <p className="mt-4 max-w-[75ch] text-white/70">
             Cette page est réservée aux utilisateurs autorisés.  
           </p>
-
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
             <button
               onClick={() => navigate("/")}
