@@ -28,6 +28,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import handleLogout from "@/utils/helpers";
+import { ThemeToggle } from "../ThemeToggle";
 
 const navItems = [
   { title: "Overview", url: "/admin", icon: LayoutDashboard },
