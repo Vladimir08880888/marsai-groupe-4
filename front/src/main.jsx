@@ -13,7 +13,7 @@ import { RoleGuard } from "./middlewares/RoleGuard.jsx";
 import GalerieDesFilmsPage from "./pages/public/Gallerie.jsx";
 import Videos from "./pages/admin/Videos.jsx";
 import Users from "./pages/admin/Users.jsx";
-import Jury from "./pages/admin/Jury.jsx";
+import Jury from "./pages/admin/Events.jsx";
 import Events from "./pages/admin/Events";
 import Contact from "./pages/public/Contact.jsx";
 import Film from "./pages/public/Film.jsx";
