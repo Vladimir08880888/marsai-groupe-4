@@ -90,6 +90,13 @@ export default function AdminSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        <SidebarMenuItem>
+          <SidebarMenuButton asChild tooltip="Toggle Theme">
+            <div className="flex items-center w-full">
+              <ThemeToggle />
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Back Home">
