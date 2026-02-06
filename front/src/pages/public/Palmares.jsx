@@ -1,25 +1,21 @@
 import { Trophy, Sparkles } from "lucide-react";
 
 export default function Palmares() {
+
+  // 👉 AUTOMATIC DATE
+  const today = new Date();
+  const formattedDate = today
+    .toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    .toUpperCase();
+
   const topWinners = [
-    {
-      place: 2,
-      title: "CODE QUANTIQUE",
-      studio: "Dystopia",
-      prize: "PRIX DES HACKERS",
-    },
-    {
-      place: 1,
-      title: "LE DERNIER HUMAIN",
-      studio: "Ethereal",
-      prize: "GRAND PRIX",
-    },
-    {
-      place: 3,
-      title: "MÉMOIRES VIRTUELLES",
-      studio: "Dystopia",
-      prize: "PRIX DE L'INNOVATION",
-    },
+    { place: 2, title: "CODE QUANTIQUE", studio: "Dystopia", prize: "PRIX DES HACKERS" },
+    { place: 1, title: "LE DERNIER HUMAIN", studio: "Ethereal", prize: "GRAND PRIX" },
+    { place: 3, title: "MÉMOIRES VIRTUELLES", studio: "Dystopia", prize: "PRIX DE L'INNOVATION" },
   ];
 
   const specialMentions = [
@@ -53,11 +49,13 @@ export default function Palmares() {
           </div>
         </div>
 
-        <h1 className="text-5xl font-bold tracking-wide">PALMARÈS 2026</h1>
+        <h1 className="text-5xl font-bold tracking-wide">PALMARÈS</h1>
         <p className="text-gray-400 mt-3 tracking-widest text-sm">
           FESTIVAL MARSAI — ÉDITION INAUGURALE
         </p>
-        <p className="text-yellow-400 mt-2 font-semibold">JUIN 2026</p>
+
+        {/* ✅ AUTOMATIC DATE */}
+        <p className="text-yellow-400 mt-2 font-semibold">{formattedDate}</p>
 
         <div className="flex justify-center gap-16 mt-10 text-center">
           <div>
@@ -77,14 +75,16 @@ export default function Palmares() {
 
       {/* TOP 3 */}
       <section className="max-w-6xl mx-auto mb-24">
-        <h2 className="text-xl mb-8 font-semibold">🏆 GAGNANTS </h2>
+        <h2 className="text-xl mb-8 font-semibold">🏆 GAGNANTS</h2>
 
         <div className="grid md:grid-cols-3 gap-8">
           {topWinners.map((film) => (
             <div
               key={film.title}
               className={`bg-white/5 p-6 rounded-3xl border border-white/10 transition hover:scale-105 ${
-                film.place === 1 ? "ring-2 ring-yellow-400 shadow-yellow-400/30 shadow-lg" : ""
+                film.place === 1
+                  ? "ring-2 ring-yellow-400 shadow-yellow-400/30 shadow-lg"
+                  : ""
               }`}
             >
               <div className="text-yellow-400 font-bold text-xl mb-2">
@@ -129,7 +129,9 @@ export default function Palmares() {
 
       {/* ALL WINNERS */}
       <section className="max-w-6xl mx-auto mb-32">
-        <h2 className="text-3xl font-bold text-center mb-12">TOUS LES LAURÉATS</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">
+          TOUS LES LAURÉATS
+        </h2>
 
         <div className="grid md:grid-cols-4 gap-6">
           {allWinners.map((film, i) => (
