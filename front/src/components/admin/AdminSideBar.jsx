@@ -28,6 +28,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import handleLogout from "@/utils/helpers";
+import { ThemeToggle } from "../ThemeToggle";
 
 const navItems = [
   { title: "Overview", url: "/admin", icon: LayoutDashboard },
@@ -40,6 +41,8 @@ const navItems = [
 export default function AdminSidebar() {
   const { pathname } = useLocation()
 
+
+
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -51,7 +54,7 @@ export default function AdminSidebar() {
                   <LayoutDashboard className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">Admin Panel</span>
+                  <span className="truncate font-semibold">Greetings, {localStorage.getItem("first_name")}</span>
                   <span className="truncate text-xs text-muted-foreground">
                     Dashboard
                   </span>
@@ -87,6 +90,13 @@ export default function AdminSidebar() {
       </SidebarContent>
 
       <SidebarFooter>
+        <SidebarMenuItem>
+          <SidebarMenuButton asChild tooltip="Toggle Theme">
+            <div className="flex items-center w-full">
+              <ThemeToggle />
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild tooltip="Back Home">
@@ -94,6 +104,13 @@ export default function AdminSidebar() {
                 <ArrowLeftFromLine className="size-4" />
                 <span>Back Home</span>
               </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Toggle Theme">
+              <div className="flex items-center w-full">
+                <ThemeToggle />
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
