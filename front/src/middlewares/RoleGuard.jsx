@@ -18,7 +18,7 @@ export function RoleGuard({ allowedRoles, children }) {
 
     instance.post("/auth/checkToken", { token: token })
       .then((response) => {
-        console.log("checkToken response:", response.data);
+        // console.log("checkToken response:", response.data);
         if (response.data.role) {
           setUser(response.data);
         }

@@ -47,8 +47,8 @@ console.log(data)
               title={video.title}
               customThumbnail={
                 video.thumbnail
-                  ? `http://localhost:3000/images/${video.thumbnail}`
-                  : "http://localhost:3000/images/thumbnail-placeholder.png"
+                  ? `http://localhost:3000/uploads/images/${video.thumbnail}`
+                  : "http://localhost:3000/uploads/images/thumbnail-placeholder.png"
               }
               defaultExpanded={false}
               className="mb-8"

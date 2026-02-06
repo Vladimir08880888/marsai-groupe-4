@@ -43,7 +43,18 @@ export function Login() {
       }
     },
     onError: (error) => {
-      alert(error.response?.data?.error || "Erreur lors de la connexion");
+      console.error("Login error:", error);
+      console.error("Error response:", error.response);
+      
+      if (error.code === "ERR_NETWORK") {
+        alert("Impossible de contacter le serveur. Vérifiez que le backend est démarré.");
+      } else if (error.response?.data?.error) {
+        alert(error.response.data.error);
+      } else if (error.message) {
+        alert(`Erreur: ${error.message}`);
+      } else {
+        alert("Erreur lors de la connexion");
+      }
     },
   });
 
@@ -114,11 +125,11 @@ export function Login() {
       <form onSubmit={handleSubmit(onSubmit)} className="bg-black text-white py-[90px]">
         <div className="flex flex-col max-w-[500px] my-0 mx-auto p-[56px] items-center uppercase bg-black/70 border border-white/10 rounded-[24px] shadow-[0_0_30px_rgba(173,70,255,0.1)]">
 
-            <img className="bg-white/5 mb-[24px] border border-white/10 p-6 w-fit w-[96px] h-[96px] rounded-[32px] " src="/src/assets/login_svg/Icon.svg" alt="" />
+            <img className="bg-white/5 mb-[24px] border border-white/10 p-6 w-[96px] h-[96px] rounded-[32px]" src="/src/assets/login_svg/Icon.svg" alt="" />
         
         
 
-          <h2 className="text-center text-[48px] mb-[11px] font-bold inline-block inline-block bg-[linear-gradient(to_top,rgba(152,16,250,0.6)_35%,rgba(43,127,255,1)_60%)] bg-clip-text text-transparent tracking-[-2.4px]">CONNEXION</h2>
+          <h2 className="text-center text-[48px] mb-[11px] font-bold inline-block bg-[linear-gradient(to_top,rgba(152,16,250,0.6)_35%,rgba(43,127,255,1)_60%)] bg-clip-text text-transparent tracking-[-2.4px]">CONNEXION</h2>
           <h2 className="text-center text-[10px] mb-[44px] tracking-[3px] text-white/50 font-bold">Protocole d'accès marsAI</h2>
 
           
