@@ -60,7 +60,7 @@ function Footer() {
               </div>
             </div>
             <div>
-              <div className="flex flex-col w-[330px] rounded-[36px] border-1 border-white/5  bg-[linear-gradient(45deg,rgba(13,13,13,1)_60%,rgba(173,70,255,0.2)_100%)] p-[40px] gap-[20px]">
+              <div className="flex flex-col w-[330px] rounded-[36px] border border-white/5  bg-[linear-gradient(45deg,rgba(13,13,13,1)_60%,rgba(173,70,255,0.2)_100%)] p-[40px] gap-[20px]">
                 <h2 className="text-start text-white font-bold text-[24px] tracking-[-0.6px]">
                   RESTEZ <br />
                   CONNECTÉ
@@ -70,7 +70,7 @@ function Footer() {
                   <input
                     placeholder="Email Signal"
                     type="text"
-                    className="w-full rounded-[14px] placeholder-white/10 text-[14px] border-1 border-white/5 runded bg-white/3 p-[25px] h-[56px]"
+                    className="w-full rounded-[14px] placeholder-white/10 text-[14px] border border-white/5 runded bg-white/3 p-[25px] h-[56px]"
                   />{" "}
                   <button className="text-center py-0 px-[20px] bg-white rounded-[14px] font-bold text-[11px] tracking-[1.1px]">
                     OK
