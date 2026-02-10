@@ -23,6 +23,7 @@ import Palmares from "./pages/public/Palmares.jsx";
 import Agenda from "./pages/public/Agenda.jsx";
 
 
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -48,6 +49,8 @@ createRoot(document.getElementById("root")).render(
             <Route path="/upload" element={<Upload />} />
             <Route path="/palmares" element={<Palmares />} />
             <Route path="/agenda" element={<Agenda />} />
+
+            
           </Route>
 
           {/* Routes privées */}
