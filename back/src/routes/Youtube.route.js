@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer'; 
-import YoutubeController from '../controllers/YoutubeController.js';
+import { googleAuth, googleAuthCallback, uploadVideoToYoutube } from '../controllers/YoutubeController.js';
 import path from 'path';
 import fs from 'fs';
 
@@ -18,9 +18,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+youtubeRouter.get("/auth", googleAuth);
 
-youtubeRouter.get("/auth", YoutubeController.googleAuth);
-youtubeRouter.get("/auth/callback", YoutubeController.googleAuthCallback);
-youtubeRouter.post("/upload", upload.single("video"), YoutubeController.uploadVideoToYoutube);
+youtubeRouter.get("/auth/callback", googleAuthCallback);
+youtubeRouter.post("/upload", upload.single("video"), uploadVideoToYoutube);
 
 export default youtubeRouter;
