@@ -1,4 +1,5 @@
 import Film from "../models/Video.js";
+import User from "../models/User.js";
 
 async function listFilms(req, res) {
 
@@ -7,7 +8,7 @@ async function listFilms(req, res) {
     const limit = Math.max(parseInt(req.query.limit ?? "6", 10), 1);
     const offset = (page - 1) * limit;
 
-    const { rows, count } = await Video.findAndCountAll({
+    const { rows, count } = await Film.findAndCountAll({
       where: { status: "selected" },
       include: [{
         model: User,
