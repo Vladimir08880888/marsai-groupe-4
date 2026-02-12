@@ -1,12 +1,13 @@
 import instance from "./config.js";
 
-/*
+
 
 async function getEvents() {
   return await instance.get("events");
   // http://localhost:3000/events; fetch method GET
 }
 
+/*
 async function createEvents(newEvent) {
   return await instance.post("Events", newEvent);
   // http://localhost:3000/events; fetch method POST
@@ -33,7 +34,7 @@ async function getRoles() {
   // http://localhost:3000/events/roles; fetch method GET
 }
 
-export { getEvents, createEvent, updateEvent, deleteEvent, getEventById, getRoles };
-
-
 */
+export { getEvents };
+
+

@@ -1,18 +1,17 @@
 import express from "express";
-import UserController from "../../controllers/UserController.js";
+import EventController from "../../controllers/EventController.js";
 import AuthMiddleware from "../../middlewares/AuthMiddleware.js";
 
-const userRouter = express.Router();
+const eventRouter = express.Router();
 
 // Admin
 
-userRouter.use((req, res, next) => AuthMiddleware(req, res, next, ["ADMIN"]));
+eventRouter.use((req, res, next) => AuthMiddleware(req, res, next, ["ADMIN"]));
 
-userRouter.get("/", UserController.getUsers); // Liste de tous les utilisateurs
-userRouter.get("/roles", UserController.getRoles);
-userRouter.get("/:id", UserController.getUserById); // Récupérer un utilisateur par ID
-userRouter.post("/", UserController.createUser); // Créer un nouvel utilisateur
-userRouter.delete("/:id", UserController.deleteUser); // Supprimer un utilisateur par ID
-userRouter.put("/:id", UserController.updateUser); // Modifier un utilisateur par ID
-
-export default userRouter;
+eventRouter.get("/", EventController.getEvents); // Liste de tous les utilisateurs
+/* eventRouter.get("/:id", EventController.getEventById); // Récupérer un utilisateur par ID
+eventRouter.post("/", EventController.createEvent); // Créer un nouvel utilisateur
+eventRouter.delete("/:id", EventController.deleteEvent); // Supprimer un utilisateur par ID
+eventRouter.put("/:id", EventController.updateEvent); // Modifier un utilisateur par ID
+*/
+export default eventRouter;

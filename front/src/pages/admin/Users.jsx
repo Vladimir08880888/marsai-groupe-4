@@ -139,7 +139,6 @@ function Users() {
       setValue("discovery_source", user.discovery_source || "https://google.com");
       setValue("role", user.role);
       setIsDialogOpen(true);
-      
       setModeEdit(true);
   }
 
