@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { signIn } from "../../api/auth.js";
+import { Send } from "lucide-react";
+import {UserPlus} from "lucide-react" 
 
 // Schéma de validation Zod
 const registerSchema = z
@@ -100,85 +102,169 @@ export function Register() {
 
       <Link to="/auth/login">Already have an account? Login</Link> */}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="bg-black text-white py-[90px]">
-        <div className="flex flex-col w-fit my-0 mx-auto p-[56px] items-center uppercase bg-black/70 border border-white/10 rounded-[24px] shadow-[0_0_30px_rgba(173,70,255,0.1)]">
-
-            <img className="bg-white/5 mb-[24px] border border-white/10 p-6 w-[96px] h-[96px] rounded-[32px]" src="/src/assets/login_svg/Icon.svg" alt="" />
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-black text-white pt-[154px] pb-[90px] px-6"
+      >
         
-        
 
-          <h2 className="text-center text-[48px] mb-[11px] font-bold inline-block bg-[linear-gradient(to_top,rgba(152,16,250,0.6)_35%,rgba(43,127,255,1)_60%)] bg-clip-text text-transparent tracking-[-2.4px]">INSCRIPTION</h2>
-          <h2 className="text-center text-[10px] mb-[44px] tracking-[3px] text-white/50 font-bold">Nouveau profil cyber-premium</h2>
+        <div className="flex flex-col w-fit my-0 mx-auto p-8 sm:p-[56px] items-center uppercase bg-black/70 border border-white/10 rounded-[24px] shadow-[0_0_30px_rgba(173,70,255,0.1)]">
+          <UserPlus className="bg-white/5 mb-[24px] border border-white/10 p-6 w-[96px] h-[96px] rounded-[32px] "/>
 
-          <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">Prénom</h2>
+          <h2 className="text-center text-[36px] sm:text-[48px] mb-[11px] font-bold inline-block bg-[linear-gradient(to_top,rgba(152,16,250,0.6)_35%,rgba(43,127,255,1)_60%)] bg-clip-text text-transparent tracking-[-2.4px]">
+            INSCRIPTION
+          </h2>
+          <h2 className="text-center text-[10px] mb-[44px] tracking-[3px] text-white/50 font-bold">
+            Nouveau profil cyber-premium
+          </h2>
+
+          <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">
+            Prénom
+          </h2>
 
           <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full mb-[24px]">
-          <img className="flex items-center px-[15px]" src="/src/assets/login_svg/Icon (2).svg" alt="" />
-               <input placeholder="John" {...register("first_name")} className="w-full h-[76px] outline-none  placeholder-white/10" type="text" required />
+            <img
+              className="flex items-center px-[15px]"
+              src="/src/assets/login_svg/Icon (2).svg"
+              alt=""
+            />
+            <input
+              placeholder="John"
+              {...register("first_name")}
+              className="w-full h-[76px] outline-none  placeholder-white/40"
+              type="text"
+              required
+            />
           </div>
-          
+
           <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">Nom</h2>
 
           <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full mb-[24px]">
-          <img className="flex items-center px-[15px]" src="/src/assets/login_svg/Icon (2).svg" alt="" />
-               <input placeholder="Doe" {...register("last_name")} className="w-full h-[76px] outline-none  placeholder-white/10" type="text" required />
+            <img
+              className="flex items-center px-[15px]"
+              src="/src/assets/login_svg/Icon (2).svg"
+              alt=""
+            />
+            <input
+              placeholder="Doe"
+              {...register("last_name")}
+              className="w-full h-[76px] outline-none  placeholder-white/40"
+              type="text"
+              required
+            />
           </div>
-          
-          <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">Canal de Communication</h2>
+
+          <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">
+            Canal de Communication
+          </h2>
 
           <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full mb-[24px]">
-          <img className="flex items-center px-[15px]" src="/src/assets/login_svg/Icon (2).svg" alt="" />
-               <input placeholder="nom@exemple.com" {...register("email")} className="w-full h-[76px] outline-none  placeholder-white/10" type="email" required />
+            <img
+              className="flex items-center px-[15px]"
+              src="/src/assets/login_svg/Icon (2).svg"
+              alt=""
+            />
+            <input
+              placeholder="nom@exemple.com"
+              {...register("email")}
+              className="w-full h-[76px] outline-none  placeholder-white/40"
+              type="email"
+              required
+            />
           </div>
 
-          
-          <div className="grid grid-cols-2 gap-[24px]">
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-[24px] w-full">
+            <div className="w-full">
+              <h2 className=" tracking-[2px] text-[10px] mb-[12px]">
+                Clé d'Accès
+              </h2>
+              <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full">
+                <input
+                  placeholder="●●●●●●"
+                  {...register("password")}
+                  className="w-full h-[76px] w-full pl-[15px] outline-none  placeholder-white/40"
+                  type="password"
+                  required
+                />
+                <img
+                  className="flex items-center"
+                  src="/src/assets/login_svg/Icon (2).svg"
+                  alt=""
+                />
+              </div>
+            </div>
 
             <div>
-              <h2 className=" tracking-[2px] text-[10px] mb-[12px]">Clé d'Accès</h2>
-              <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-[200px] ">
-          
-               <input placeholder="●●●●●●" {...register("password")} className="w-full h-[76px] pl-[15px] outline-none  placeholder-white/10" type="password" required />
-          <img className="flex items-center px-[15px]" src="/src/assets/login_svg/Icon (2).svg" alt="" />
-          </div>
+              <h2 className="tracking-[2px] text-[10px] mb-[12px]">
+                Vérification
+              </h2>
+
+              <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full">
+                <input
+                  placeholder="●●●●●●"
+                  {...register("confirmpassword")}
+                  className=" pl-[15px] w-full h-[76px] outline-none  placeholder-white/40"
+                  type="password"
+                  required
+                />
+                <img
+                  className="flex items-center "
+                  src="/src/assets/login_svg/Icon (2).svg"
+                  alt=""
+                />
+
+              </div>
+
             </div>
-
-
-            <div>
-              <h2 className="tracking-[2px] text-[10px] mb-[12px]">Vérification</h2>
-              <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-[200px]">
-         
-               <input placeholder="●●●●●●" {...register("confirmpassword")} className=" pl-[15px] w-full h-[76px] outline-none  placeholder-white/10" type="password" required />
-                <img className="flex items-center px-[15px]" src="/src/assets/login_svg/Icon (2).svg" alt="" />
-          </div>
-            </div>
           </div>
 
+          <div className="flex text-[10px] items-center w-full py-[32px] gap-[10px] tracking-[1px]">
+  <label className="relative inline-flex items-center cursor-pointer mb-[1px]">
+
+    <input type="checkbox" className="peer sr-only" />
+
+   
+    <div className="w-5 h-5 rounded-full border-2 border-white bg-black/40 flex items-center justify-center transition-colors duration-200 peer-checked:bg-[rgb(0,79,198)]">
+      {/* SVG галочка */}
+      <svg
+        className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+  </label>
 
 
-          <div className="flex text-[10px]  items-center w-full py-[32px] gap-[10px] tracking-[1px]">
-            <label className="mb-[1px] bg-black/40 inline-block w-[20px] h-[20px] border-[2px] border-white rounded-[100%] cursor-pointer peer">
-              <input type="checkbox" className="hidden peer" />
-              <div className="rounded-[100%] hidden peer-checked:block w-full h-full bg-blue-500"></div>
-            </label>
+  <h2 className="mr-auto tracking-[1px]">
+    Je consents aux Termers et au condition GENERAL
+  </h2>
+</div>
 
-            
-            <h2 className="mr-auto tracking-[1px]">Je consents aux Termers et au condition GENERAL</h2>
-            
-            
+          <button
+            type="submit"
+            disabled={registerMutation.isPending}
+            className="flex justify-center items-center gap-[17px] font-bold w-full bg-white text-black rounded-[28px] tracking-[2.75px] uppercase text-[11px] h-[76px] trackincg-[2.75px] mb-[75px]"
+          >
+            {" "}
+            <Send size={20} />{" "}
+            <h2>
+              {registerMutation.isPending ? "Loading..." : "Initialiser Flux"}
+            </h2>
+          </button>
 
-            
+          <div className="flex w-full gap-[15px] justify-center items-center sm:items-end flex-col sm:flex-row ">
+            <h2 className="text-[11px] white-[80px] tracking-[2.2px]">
+              Déjà Enregistré ?
+            </h2>
+            <h2 className="text-[16px] capitalize tracking-[2.2px] mb-[-3px]">
+              Ouvrir Session
+            </h2>
           </div>
-
-          <button type="submit" disabled={registerMutation.isPending} className="flex justify-center items-center gap-[17px] font-bold w-full bg-white text-black rounded-[28px] tracking-[2.75px] uppercase text-[11px] h-[76px] trackincg-[2.75px] mb-[75px]"> <img src="/src/assets/login_svg/Icon (3).svg" alt="" /> <h2>{registerMutation.isPending ? "Loading..." : "Initialiser Flux"}</h2></button>
-
-          <div className="flex items-end  w-full gap-[15px] justify-center">
-              <h2 className="text-[11px] white-[80px] tracking-[2.2px]">Déjà Enregistré ?</h2>
-              <h2 className="text-[16px] capitalize tracking-[2.2px] mb-[-3px]">Ouvrir Session</h2>
-            </div>
         </div>
-        
       </form>
     </>
   );
