@@ -1,32 +1,75 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import FilmCard from "../../components/FilmCard";
+import { listFilms } from "../../api/films";
 
 export default function GalerieDesFilmsPage() {
   const [typeIA, setTypeIA] = useState("");
-  const [pays, setPays] = useState("");
+  const [pays, setPays] = useState(""); 
   const [statut, setStatut] = useState("");
-  const [page, setPage] = useState(1);
+  
 
-  const films = useMemo(
-    () => [
-      { id: 1, title: "NEURAL ODYSSEY", category: "ART NUMÉRIQUE", ai: "CHATGPT", rank: "#3", director: "Nom du réalisateur", origin: "France" },
-      { id: 2, title: "NEURAL ODYSSEY", category: "ART NUMÉRIQUE", ai: "Midjourney", rank: "#2", director: "Nom du réalisateur", origin: "USA" },
-      { id: 3, title: "NEURAL ODYSSEY", category: "ART NUMÉRIQUE", ai: "Runway", rank: "#1", director: "Nom du réalisateur", origin: "France" },
-      { id: 4, title: "NEURAL ODYSSEY", category: "ART NUMÉRIQUE", ai: "CHATGPT", rank: "#3", director: "Nom du réalisateur", origin: "USA" },
-      { id: 5, title: "NEURAL ODYSSEY", category: "ART NUMÉRIQUE", ai: "Midjourney", rank: "#4", director: "Nom du réalisateur", origin: "France" },
-      { id: 6, title: "NEURAL ODYSSEY", category: "ART NUMÉRIQUE", ai: "Runway", rank: "#5", director: "Nom du réalisateur", origin: "USA" },
-    ],
-    []
-  );
+  const [currentPage, setCurrentPage] = useState(1);
+  	const limit = 6;
+
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ["gallerie", currentPage, limit],
+    queryFn: () => listFilms(currentPage, limit),
+	  keepPreviousData: true,
+  });
+
+  if (isPending) {
+    return <div>Chargement en cours...</div>;
+  }
+
+  if (isError) {
+    return <div>Une erreur est survenue : {error.message}</div>;
+  }
+
+//passerà la page 1 à chaque fois que la liste de films change (ex: après un filtre) pour éviter d’avoir une page vide
+  
+
+  const filteredFilms = useMemo(() => {
+    const wantedAI = typeIA.trim().toLowerCase();
+    const wantedStatus = statut.trim();
+
+    return films.filter((f) => {
+      const aiTools = (f.ai_tools ?? "").toLowerCase();
+      const status = f.status ?? "";
+
+      const okAI = wantedAI ? aiTools.includes(wantedAI) : true;
+      const okStatus = wantedStatus ? status === wantedStatus : true;
+
+      //pays nul pour l'instant
+      const okPays = true;
+
+      return okAI && okStatus && okPays;
+    });
+  }, [films, typeIA, statut]);
 
   const pageSize = 6;
-
-  const totalPages = Math.max(1, Math.ceil(films.length / pageSize));
+  const totalPages = Math.max(1, Math.ceil(filteredFilms.length / pageSize));
 
   const visibleFilms = useMemo(() => {
     const start = (page - 1) * pageSize;
-    return films.slice(start, start + pageSize);
-  }, [films, page]);
+    return filteredFilms.slice(start, start + pageSize);
+  }, [filteredFilms, page]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-black text-white p-6">
+        Loading...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-black text-white p-6">
+        Erreur de chargement
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white font-sans p-4">
@@ -50,17 +93,20 @@ export default function GalerieDesFilmsPage() {
             onChange={(e) => setTypeIA(e.target.value)}
           >
             <option value="">Type d’IA</option>
-            <option value="CHATGPT">CHATGPT</option>
-            <option value="Midjourney">Midjourney</option>
-            <option value="Runway">Runway</option>
+            <option value="chatgpt">ChatGPT</option>
+            <option value="midjourney">Midjourney</option>
+            <option value="runway">Runway</option>
           </select>
 
+          {/* Pays d'origine -> nul pour l'instant*/}
           <select
             className="rounded-2xl px-4 py-4 pr-10 text-sm font-bold text-white outline-none bg-gradient-to-r from-[#7b2cff] to-[#FF2B7F]"
             value={pays}
             onChange={(e) => setPays(e.target.value)}
+            disabled
+            title="Pas de champ 'pays' dans la table films (pour l’instant)"
           >
-            <option value="">Pays d’origine</option>
+            <option value="">Pays d’origine (désactivé)</option>
             <option value="France">France</option>
             <option value="USA">USA</option>
           </select>
@@ -71,16 +117,23 @@ export default function GalerieDesFilmsPage() {
             onChange={(e) => setStatut(e.target.value)}
           >
             <option value="">Statut</option>
-            <option value="published">Publié</option>
-            <option value="pending">En attente</option>
+            <option value="submitted">submitted</option>
+            <option value="under_review">under_review</option>
+            <option value="rejected">rejected</option>
+            <option value="selected">selected</option>
+            <option value="finalist">finalist</option>
           </select>
         </section>
 
         {/* Gallery */}
         <section className="grid grid-cols-1 gap-20 md:grid-cols-2 lg:grid-cols-3">
-          {visibleFilms.map((film) => (
-            <FilmCard key={film.id} film={film} />
-          ))}
+          {visibleFilms.length === 0 ? (
+            <div className="text-white/60 text-sm">
+              Il n&apos;y a pas encore de films..
+            </div>
+          ) : (
+            visibleFilms.map((film) => <FilmCard key={film.id} film={film} />)
+          )}
         </section>
 
         {/* Pagination */}
@@ -98,8 +151,11 @@ export default function GalerieDesFilmsPage() {
               <button
                 key={n}
                 onClick={() => setPage(n)}
-                className={`grid h-9 w-9 place-items-center rounded-xl text-sm font-black transition
-                  ${page === n ? "bg-[#7b2cff] text-white" : "text-black/70 hover:bg-black/5"}`}
+                className={`grid h-9 w-9 place-items-center rounded-xl text-sm font-black transition ${
+                  page === n
+                    ? "bg-[#7b2cff] text-white"
+                    : "text-black/70 hover:bg-black/5"
+                }`}
               >
                 {n}
               </button>
@@ -115,7 +171,7 @@ export default function GalerieDesFilmsPage() {
           </div>
 
           <div className="text-[11px] font-black tracking-widest text-white/50">
-            PAGE {page} SUR {totalPages} — {films.length} FILMS TROUVÉS
+            PAGE {page} SUR {totalPages} — {filteredFilms.length} FILMS TROUVÉS
           </div>
         </section>
       </main>

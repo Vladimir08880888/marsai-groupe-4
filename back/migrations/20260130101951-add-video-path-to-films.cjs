@@ -7,7 +7,7 @@ module.exports = {
       await queryInterface.sequelize.query(
         `
         ALTER TABLE films
-        ADD COLUMN video_path VARCHAR(255) NULL DEFAULT NULL,
+        ADD COLUMN video_path VARCHAR(255) NULL DEFAULT NULL
         AFTER image_3;
          
         `,

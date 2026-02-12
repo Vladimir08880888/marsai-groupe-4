@@ -5,14 +5,15 @@ import authRouter from "./Auth.route.js";
 import uploadRouter from "./Upload.route.js";
 import overviewRouter from "./admin/Overview.route.js";
 import eventRouter from "./admin/Event.route.js";
+import filmRouter from "./Film.route.js";
 
 const router = express.Router();
 
 router.use("/auth", authRouter);
 router.use("/users", userRouter);
-router.use("/films", videoRouter);
 router.use("/uploads", uploadRouter);
 router.use("/overview", overviewRouter);
 router.use("/events", eventRouter);
-
+router.use("/films", videoRouter);
+router.use("/gallerie", filmRouter);
 export default router;
