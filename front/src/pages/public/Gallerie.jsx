@@ -29,7 +29,7 @@ export default function GalerieDesFilmsPage() {
   }, [films, page]);
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans p-4">
+    <div className="min-h-screen bg-black text-white font-sans p-4 pt-[64px]">
       <main className="mx-auto max-w-[1180px] px-6 pb-10 pt-10">
         {/* Title */}
         <section className="mb-36">
