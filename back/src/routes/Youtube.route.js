@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer'; 
-import { googleAuth, googleAuthCallback, uploadVideoToYoutube } from '../controllers/YoutubeController.js';
+import { googleAuth, googleAuthCallback, uploadVideoToYoutube, loadTokens } from '../controllers/YoutubeController.js';
 import path from 'path';
 import fs from 'fs';
 
@@ -22,5 +22,15 @@ youtubeRouter.get("/auth", googleAuth);
 
 youtubeRouter.get("/auth/callback", googleAuthCallback);
 youtubeRouter.post("/upload", upload.single("video"), uploadVideoToYoutube);
+
+youtubeRouter.get("/check-auth", async (req, res) => {
+  try {
+    const tokens = await loadTokens();
+    res.json({ connected: !!tokens }); 
+  } catch (err) {
+    console.error("Erreur check-auth:", err);
+    res.status(500).json({ connected: false, error: "Erreur serveur" });
+  }
+});
 
 export default youtubeRouter;

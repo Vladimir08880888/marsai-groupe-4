@@ -1,5 +1,4 @@
 import fs from "fs";
-import path from "path";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import { google } from "googleapis";
@@ -89,7 +88,7 @@ async function googleAuthCallback(req, res) {
 
     await saveTokens(tokens);
 
-    res.redirect("http://localhost:5173/admin"); 
+    res.redirect("/admin"); 
   } catch (error) {
     console.error("Erreur auth callback:", error);
     res.status(500).send("Erreur lors de l'authentification");
@@ -150,4 +149,4 @@ async function uploadVideoToYoutube(req, res) {
   }
 }
 
-export { googleAuth, googleAuthCallback, uploadVideoToYoutube };
+export { googleAuth, googleAuthCallback, uploadVideoToYoutube, loadTokens };
