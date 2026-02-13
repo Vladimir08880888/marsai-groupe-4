@@ -1,233 +1,138 @@
-import { Link, useNavigate } from "react-router";
-import { login } from "../../api/auth.js";
-import { useMutation } from "@tanstack/react-query";
+import { NavLink } from "react-router";
+import { ThemeToggle } from "./ThemeToggle";
+import { useState, useEffect } from "react";
+import { Trophy, House, Search, Calendar, User } from "lucide-react";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import handleLogout from "@/utils/helpers.js";
-import { LogOut } from "lucide-react";
-import { Send } from "lucide-react";
-import { LogIn } from "lucide-react";
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-const loginSchema = z.object({
-  email: z.string().email("Email invalide"),
-  password: z.string().min(1, "Mot de passe requis"),
-});
+  const isLoggedIn = !!localStorage.getItem("token");
+  const userPath = isLoggedIn ? "/admin" : "/auth/login";
 
-export function Login() {
-  const navigate = useNavigate();
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const { register, handleSubmit } = useForm({
-    resolver: zodResolver(loginSchema),
-  });
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "auto";
+  }, [open]);
 
-  const loginMutation = useMutation({
-    mutationFn: async (data) => {
-      return await login(data);
-    },
-    onSuccess: (response) => {
-      localStorage.setItem("first_name", response.data.first_name);
-      localStorage.setItem("email", response.data?.email);
-      localStorage.setItem("role", response.data?.role);
-      localStorage.setItem("token", response.data?.token);
-
-      switch (response.data?.role) {
-        case "ADMIN":
-          navigate("/admin");
-          break;
-        case "JURY":
-          navigate("/");
-          break;
-        default:
-          navigate("/");
-          break;
-      }
-    },
-    onError: (error) => {
-      console.error("Login error:", error);
-      console.error("Error response:", error.response);
-
-      if (error.code === "ERR_NETWORK") {
-        alert(
-          "Impossible de contacter le serveur. Vérifiez que le backend est démarré.",
-        );
-      } else if (error.response?.data?.error) {
-        alert(error.response.data.error);
-      } else if (error.message) {
-        alert(`Erreur: ${error.message}`);
-      } else {
-        alert("Erreur lors de la connexion");
-      }
-    },
-  });
-
-  const isLoggedIn = !!localStorage.getItem("email");
-
-  if (isLoggedIn) {
-    return (
-      <>
-        <h1 className="text-2xl">
-          You are already logged in as {localStorage.getItem("first_name")}
-        </h1>
-        <button onClick={handleLogout} className="hover:cursor-pointer">
-          <LogOut className="size-4" />
-          <span>Log out</span>
-        </button>
-        <Link to="/">Return to homepage</Link>
-      </>
-    );
-  }
-
-  const onSubmit = (data) => {
-    loginMutation.mutate(data);
-  };
+  const iconLinkClass = ({ isActive }) =>
+    `flex items-center justify-center transition-all duration-300
+     ${
+       isActive
+         ? "opacity-100 drop-shadow-[0_0_8px_rgba(123,44,255,0.9)] scale-110"
+         : "opacity-60 hover:opacity-100"
+     }`;
 
   return (
-    <>
-      {/* <h1 className="text-2xl">Login</h1>
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div>
-          <label
-            htmlFor="email"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-            Email
-          </label>
-          <input
-            id="email"
-            type="email"         
-            placeholder="your@email.com"
-            className="border p-2 rounded w-full"
-            {...register("email")}
-            required
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="password"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-          >
-             Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            placeholder="••••••••"
-            className="border p-2 rounded w-full"
-            {...register("password")}
-            required
-          />
-        </div>
-
-      </form>
-
-      <Link to="/auth/register">No account yet? Register</Link> */}
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="bg-black text-white pt-[154px] pb-[90px] px-6"
+    <section className="fixed top-0 left-0 w-full z-30 p-4 sm:p-6">
+      {/* MAIN NAVBAR */}
+      <div
+        className={`flex items-center justify-between w-full rounded-full px-6 sm:px-6 h-16 transition-all duration-500 border
+        ${
+          scrolled
+            ? "bg-black/30 text-white border-white/5 backdrop-blur-[13px] shadow-2xl"
+            : "bg-white/1 text-white border-white/5 backdrop-blur-[5px]"
+        }`}
       >
-       
-        <div className="flex flex-col max-w-[500px] my-0 mx-auto p-8 sm:p-[56px] items-center uppercase bg-black/70 border border-white/10 rounded-[24px] shadow-[0_0_30px_rgba(173,70,255,0.1)]">
-          <LogIn className="bg-white/5 mb-[24px] border border-white/10 p-6 w-[96px] h-[96px] rounded-[32px] " />
+        {/* LOGO */}
+        <NavLink to="/" className="flex items-center gap-1 font-bold text-xl min-w-0">
+          <span className="truncate text-white">MARS</span>
+          <span className="bg-[linear-gradient(180deg,rgba(81,162,255,1)_0%,rgba(173,70,255,1)_50%,rgba(255,43,127,1)_100%)] bg-clip-text text-transparent truncate">
+            AI
+          </span>
+        </NavLink>
 
-          <h2 className="text-center text-[36px] sm:text-[48px] mb-[11px] font-bold inline-block bg-[linear-gradient(to_top,rgba(152,16,250,0.6)_35%,rgba(43,127,255,1)_60%)] bg-clip-text text-transparent tracking-[-2.4px]">
-            CONNEXION
-          </h2>
-          <h2 className="text-center text-[10px] mb-[44px] tracking-[3px] text-white/50 font-bold">
-            Protocole d'accès marsAI
-          </h2>
-
-          <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">
-            Identifiant de Session
-          </h2>
-          <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full mb-[24px]">
-            <img
-              className="flex items-center px-[15px]"
-              src="/src/assets/login_svg/Icon (2).svg"
-              alt=""
-            />
-            <input
-              id="email"
-              type="email"
-              placeholder="agent@marsai.io"
-              {...register("email")}
-              className="w-full h-[76px] outline-none  placeholder-white/40"
-            />
-          </div>
-
-          <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">
-            Clé Cryptographique
-          </h2>
-          <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full">
-            <img
-              className="flex items-center px-[15px]"
-              src="/src/assets/login_svg/Icon (2).svg"
-              alt=""
-            />
-            <input
-              id="password"
-              type="password"
-              placeholder="●●●●●●"
-              className="w-full h-[76px] outline-none  placeholder-white/40"
-              {...register("password")}
-              required
-            />
-          </div>
-
-          <div className="flex text-[10px] items-center w-full py-[32px] gap-[10px] tracking-[1px]">
-            {/* Checkbox */}
-            <label className="relative inline-flex items-center cursor-pointer mb-[-1px]">
-              <input type="checkbox" className="peer sr-only" />
-              <div className="w-5 h-5 rounded-full border border-white/10 bg-black/40 flex items-center justify-center transition-colors duration-200 peer-checked:bg-blue-500">
-                <svg
-                  className="w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              </div>
-            </label>
-
-            {/* Текст */}
-            <h2 className="mr-auto tracking-[1px]">Maintenir session</h2>
-            <h2 className="text-[#51A2FF] tracking-[2px]  cursor-pointer">
-              Reset ?
-            </h2>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loginMutation.isPending}
-            className="flex justify-center items-center gap-[17px] font-bold w-full bg-white text-black rounded-[28px] tracking-[2.75px] uppercase text-[11px] h-[76px] trackincg-[2.75px] mb-[75px]"
-          >
-            {" "}
-            <Send size={20} />
-            <h2>
-              {loginMutation.isPending ? "Connecting..." : "Initialiser Flux"}
-            </h2>
-          </button>
-
-          <div className="flex items-center sm:items-end flex-col sm:flex-row   w-full gap-[15px] justify-center">
-            <h2 className="text-[11px] text-[rgba(255,255,255,0.6)] tracking-[2.2px]">
-              Nouveau Voyageur ?
-            </h2>
-            <h2 className="text-[16px] capitalize tracking-[2.2px] mb-[-3px]">
-              Générer Identité
-            </h2>
-          </div>
+        {/* ICONS — desktop only */}
+        <div className="hidden sm:flex gap-6">
+          <NavLink to="/gallerie" className={iconLinkClass}>
+            <Search size={20} />
+          </NavLink>
+          <NavLink to="/" end className={iconLinkClass}>
+            <House size={20} />
+          </NavLink>
+          <NavLink to="/palmares" className={iconLinkClass}>
+            <Trophy size={20} />
+          </NavLink>
+          <NavLink to="/agenda" className={iconLinkClass}>
+            <Calendar size={20} />
+          </NavLink>
+          <NavLink to={userPath} end className={iconLinkClass}>
+            <User size={20} />
+          </NavLink>
         </div>
-      </form>
-    </>
+
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-4">
+          <ThemeToggle />
+
+          {/* BURGER — mobile only */}
+          <button
+            onClick={() => setOpen(true)}
+            className="sm:hidden text-white opacity-70 hover:opacity-100 transition"
+          >
+            <svg
+              width="28"
+              height="28"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* OVERLAY */}
+      <div
+        onClick={() => setOpen(false)}
+        className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 sm:hidden z-40 ${
+          open ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      />
+
+      {/* SIDEBAR */}
+      <div
+        className={`fixed top-0 left-0 h-full w-[260px] bg-black border-r border-white/10 p-7 flex flex-col gap-7 transform transition-transform duration-300 ease-in-out sm:hidden z-50 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div className="text-white font-bold text-xl">MARS AI</div>
+          <button
+            onClick={() => setOpen(false)}
+            className="text-white/70 hover:text-white transition"
+          >
+            ✕
+          </button>
+        </div>
+
+        {/* Links */}
+        <NavLink to="/gallerie" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
+          Galerie
+        </NavLink>
+        <NavLink to="/" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
+          Home
+        </NavLink>
+        <NavLink to="/palmares" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
+          Palmarès
+        </NavLink>
+        <NavLink to="/agenda" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
+          Agenda
+        </NavLink>
+        <NavLink to={userPath} onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
+          Profile
+        </NavLink>
+      </div>
+    </section>
   );
 }
