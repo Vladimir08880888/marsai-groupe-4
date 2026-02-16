@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer'; 
-import { googleAuth, googleAuthCallback, uploadVideoToYoutube, loadTokens } from '../controllers/YoutubeController.js';
+import { googleAuth, googleAuthCallback, uploadVideoToYoutubeInternal, loadTokens } from '../controllers/YoutubeController.js';
 import path from 'path';
 import fs from 'fs';
 
@@ -21,7 +21,7 @@ const upload = multer({ storage });
 youtubeRouter.get("/auth", googleAuth);
 
 youtubeRouter.get("/auth/callback", googleAuthCallback);
-youtubeRouter.post("/upload", upload.single("video"), uploadVideoToYoutube);
+youtubeRouter.post("/upload", upload.single("video"), uploadVideoToYoutubeInternal);
 
 youtubeRouter.get("/check-auth", async (req, res) => {
   try {
@@ -32,5 +32,7 @@ youtubeRouter.get("/check-auth", async (req, res) => {
     res.status(500).json({ connected: false, error: "Erreur serveur" });
   }
 });
+
+
 
 export default youtubeRouter;

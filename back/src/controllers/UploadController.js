@@ -1,6 +1,7 @@
 import Upload from "../models/Upload.js";
 import { videoDuration } from "@numairawan/video-duration";
 import fs from "fs/promises";
+import { uploadVideoToYoutubeInternal } from "./YoutubeController.js";
 import path from "path";
 
 function getUploads(req, res) {
@@ -49,37 +50,26 @@ async function createUpload(req, res) {
       return res.status(400).json({ error: "Aucune vidéo envoyée" });
     }
 
-    let durationInfo = {};
+    // === Validation durée ===
     let durationSeconds = 0;
     try {
-      durationInfo = await videoDuration(videoFile.path);
-      console.log("Durée lue :", durationInfo);
+      const durationInfo = await videoDuration(videoFile.path);
       durationSeconds = durationInfo.seconds || (durationInfo.duration / durationInfo.timeScale) || 0;
     } catch (err) {
       console.error("Erreur lecture durée :", err);
-      durationSeconds = 0;
+
     }
 
-    const MAX_DURATION = 60;
-
-    if (durationSeconds > MAX_DURATION) {
-      return res.status(400).json({
-        error: `La vidéo est trop longue (${Math.round(durationSeconds)}s). Maximum autorisé : ${MAX_DURATION} secondes.`,
-      });
+    if (durationSeconds > 60) {
+      return res.status(400).json({ error: "La vidéo est trop longue (max 60 secondes)" });
     }
 
     const formattedDuration = durationSeconds > 0
       ? `${Math.floor(durationSeconds / 60).toString().padStart(2, "0")}:${Math.floor(durationSeconds % 60).toString().padStart(2, "0")}`
-      : null; // ou "00:00" si tu préfères
+      : null;
 
     const {
-      title,
-      translated_title,
-      synopsis,
-      language,
-      synopsis_en,
-      youtube_link,
-      ai_tools,
+      title, translated_title, synopsis, language, synopsis_en, youtube_link, ai_tools
     } = req.body;
 
     if (!title) {
@@ -90,8 +80,8 @@ async function createUpload(req, res) {
     const image2File = req.files?.image_2?.[0];
     const image3File = req.files?.image_3?.[0];
     const subtitlesFile = req.files?.subtitles?.[0];
-    
 
+    // === Création du film ===
     const newFilm = await Upload.create({
       title,
       translated_title: translated_title || null,
@@ -108,7 +98,30 @@ async function createUpload(req, res) {
       status: "submitted",
       user_id: userId,
       video_path: videoFile.path,
+      youtube_status: "pending",        
     });
+
+    // === AUTO UPLOAD SUR YOUTUBE ===
+    try {
+      console.log(`[AUTO] Début upload YouTube pour le film ${newFilm.id}`);
+
+      const youtubeResult = await uploadVideoToYoutubeInternal(newFilm.video_path, {
+        title: newFilm.title,
+        description: newFilm.synopsis || "",
+        tags: newFilm.ai_tools ? newFilm.ai_tools.split(',').map(t => t.trim()) : [],
+      });
+
+      if (youtubeResult.success) {
+        await newFilm.update({
+          youtube_video_id: youtubeResult.videoId,
+          youtube_status: "uploaded",
+        });
+        console.log(`[AUTO] Upload YouTube réussi → ID: ${youtubeResult.videoId}`);
+      }
+    } catch (youtubeError) {
+      console.error("[AUTO] Échec upload YouTube :", youtubeError);
+      await newFilm.update({ youtube_status: "failed" });
+    }
 
     res.status(201).json({
       message: "Film soumis avec succès",

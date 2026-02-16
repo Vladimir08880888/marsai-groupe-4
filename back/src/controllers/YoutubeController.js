@@ -95,58 +95,42 @@ async function googleAuthCallback(req, res) {
   }
 }
 
-async function uploadVideoToYoutube(req, res) {
-  const tokens = await loadTokens();
-  if (!tokens) {
-    return res.status(401).json({ error: "Authentification Google requise" });
-  }
-
-  if (!req.file?.path) {
-    return res.status(400).json({ error: "Aucune vidéo uploadée" });
-  }
-
-  const filePath = req.file.path;
-
+async function uploadVideoToYoutubeInternal(filePath, metadata = {}) {
   try {
+    const tokens = await loadTokens(); // ← SANS adminId
+    if (!tokens) throw new Error("Aucun token YouTube trouvé. Connectez la chaîne d'abord.");
+
     oauth2Client.setCredentials(tokens);
-    await oauth2Client.getAccessToken();
+    await oauth2Client.getAccessToken(); // refresh auto si expiré
 
     const youtube = google.youtube({ version: "v3", auth: oauth2Client });
-
-    const tags = req.body.tags
-      ? req.body.tags.split(",").map(t => t.trim()).filter(Boolean)
-      : undefined;
 
     const response = await youtube.videos.insert({
       part: "snippet,status",
       requestBody: {
         snippet: {
-          title: req.body.title || "Vidéo sans titre",
-          description: req.body.description || "",
-          tags,
-          categoryId: "22",
+          title: metadata.title || "Vidéo sans titre",
+          description: metadata.description || "",
+          tags: metadata.tags || [],
+          categoryId: "22", // People & Blogs
         },
         status: {
-          privacyStatus: req.body.privacyStatus || "private",
+          privacyStatus: "private", // ou "public" / "unlisted" si tu veux
         },
       },
-      media: { body: fs.createReadStream(filePath) },
+      media: {
+        body: fs.createReadStream(filePath),
+      },
     });
 
-
-
-    res.json({
+    return {
       success: true,
       videoId: response.data.id,
-      license: response.data.contentDetails?.licensedContent,
-    });
+    };
   } catch (error) {
-    console.error("Erreur upload YouTube:", error);
-    res.status(500).json({
-      error: "Échec upload YouTube",
-      details: error.message || error.response?.data || "Erreur inconnue",
-    });
+    console.error("Erreur upload interne YouTube:", error);
+    throw error; // laisse l'erreur remonter pour gestion dans createUpload
   }
 }
 
-export { googleAuth, googleAuthCallback, uploadVideoToYoutube, loadTokens };
+export { googleAuth, googleAuthCallback, uploadVideoToYoutubeInternal, loadTokens };
