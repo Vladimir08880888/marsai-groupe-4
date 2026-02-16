@@ -21,6 +21,7 @@ import Evennements from "./pages/Evennements.jsx";
 import Upload from "./pages/public/Upload.jsx";
 import Palmares from "./pages/public/Palmares.jsx";
 import Agenda from "./pages/public/Agenda.jsx";
+import Cms from "./pages/admin/Cms.jsx";
 
 
 
@@ -63,6 +64,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="videos" element={<Videos />} />
             <Route path="jurys" element={<Jury />} />
             <Route path="events" element={<Events />} />
+            <Route path="cms" element={<Cms />} />
 
           </Route>
         </Routes>

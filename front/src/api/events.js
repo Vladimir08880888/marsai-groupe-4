@@ -7,12 +7,10 @@ async function getEvents() {
   // http://localhost:3000/events; fetch method GET
 }
 
-/*
-async function createEvents(newEvent) {
-  return await instance.post("Events", newEvent);
+async function createEvent(newEvent) {
+  return await instance.post("events", newEvent);
   // http://localhost:3000/events; fetch method POST
 }
-
 
 async function updateEvent(id, updatedEvent) {
   return await instance.put(`events/${id}`, updatedEvent);
@@ -34,7 +32,6 @@ async function getRoles() {
   // http://localhost:3000/events/roles; fetch method GET
 }
 
-*/
-export { getEvents };
+export { getEvents, createEvent, updateEvent, deleteEvent, getEventById, getRoles };
 
 

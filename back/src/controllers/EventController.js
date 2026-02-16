@@ -25,9 +25,30 @@ function getEventById(req, res) {
     })
 }
 
+function createEvent(req, res) {
+    const eventData = req.body;
+    Event.create(eventData).then((event) => {
+        res.status(201).json(event);
+    }).catch((error) => {
+        res.status(400).json({ error: error.message });
+    });
+}
+
+function updateEvent(req, res) {
+    const { id } = req.params;
+    const eventData = req.body;
+    Event.update(eventData, { where: { id } }).then(() => {
+        res.json({ message: "Evennement mis à jour" });
+    }).catch((error) => {
+        res.status(400).json({ error: error.message });
+    });
+}
+
 
 export default {
     getEvents,
     deleteEvent,
-    getEventById
+    getEventById,
+    createEvent,
+    updateEvent
 }

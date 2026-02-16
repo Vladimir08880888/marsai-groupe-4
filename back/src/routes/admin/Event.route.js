@@ -9,9 +9,9 @@ const eventRouter = express.Router();
 eventRouter.use((req, res, next) => AuthMiddleware(req, res, next, ["ADMIN"]));
 
 eventRouter.get("/", EventController.getEvents); // Liste de tous les utilisateurs
-/* eventRouter.get("/:id", EventController.getEventById); // Récupérer un utilisateur par ID
+eventRouter.get("/:id", EventController.getEventById); // Récupérer un utilisateur par ID
 eventRouter.post("/", EventController.createEvent); // Créer un nouvel utilisateur
 eventRouter.delete("/:id", EventController.deleteEvent); // Supprimer un utilisateur par ID
 eventRouter.put("/:id", EventController.updateEvent); // Modifier un utilisateur par ID
-*/
+
 export default eventRouter;
