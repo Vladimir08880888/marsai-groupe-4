@@ -12,7 +12,7 @@ import {
   ArrowLeftFromLine,
   LogOut,
 } from "lucide-react";
-import { NavLink, useLocation } from "react-router";
+import { Form, NavLink, useLocation } from "react-router";
 
 import {
   Sidebar,
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/sidebar";
 import handleLogout from "@/utils/helpers";
 import { ThemeToggle } from "../ThemeToggle";
+import YoutubeConnectButton from './YoutubeConnectButton';
 
 const navItems = [
   { title: "Overview", url: "/admin", icon: LayoutDashboard },
@@ -88,7 +89,7 @@ export default function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-
+<YoutubeConnectButton />
       <SidebarFooter>
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip="Toggle Theme">
