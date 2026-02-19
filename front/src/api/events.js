@@ -27,11 +27,11 @@ async function getEventById(id) {
   // http://localhost:3000/events/1; fetch method GET
 }
 
-async function getRoles() {
-  return await instance.get("events/roles");
-  // http://localhost:3000/events/roles; fetch method GET
+async function getTypes() {
+  return await instance.get("events/types");
+  // http://localhost:3000/events/types; fetch method GET
 }
 
-export { getEvents, createEvent, updateEvent, deleteEvent, getEventById, getRoles };
+export { getEvents, createEvent, updateEvent, deleteEvent, getEventById, getTypes };
 
 

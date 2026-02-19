@@ -33,8 +33,6 @@ function Videos() {
     return <div>Une erreur est survenue : {error.message}</div>;
   }
 
-
-console.log(data)
     return data.data.showVideos.length > 0 ? (
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 p-8 max-w-7xl mx-auto">

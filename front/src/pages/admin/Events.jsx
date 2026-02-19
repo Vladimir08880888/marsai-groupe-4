@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getEvents, createEvent, updateEvent, deleteEvent } from "../../api/events.js";
+import { getEvents, createEvent, updateEvent, deleteEvent, getTypes } from "../../api/events.js";
 import { useMutation } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -32,13 +32,15 @@ import FormField from "@/components/FormField";
 
 
 const registerSchema = z.object({
-
-    id: z.number().optional(),
-    title: z.string(),
+    id: z.preprocess((val) => {
+        if (val === "" || val === undefined || val === null) return undefined;
+        return Number(val);
+    }, z.number().optional()),
+    title: z.string().min(1, "Le titre est requis"),
     description: z.string().optional(),
     location: z.string().optional(),
-    type: z.string(),
-    event_date: z.string(),
+    type: z.string().min(1, "Le type est requis"),
+    event_date: z.string().min(1, "La date est requise"),
 })
 
 
@@ -47,6 +49,7 @@ const registerSchema = z.object({
 function Events(){
 
     const [events, setEvents] = useState([]);
+    const [types, setTypes] = useState([]);
     const [modeEdit, setModeEdit] = useState(false);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [sorting, setSorting] = useState([]);
@@ -55,9 +58,13 @@ function Events(){
         getEvents().then((data) => {
         setEvents(data.data);
         });
+
+        getTypes().then((data) => {
+            setTypes(data.data.types);
+        });
     }, []);
 
-    const { register, handleSubmit, setValue } = useForm({
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm({
         resolver: zodResolver(registerSchema),
     });
 
@@ -68,6 +75,10 @@ function Events(){
         onSuccess: (data, variables, context) => {
             window.location.reload();
         },
+        onError: (error) => {
+            console.error('Error creating event:', error);
+            alert('Erreur lors de la création: ' + (error.response?.data?.error || error.message));
+        },
     });
 
     const deleteMutation = useMutation({
@@ -76,6 +87,10 @@ function Events(){
         },
         onSuccess: (data, variables, context) => {
             window.location.reload();
+        },
+        onError: (error) => {
+            console.error('Error deleting event:', error);
+            alert('Erreur lors de la suppression: ' + (error.response?.data?.error || error.message));
         },
     });
 
@@ -86,23 +101,31 @@ function Events(){
         onSuccess: (data, variables, context) => {
             window.location.reload();
         },
+        onError: (error) => {
+            console.error('Error updating event:', error);
+            alert('Erreur lors de la mise à jour: ' + (error.response?.data?.error || error.message));
+        },
     });
 
     function onSubmit(data) {
-        return registerMutation.mutate(data);
+        console.log('Form submitted with data:', data);
+        if (modeEdit && data.id) {
+            return updateMutation.mutate(data);
+        } else {
+            return registerMutation.mutate(data);
+        }
     }
 
     function handleEdit(event) {
         setValue("id", event.id);
         setValue("title", event.title);
-        setValue("description", event.last_name);
+        setValue("description", event.description);
         setValue("location", event.location);
         setValue("type", event.type);
         setValue("event_date", event.event_date);
 
         setIsDialogOpen(true);
         setModeEdit(true);
-
     }
 
     function handleReset() {
@@ -216,17 +239,30 @@ function Events(){
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                 <input type="hidden" id="id" {...register("id")} />
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-2">
-                                    <FormField label="Title" id="title" register={register} required />
-                                    <FormField label="Description" id="description" register={register} required />
-                                    <FormField label="Localization" id="location" register={register} required />
-                                    <FormField label="Type" id="type" register={register} required />
-                                    <FormField label="Date" id="event_date" register={register} required />
+                                {Object.keys(errors).length > 0 && (
+                                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                                        <p className="font-medium">Erreurs de validation:</p>
+                                        <ul className="list-disc list-inside">
+                                            {Object.entries(errors).map(([key, error]) => (
+                                                <li key={key}>{error.message}</li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField label="Title" id="title" type="text" register={register} required />
+                                    <FormField label="Type" id="type" type="select" register={register} required options={types}/>
+                                    <FormField label="Date" id="event_date" type="date" register={register} required />
+                                    <FormField label="Localization" id="location" type="text" register={register} />
+                                    <div className="md:col-span-2">
+                                        <FormField label="Description" id="description" type="textarea" register={register} rows={3} />
+                                    </div>
                                 </div>
 
                                 <DialogFooter>
                                     <Button type="button" variant="outline" onClick={handleReset}>Annuler</Button>
-                                    <Button type="submit">Créer un utilisateur</Button>
+                                    <Button type="submit">Créer un evennement</Button>
                                 </DialogFooter>
                             </form>
                         </DialogContent>
@@ -281,7 +317,43 @@ function Events(){
                 setIsDialogOpen(open);
                 if (!open) handleReset();
             }}>
-                
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                        <DialogTitle>Modifier l'Evennement</DialogTitle>
+                        <DialogDescription>
+                            Modifiez les informations de l'evennement
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                        <input type="hidden" id="id" {...register("id")} />
+
+                        {Object.keys(errors).length > 0 && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                                <p className="font-medium">Erreurs de validation:</p>
+                                <ul className="list-disc list-inside">
+                                    {Object.entries(errors).map(([key, error]) => (
+                                        <li key={key}>{error.message}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <FormField label="Title" id="title" type="text" register={register} required />
+                            <FormField label="Type" id="type" type="select" register={register} required options={types}/>
+                            <FormField label="Date" id="event_date" type="date" register={register} required />
+                            <FormField label="Localization" id="location" type="text" register={register} />
+                            <div className="md:col-span-2">
+                                <FormField label="Description" id="description" type="textarea" register={register} rows={3} />
+                            </div>
+                        </div>
+
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={handleReset}>Annuler</Button>
+                            <Button type="submit">Modifier l'evennement</Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
             </Dialog>
 
         </section>
