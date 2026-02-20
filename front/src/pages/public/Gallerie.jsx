@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { listFilms } from "../../api/films";
-
-//shadcn components
-import { YouTubePlayer, YouTubePlayerControls } from "@/components/ui/youtube-video-player.jsx";
+import FilmCard from "../../components/FilmCard";
+import { useNavigate } from "react-router";
 
 import {
   Pagination,
@@ -14,30 +13,69 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-
-export default function GalerieDesFilmsPage() {
+export default function Gallerie() {
+  const navigate = useNavigate();
   const [typeIA, setTypeIA] = useState("");
-  const [pays, setPays] = useState(""); 
+  const [pays, setPays] = useState("");
   const [statut, setStatut] = useState("");
-  
 
   const [currentPage, setCurrentPage] = useState(1);
-  	const limit = 6;
-  const pageSize = 6;
+  const limit = 6;
 
-  const totalPages = Math.max(1, Math.ceil(films.length / pageSize));
+  const { isPending, isError, data, error } = useQuery({
+    queryKey: ["gallerie", currentPage, limit],
+    queryFn: () => listFilms(currentPage, limit),
+    keepPreviousData: true,
+  });
 
-  const visibleFilms = useMemo(() => {
-    const start = (page - 1) * pageSize;
-    return films.slice(start, start + pageSize);
-  }, [films, page]);
+  const UPLOADS_BASE = "http://localhost:3000/uploads/images";
 
-  return (
-    <div className="min-h-screen bg-black text-white font-sans p-4 pt-[64px]">
-      <main className="mx-auto max-w-[1180px] px-6 pb-10 pt-10">
-        {/* Title */}
-        <section className="mb-36">
-          <h1 className="m-0 text-[56px] leading-[0.95] font-black tracking-[-1.5px]">
+  const toFilmCardShape = (video) => {
+    const thumb = video?.thumbnail
+      ? `${UPLOADS_BASE}/${video.thumbnail}`
+      : `${UPLOADS_BASE}/thumbnail-placeholder.png`;
+
+    const youtubeIdOrUrl = video?.youtube_link ?? "";
+    const youtubeUrl =
+      youtubeIdOrUrl && !String(youtubeIdOrUrl).startsWith("http")
+        ? `https://www.youtube.com/watch?v=${youtubeIdOrUrl}`
+        : youtubeIdOrUrl;
+
+    return {
+      id: video?.id,
+      title: video?.title,
+      translated_title: video?.translated_title ?? "",
+      duration: video?.duration ?? "",
+      synopsis: video?.synopsis ?? "",
+      status: video?.status ?? "",
+      ai_tools: video?.ai_tools ?? "",
+      youtube_link: youtubeUrl,
+      thumbnail: thumb,
+      image_2: "",
+      image_3: "",
+    };
+  };
+
+  // UI Shell pour chaque état (loading, error, empty)
+  const Shell = ({ children }) => (
+    <div className="min-h-screen bg-black text-white font-sans">
+      {/* gradient flou */}
+      <div className="pointer-events-none fixed inset-0 opacity-40">
+        <div className="absolute -top-40 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-[#7b2cff]/30 blur-3xl" />
+        <div className="absolute top-20 right-[-120px] h-[420px] w-[420px] rounded-full bg-[#ff4fd8]/20 blur-3xl" />
+      </div>
+
+      <main className="relative mx-auto max-w-6xl px-6 pb-14 pt-12">
+        {children}
+      </main>
+    </div>
+  );
+
+  if (isPending) {
+    return (
+      <Shell>
+        <section className="mb-10">
+          <h1 className="m-0 text-[44px] md:text-[56px] leading-[0.95] font-black tracking-[-1.5px]">
             LA GALERIE <br />
             DES{" "}
             <span className="bg-gradient-to-r from-[#ff4fd8] to-[#7b2cff] bg-clip-text text-transparent">
@@ -46,150 +84,154 @@ export default function GalerieDesFilmsPage() {
           </h1>
         </section>
 
-        {/* Filters */}
-        <section className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-          <select
-            className="rounded-2xl px-4 py-4 pr-10 text-sm font-bold text-white outline-none bg-gradient-to-r from-[#7b2cff] to-[#FF2B7F]"
-            value={typeIA}
-            onChange={(e) => setTypeIA(e.target.value)}
-          >
-            <option value="">Type d’IA</option>
-            <option value="CHATGPT">CHATGPT</option>
-            <option value="Midjourney">Midjourney</option>
-            <option value="Runway">Runway</option>
-          </select>
-
-          <select
-            className="rounded-2xl px-4 py-4 pr-10 text-sm font-bold text-white outline-none bg-gradient-to-r from-[#7b2cff] to-[#FF2B7F]"
-            value={pays}
-            onChange={(e) => setPays(e.target.value)}
-          >
-            <option value="">Pays d’origine</option>
-            <option value="France">France</option>
-            <option value="USA">USA</option>
-          </select>
-
-          <select
-            className="rounded-2xl px-4 py-4 pr-10 text-sm font-bold text-white outline-none bg-gradient-to-r from-[#7b2cff] to-[#FF2B7F]"
-            value={statut}
-            onChange={(e) => setStatut(e.target.value)}
-          >
-            <option value="">Statut</option>
-            <option value="published">Publié</option>
-            <option value="pending">En attente</option>
-          </select>
-        </section>
-
-        {/* Gallery */}
-        <section className="grid grid-cols-1 gap-20 md:grid-cols-2 lg:grid-cols-3">
-          {visibleFilms.map((film) => (
-            <FilmCard key={film.id} film={film} />
+        {/* Skeleton loading : 6 cards avec animation pulse */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {Array.from({ length: limit }).map((_, i) => (
+            <div
+              key={i}
+              className="h-[420px] rounded-3xl border border-white/10 bg-white/5 animate-pulse"
+            />
           ))}
-        </section>
+        </div>
 
-        {/* Pagination */}
-        <section className="mt-12 flex flex-col items-center gap-4">
-          <div className="flex items-center gap-2 rounded-2xl bg-white p-2 shadow-[0_24px_80px_rgba(0,0,0,0.55)]">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="grid h-9 w-9 place-items-center rounded-xl text-black/70 transition hover:bg-black/5 disabled:opacity-40"
-              disabled={page === 1}
-            >
-              ‹
-            </button>
-
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-              <button
-                key={n}
-                onClick={() => setPage(n)}
-                className={`grid h-9 w-9 place-items-center rounded-xl text-sm font-black transition
-                  ${page === n ? "bg-[#7b2cff] text-white" : "text-black/70 hover:bg-black/5"}`}
-              >
-                {n}
-              </button>
-            ))}
-
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ["gallerie", currentPage, limit],
-    queryFn: () => listFilms(currentPage, limit),
-	  keepPreviousData: true,
-  });
-
-  if (isPending) {
-    return <div>Chargement en cours...</div>;
+        <div className="mt-10 text-center text-white/70">
+          Chargement en cours...
+        </div>
+      </Shell>
+    );
   }
 
   if (isError) {
-    return <div>Une erreur est survenue : {error.message}</div>;
+    return (
+      <Shell>
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+          <div className="text-lg font-bold">Une erreur est survenue</div>
+          <div className="mt-2 text-white/70">{error?.message}</div>
+        </div>
+      </Shell>
+    );
   }
 
+  const videos = data?.data?.showVideos ?? [];
+  const totalPages = data?.data?.totalPages ?? 1;
 
+  if (videos.length === 0) {
+    return (
+      <Shell>
+        <section className="mb-10">
+          <h1 className="m-0 text-[44px] md:text-[56px] leading-[0.95] font-black tracking-[-1.5px]">
+            LA GALERIE <br />
+            DES{" "}
+            <span className="bg-gradient-to-r from-[#ff4fd8] to-[#7b2cff] bg-clip-text text-transparent">
+              FILMS
+            </span>
+          </h1>
+        </section>
 
-  return data.data.showVideos.length > 0 ? (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 p-8 max-w-7xl mx-auto">
-        {data.data.showVideos.map((video) => (
-          <div key={video.id || video.title}>
-            <h2 className="text-2xl font-bold">{video.title}</h2>
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-white/70">
+          Aucune vidéo à afficher.
+        </div>
+      </Shell>
+    );
+  }
 
-            <YouTubePlayer
-              videoId={video.youtube_link}
-              title={video.title}
-              customThumbnail={
-                video.thumbnail
-                  ? `http://localhost:3000/uploads/images/${video.thumbnail}`
-                  : "http://localhost:3000/uploads/images/thumbnail-placeholder.png"
-              }
-              defaultExpanded={false}
-              className="mb-8"
-            />
+  return (
+    <Shell>
+      {/* Title + subtitle */}
+      <section className="mb-10">
+        <h1 className="m-0 text-[44px] md:text-[56px] leading-[0.95] font-black tracking-[-1.5px]">
+          LA GALERIE <br />
+          DES{" "}
+          <span className="bg-gradient-to-r from-[#ff4fd8] to-[#7b2cff] bg-clip-text text-transparent">
+            FILMS
+          </span>
+        </h1>
 
-            <div>
-              <p>
-                <strong>Propriétaire:</strong>{" "}
-                {video.user ? `${video.user.first_name} ${video.user.last_name}` : "N/A"}
-              </p>
-              <p><strong>Email:</strong> {video.user?.email || "N/A"}</p>
-              <p>{video.synopsis}</p>
-              <label>{video.ai_tools}</label>
-              <label><small>{video.created_at}</small></label>
-            </div>
+        <p className="mt-4 max-w-2xl text-white/60">
+          Découvrez une sélection de films générés avec des outils d’IA.
+        </p>
+      </section>
+
+      {/* Filters in a nice panel */}
+      <section className="mb-10">
+        <div className="mb-12">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <select
+              className="h-12 rounded-2xl px-4 pr-10 text-sm font-bold text-white outline-none
+                         bg-gradient-to-r from-[#7b2cff] to-[#FF2B7F]
+                         shadow-[0_10px_30px_rgba(123,44,255,0.15)]"
+              value={typeIA}
+              onChange={(e) => setTypeIA(e.target.value)}
+            >
+              <option value="">Type d’IA</option>
+              <option value="CHATGPT">ChatGPT</option>
+              <option value="Midjourney">Midjourney</option>
+              <option value="Runway">Runway</option>
+            </select>
+
+            <select
+              className="h-12 rounded-2xl px-4 pr-10 text-sm font-bold text-white outline-none
+                         bg-gradient-to-r from-[#7b2cff] to-[#FF2B7F]
+                         shadow-[0_10px_30px_rgba(255,79,216,0.12)]"
+              value={statut}
+              onChange={(e) => setStatut(e.target.value)}
+            >
+              <option value="">Statut</option>
+              <option value="published">Publié</option>
+              <option value="pending">En attente</option>
+            </select>
           </div>
-        ))}
+
+        </div>
+      </section>
+
+      {/* Gallery grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {videos.map((video) => (
+  <div
+    key={video.id || video.title}
+    onClick={() => navigate(`/films/${video.id}`)}
+    className="cursor-pointer"
+  >
+    <FilmCard film={toFilmCardShape(video)} />
+  </div>
+))}
+
       </div>
 
-      {data.data.totalPages > 1 && (
-        <Pagination className="pb-10">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-
-            {Array.from({ length: data.data.totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <PaginationLink
-                  onClick={() => setCurrentPage(page)}
-                  isActive={currentPage === page}
-                >
-                  {page}
-                </PaginationLink>
+      {/* Paginations */}
+      <div className="mt-12 flex justify-center">
+        <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                />
               </PaginationItem>
-            ))}
 
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => setCurrentPage((p) => Math.min(p + 1, data.data.totalPages))}
-                className={currentPage === data.data.totalPagesages ? "pointer-events-none opacity-50" : ""}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
-    </>
-  ) : (
-    <div>Aucune vidéo à afficher.</div>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <PaginationItem key={page}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(page)}
+                    isActive={currentPage === page}
+                  >
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+      </div>
+    </Shell>
   );
 }

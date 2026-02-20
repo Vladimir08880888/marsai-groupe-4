@@ -12,6 +12,7 @@ import {
   ArrowLeftFromLine,
   LogOut,
   SquareCode,
+  LogIn,
 } from "lucide-react";
 import { Form, NavLink, useLocation } from "react-router";
 
@@ -91,12 +92,20 @@ export default function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-<YoutubeConnectButton />
-      <SidebarFooter>
+
+      <SidebarFooter>       
         <SidebarMenuItem>
           <SidebarMenuButton asChild tooltip="Toggle Theme">
             <div className="flex items-center w-full">
               <ThemeToggle />
+            </div>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+        <SidebarMenuItem>
+          <SidebarMenuButton asChild tooltip="Toggle Theme">
+            <div className="flex items-center w-full hover:cursor-pointer">
+              <LogIn />
+              <YoutubeConnectButton />
             </div>
           </SidebarMenuButton>
         </SidebarMenuItem>
