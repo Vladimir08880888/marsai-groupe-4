@@ -1,0 +1,72 @@
+{
+  "home": {
+    "tagline": "",
+    "subtitles": "",
+    "selection_button": "",
+    "contact_button": "",
+    "immersion_text": "",
+    "immersion_title": "",
+    "adventure_button": "",
+    "objectif-title": "",
+    "first_objectif": "",
+    "first description": "",
+    "second_objectif": "",
+    "second_description": "",
+    "third_objectif": "",
+    "third_description": "",
+    "films_title": "",
+    "films_description": "",
+    "gallery_button": "",
+    "sponsor_line":"",
+    "sponsor_title":"",
+    "sponsor_subtitle":"",
+    "sponsor_placeholder":"",
+    "location_badge":"",
+    "location_access":""
+  },
+  "login": {
+    
+  },
+  "register": {
+
+  },
+  "agenda": {
+
+  },
+  "event": {
+
+  },
+  "accessdenied": {
+
+  },
+  "contact": {
+
+  },
+  "gallery": {
+
+  },
+  "palmares": {
+
+  },
+  "reservation": {
+
+  },
+  "upload": {
+
+  },
+  "confirmmodal": {
+
+  },
+  "footer": {
+
+  },
+  "formfield": {
+
+  },
+  "navbar": {
+
+  },
+  "publiclayout": {
+    
+  }
+}
