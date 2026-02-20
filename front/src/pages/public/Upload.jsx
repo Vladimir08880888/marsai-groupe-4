@@ -6,6 +6,7 @@ import ConfirmModal from "@/components/ConfirmModal";
 import { Sparkles } from "lucide-react";
 import { Film } from "lucide-react";
 import { CircleCheck } from "lucide-react";
+import { Info } from "lucide-react";
 
 const MAX_SECONDS = 60;
 const MAX_FILE_SIZE = 500 * 1024 * 1024;
@@ -229,10 +230,10 @@ export default function Upload() {
           </div>
           <div>
             <div className="grid grid-cols-[40px_1fr] gap-4 items-center">
-              <div className="none"></div>
+              <div></div>
 
               <div>
-                <div className="grid grid-cols-2 gap-10">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col">
                     <label className="uppercase text-[24px]">
                       titre du court métrage * :
@@ -259,24 +260,70 @@ export default function Upload() {
                       <p>{errors.translated_title.message}</p>
                     )}
                   </div>
-                </div>
 
-                <div className="flex flex-col">
-                  <label>Langue (optionnel)</label>
-                  <input
-                    {...register("language")}
-                    placeholder="Français, Anglais, etc."
-                  />
-                  {errors.language && <p>{errors.language.message}</p>}
+                  <div className="flex flex-col">
+                    <label className="uppercase text-[24px]">
+                      Langue (optionnel)
+                    </label>
+                    <input
+                      className="
+    bg-white/2 
+    border-white/5 
+    border-[1px] 
+    rounded-[10px] 
+    p-[10px] 
+    resize-none
+    w-full 
+    
+    flex items-start
+  "
+                      {...register("language")}
+                      placeholder="Français, Anglais, etc."
+                    />
+                    {errors.language && <p>{errors.language.message}</p>}
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label className="uppercase text-[24px]">
+                      Outils IA (optionnel)
+                    </label>
+                    <input
+                      type="text"
+                      className="
+    bg-white/2 
+    border-white/5 
+    border-[1px] 
+    rounded-[10px] 
+    p-[10px] 
+    resize-none
+    w-full 
+  "
+                      {...register("ai_tools")}
+                      rows={3}
+                      placeholder="Midjourney, Runway, Luma, etc."
+                    />
+                    {errors.ai_tools && <p>{errors.ai_tools.message}</p>}
+                  </div>
                 </div>
 
                 {/* Synopsis */}
+                <label className="uppercase text-[24px]">Synopsis</label>
                 <div className="flex flex-col">
-                  <label>Synopsis (optionnel)</label>
                   <textarea
+                    className="
+    bg-white/2 
+    border-white/5 
+    border-[1px] 
+    rounded-[10px] 
+    p-[10px] 
+    resize-none
+    w-full 
+    h-[120px]
+
+  "
                     {...register("synopsis")}
-                    rows={4}
                     placeholder="Description du film"
+                    // rows={4} mozhno ubrat', t.k. ispol'zuem h-[120px]
                   />
                   {errors.synopsis && <p>{errors.synopsis.message}</p>}
                 </div>
@@ -285,8 +332,20 @@ export default function Upload() {
 
                 {/* Synopsis anglais */}
                 <div className="flex flex-col">
-                  <label>Synopsis en anglais (optionnel)</label>
+                  <label className="uppercase text-[24px]">
+                    Synopsis en anglais (optionnel)
+                  </label>
                   <textarea
+                    className="
+    bg-white/2 
+    border-white/5 
+    border-[1px] 
+    rounded-[10px] 
+    p-[10px] 
+    resize-none
+    w-full 
+    h-[120px]  /* fiksirovannaya vysota */
+  "
                     {...register("synopsis_en")}
                     rows={4}
                     placeholder="English synopsis"
@@ -296,97 +355,154 @@ export default function Upload() {
               </div>
             </div>
           </div>
-          {/* Outils IA */}
-          <div className="flex flex-col">
-            <label>Outils IA (optionnel)</label>
-            <textarea
-              {...register("ai_tools")}
-              rows={3}
-              placeholder="Midjourney, Runway, Luma, etc."
-            />
-            {errors.ai_tools && <p>{errors.ai_tools.message}</p>}
+
+          <div className="grid grid-cols-[40px_1fr] gap-4 items-center">
+            <Film size={39} className="text-[#c27aff] min-w-[39px]" />
+            <h2 className="text-[32px] text-[#c27aff] uppercase">
+              02. Livrables & Accessibilité
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-[40px_1fr] gap-4 items-center">
+            <div></div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {/* Vidéo */}
+              <div className="flex flex-col">
+                <label className="uppercase text-[24px]">Vidéo *</label>
+
+                <input
+                  type="file"
+                  accept={ACCEPTED_VIDEO_TYPES.join(",")}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) setValue("video", file, { shouldValidate: true });
+                  }}
+                  className="hidden"
+                  id="video-upload"
+                />
+
+                <label
+                  htmlFor="video-upload"
+                  className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full"
+                >
+                  <span>
+                    {watch("video") ? watch("video").name : "Choisir une vidéo"}
+                  </span>
+                </label>
+
+                {errors.video && (
+                  <p className="text-red-400">{errors.video.message}</p>
+                )}
+              </div>
+
+             <div className="flex flex-col">
+  <label className="uppercase text-[24px]">
+    Sous-titres (.srt) (optionnel)
+  </label>
+  
+  <input
+    className="hidden"
+    type="file"
+    id="sous-titre-upload"
+    accept=".srt"
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        setValue("subtitles", file, { shouldValidate: true });
+      }
+    }}
+  />
+  
+  {errors.subtitles && <p>{errors.subtitles.message}</p>}
+
+  <label
+    htmlFor="sous-titre-upload"
+    className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full"
+  >
+    <span>
+      {watch("subtitles")
+        ? watch("subtitles").name
+        : "Choisir sous titre"}
+    </span>
+  </label>
+</div>
+
+
+              {/* Thumbnail */}
+              <div className="flex flex-col">
+  <label className="uppercase text-[24px]">
+    Thumbnail (optionnel)
+  </label>
+  
+  <input
+    type="file"
+    accept={ACCEPTED_IMAGE_TYPES.join(",")}
+    onChange={(e) => {
+      const file = e.target.files?.[0];
+      if (file) setValue("thumbnail", file, { shouldValidate: true });
+    }}
+    className="hidden"
+    id="thumbnail-upload"
+  />
+  
+  <label
+    htmlFor="thumbnail-upload"
+    className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-fit"
+  >
+    <span>
+      {watch("thumbnail") ? watch("thumbnail").name : "Choisir une image"}
+    </span>
+  </label>
+
+  {errors.thumbnail && <p className="text-red-400">{errors.thumbnail.message}</p>}
+</div>
+
+              <div>
+                <h3 className="uppercase text-[24px]">
+                  Galerie Médias (Stills - Max 3)
+                </h3>
+                <div className="grid grid-cols-2">
+                  {/* Image 2 */}
+                  <div className="flex flex-col">
+                    <label></label>
+                    <input
+                      type="file"
+                      accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file)
+                          setValue("image_2", file, { shouldValidate: true });
+                      }}
+                    />
+                    {errors.image_2 && <p>{errors.image_2.message}</p>}
+                  </div>
+
+                  {/* Image 3 */}
+                  <div className="flex flex-col">
+                    <label></label>
+                    <input
+                      type="file"
+                      accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file)
+                          setValue("image_3", file, { shouldValidate: true });
+                      }}
+                    />
+                    {errors.image_3 && <p>{errors.image_3.message}</p>}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Sous-titres */}
-          <div className="flex flex-col">
-            <label>Sous-titres (.srt) (optionnel)</label>
-            <input
-              type="file"
-              accept=".srt"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) {
-                  setValue("subtitles", file, { shouldValidate: true });
-                }
-              }}
-            />
-            {errors.subtitles && <p>{errors.subtitles.message}</p>}
-            {watch("subtitles") && (
-              <p>Fichier sélectionné : {watch("subtitles").name}</p>
-            )}
-          </div>
-
-          {/* Vidéo */}
-          <div className="flex flex-col">
-            <label>Vidéo *</label>
-            <input
-              type="file"
-              accept={ACCEPTED_VIDEO_TYPES.join(",")}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) setValue("video", file, { shouldValidate: true });
-              }}
-            />
-            {errors.video && <p>{errors.video.message}</p>}
-          </div>
-
-          {/* Thumbnail */}
-          <div className="flex flex-col">
-            <label>Thumbnail (optionnel)</label>
-            <input
-              type="file"
-              accept={ACCEPTED_IMAGE_TYPES.join(",")}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) setValue("thumbnail", file, { shouldValidate: true });
-              }}
-            />
-            {errors.thumbnail && <p>{errors.thumbnail.message}</p>}
-          </div>
-
-          {/* Image 2 */}
-          <div className="flex flex-col">
-            <label>Image 2 (optionnel)</label>
-            <input
-              type="file"
-              accept={ACCEPTED_IMAGE_TYPES.join(",")}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) setValue("image_2", file, { shouldValidate: true });
-              }}
-            />
-            {errors.image_2 && <p>{errors.image_2.message}</p>}
-          </div>
-
-          {/* Image 3 */}
-          <div className="flex flex-col">
-            <label>Image 3 (optionnel)</label>
-            <input
-              type="file"
-              accept={ACCEPTED_IMAGE_TYPES.join(",")}
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                if (file) setValue("image_3", file, { shouldValidate: true });
-              }}
-            />
-            {errors.image_3 && <p>{errors.image_3.message}</p>}
-          </div>
-
-          {serverError && <p>{serverError}</p>}
-
           <button type="submit" disabled={loading}>
             {loading ? "Envoi en cours..." : "Uploader"}
           </button>
+
+          {serverError && <p>{serverError}</p>}
         </form>
 
         <ConfirmModal
