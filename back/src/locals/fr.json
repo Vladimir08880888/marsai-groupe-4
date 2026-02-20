@@ -44,7 +44,7 @@
     "condition":"",
     "register_button":"",
     "login_text":"",
-    "login_button":"",
+    "login_button":""
 
   },
   "agenda": {
