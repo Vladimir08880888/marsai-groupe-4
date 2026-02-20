@@ -13,7 +13,7 @@ function Home() {
           </h1>
 
           <h2 className="tagline">
-            IMAGINEZ DES<span className="highlight">FUTURS</span> SOUHAITABLES
+            IMAGINEZ DES<span className="highlight">FUTURS</span> SOUHAITABLES {/** title */}
           </h2>
 
           <p className="subtitle">
