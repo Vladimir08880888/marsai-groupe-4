@@ -32,8 +32,9 @@ export default function Palmares() {
 
   return (
     <div className="bg-black text-white min-h-screen px-6">
+
       {/* HERO */}
-      <section className="text-center py-20">
+      <section className="text-center py-20 ">
         <div className="flex justify-center mb-6">
           <div className="bg-yellow-400 text-black p-4 rounded-2xl">
             <Trophy size={32} />

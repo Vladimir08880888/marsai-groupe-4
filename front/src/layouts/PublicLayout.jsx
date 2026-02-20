@@ -1,86 +1,118 @@
 import { Outlet } from "react-router";
 import Navbar from "../components/Navbar";
+import {Facebook} from "lucide-react"
+import {Instagram} from "lucide-react"
+import {Youtube} from "lucide-react"
+import {Twitter} from "lucide-react"
 
 export default function PublicLayout() {
-  return (
-    <div>
-      <Navbar class />
 
-      <main>
+  
+
+  
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+
+      <main className="flex-1">
         <Outlet />
       </main>
 
-      <footer className="bg-black py-[96px] px-[40px] w-full">
-        <section className="max-w-[1000px] m-0 mx-auto">
-          <div className="grid grid-cols-3 gap-6  ">
-            <div className="flex flex-col gap-8">
-              <h1 className="text-white text-[36px] font-bold tracking-[-1.8px]">
+      <footer className="bg-black py-[64px] sm:py-[96px] px-[20px] sm:px-[40px] w-full">
+        <section className="max-w-[1000px] mx-auto">
+
+          {/* TOP */}
+          <div
+            className="
+              grid gap-[48px]
+              grid-cols-1
+              md:grid-cols-2
+              lg:grid-cols-3
+            "
+          >
+            {/* BRAND */}
+            <div className="flex flex-col gap-[32px]">
+              <h1 className="text-white text-[32px] sm:text-[36px] font-bold tracking-[-1.8px]">
                 MARS <span className="text-[#AD46FF]">AI</span>
               </h1>
 
-              <h1 className="text-white/30 text-start text-[18px] italic max-w-[300px]">
+              <p className="text-white/30 text-[16px] sm:text-[18px] italic max-w-[300px]">
                 "La plateforme mondiale de la narration générative, ancrée dans
                 la lumière de Marseille."
-              </h1>
+              </p>
 
-              <div className="grid grid-cols-4 max-w-[250px] gap-2">
-                <img
-                  className=""
-                  src="src/assets/login_png/Button.svg"
-                  alt=""
-                />
-                <img
-                  className=""
-                  src="src/assets/login_png/Button (1).svg"
-                  alt=""
-                />
-                <img
-                  className=""
-                  src="src/assets/login_png/Button (2).svg"
-                  alt=""
-                />
-                <img
-                  className=""
-                  src="src/assets/login_png/Button (3).svg"
-                  alt=""
-                />
+              <div className="grid grid-cols-4 max-w-[220px] gap-2">
+                <Facebook />
+                <Instagram />
+                <Youtube />
+                <Twitter/>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 text-start text-[16px]">
-              <div className="flex flex-col gap-[20px] text-white/40 ">
-                <h2 className="text-[#AD46FF] uppercase mb-[20px] text-[11px] tracking-[4.4px]">
+            {/* LINKS */}
+            <div className="grid grid-cols-2 gap-[40px] text-[15px]">
+              <div className="flex flex-col gap-[18px] text-white/40">
+                <h2 className="text-[#AD46FF] uppercase text-[11px] tracking-[4.4px] mb-[12px]">
                   Navigation
                 </h2>
-                <h2>Galerie</h2>
-                <h2>Programme</h2>
-                <h2>Top 50</h2>
-                <h2>Billetterie</h2>
+                <span>Galerie</span>
+                <span>Programme</span>
+                <span>Top 50</span>
+                <span>Billetterie</span>
               </div>
 
-              <div className="flex flex-col gap-[20px] text-white/40">
-                <h2 className="text-[#F6339A] uppercase mb-[20px] text-[11px] tracking-[4.4px]">
+              <div className="flex flex-col gap-[18px] text-white/40">
+                <h2 className="text-[#F6339A] uppercase text-[11px] tracking-[4.4px] mb-[12px]">
                   Légal
                 </h2>
-                <h2>Partenaires</h2>
-                <h2>FAQ</h2>
-                <h2>Contact</h2>
+                <span>Partenaires</span>
+                <span>FAQ</span>
+                <span>Contact</span>
               </div>
             </div>
-            <div>
-              <div className="flex flex-col w-[330px] rounded-[36px] border-1 border-white/5  bg-[linear-gradient(45deg,rgba(13,13,13,1)_60%,rgba(173,70,255,0.2)_100%)] p-[40px] gap-[20px]">
-                <h2 className="text-start text-white font-bold text-[24px] tracking-[-0.6px]">
-                  RESTEZ <br />
-                  CONNECTÉ
+
+            {/* NEWSLETTER */}
+            <div className="flex md:col-span-2 lg:col-span-1 md:justify-start lg:justify-end">
+              <div
+                className="
+                  w-full md:w-[330px]
+                  rounded-[28px]
+                  border border-white/5
+                  bg-[linear-gradient(45deg,rgba(13,13,13,1)_60%,rgba(173,70,255,0.2)_100%)]
+                  p-[28px] sm:p-[40px]
+                  flex flex-col gap-[20px]
+                "
+              >
+                <h2 className="text-white font-bold text-[22px] sm:text-[24px] tracking-[-0.6px]">
+                  RESTEZ <br /> CONNECTÉ
                 </h2>
 
                 <div className="flex gap-[10px]">
                   <input
                     placeholder="Email Signal"
-                    type="text"
-                    className="w-full rounded-[14px] placeholder-white/10 text-[14px] border-1 border-white/5 runded bg-white/3 p-[25px] h-[56px]"
-                  />{" "}
-                  <button className="text-center py-0 px-[20px] bg-white rounded-[14px] font-bold text-[11px] tracking-[1.1px]">
+                    type="email"
+                    className="
+                      w-full h-[52px]
+                      rounded-[14px]
+                      bg-white/5
+                      border border-white/5
+                      px-[18px]
+                      text-[14px]
+                      text-white
+                      placeholder-white/20
+                    "
+                  />
+                  <button
+                    className="
+                      px-[18px]
+                      bg-white
+                      text-black
+                      rounded-[14px]
+                      font-bold
+                      text-[11px]
+                      tracking-[1.1px]
+                    "
+                  >
                     OK
                   </button>
                 </div>
@@ -88,17 +120,22 @@ export default function PublicLayout() {
             </div>
           </div>
 
-
-          <div className="flex justify-between tracking-[3px] text-[10px] text-white/20 py-[40px] px-0 border-t border-white/5 mt-[96px]">
+          {/* BOTTOM */}
+          <div
+            className="
+              mt-[64px] sm:mt-[96px]
+              pt-[32px]
+              border-t border-white/5
+              flex flex-col gap-[12px]
+              sm:flex-row sm:justify-between
+              text-[10px] tracking-[3px] text-white/20
+            "
+          >
             <div>© 2026 MARS.A.I ● PROTOCOL MARSEILLE HUB</div>
             <div>DESIGN SYSTÈME CYBER-PREMIUM LÉGAL</div>
           </div>
 
         </section>
-
-        
-
-        
       </footer>
     </div>
   );
