@@ -25,9 +25,26 @@
     "location_access":""
   },
   "login": {
-    
+    "protocole":"",
+    "session_identity":"",
+    "password":"",
+    "hold":"",
+    "login_button":"",
+    "register_text":"",
+    "register_button":""
   },
   "register": {
+    "register_title":"",
+    "subtitle_title":"",
+    "first_name":"",
+    "last_name":"",
+    "email":"",
+    "password":"",
+    "confirm_pasword":"",
+    "condition":"",
+    "register_button":"",
+    "login_text":"",
+    "login_button":"",
 
   },
   "agenda": {
