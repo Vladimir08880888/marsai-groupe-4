@@ -1,6 +1,69 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@layer utilities {
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0) inset !important;
+    -webkit-text-fill-color: rgb(255, 255, 255) !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body{
+  
+  background-color: rgb(20, 20, 20);
+ 
+}
+
+*{
+  outline: none;
+  font-family: Arimo;
+}
+
+::selection {
+  background-color: #ec4899; /* цвет фона выделения */
+  color: white;              /* цвет текста при выделении */
+}
+
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000000; /* чистый чёрный */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f2f2f2; /* мягкий белый */
+  border-radius: 20px;
+  border: 2px solid #000000; /* аккуратный отступ */
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ffffff; /* чуть ярче при наведении */
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #f2f2f2 #302f30;
+}
+
+
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
