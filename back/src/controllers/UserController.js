@@ -16,7 +16,7 @@ function createUser(req, res) {
     return res.status(400).json({ error: "Données manquantes" });
   }
 
-  const { first_name, last_name, email, password,} = req.body;
+  const { first_name, last_name, email, password, role } = req.body;
 
 if (!first_name || !last_name || !email || !password ) {
   return res.status(400).json({ error: "Tous les champs sont requis" });
@@ -29,7 +29,7 @@ User.findOne({ where: { email } }).then(async (existingEmail) => {
   }
 
   const hash = await hashPassword(password);
-  User.create({ first_name, last_name, email, password: hash })
+  User.create({ first_name, last_name, email, password: hash, role: role || "PRODUCER" })
       .then((newUser) => {
         const { password, ...safeUser } = newUser.dataValues;
         res.status(201).json({ message: "Utilisateur créé", newUser: safeUser });

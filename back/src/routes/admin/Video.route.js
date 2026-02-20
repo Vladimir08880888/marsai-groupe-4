@@ -7,7 +7,8 @@ const videoRouter = express.Router();
 videoRouter.use((req, res, next) => AuthMiddleware(req, res, next, ["ADMIN"]));
 
 videoRouter.get("/", VideoController.getVideos); // Admin
-videoRouter.post("/", VideoController.createVideo); // Admin
+videoRouter.post("/", VideoController.createVideo);
+videoRouter.delete("/:id", VideoController.deleteVideo); // Admin
 
 
 export default videoRouter;

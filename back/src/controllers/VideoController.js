@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import Video from "../models/Video.js";
 import User from "../models/User.js";
+import sequelize from "../db/connection.js";
 
 // Liste
 async function getVideos(req, res) {
@@ -62,4 +63,33 @@ function createVideo(req, res) {
   });
 }
 
-export default { getVideos, createVideo };
+async function deleteVideo(req, res) {
+  const { id } = req.params;
+
+  try {
+    await sequelize.transaction(async (t) => {
+      
+      await sequelize.query(
+        'DELETE FROM evaluations WHERE film_id = ?',
+        { replacements: [id], transaction: t}
+      );
+
+      await sequelize.query(
+        'DELETE FROM awards WHERE film_id = ?',
+        { replacements: [id], transaction: t}
+      );
+
+      
+      await Video.destroy({ where: { id }, transaction: t });
+    });
+
+    res.status(204).json({ message: "Video supprimé" });
+  } catch (error) {
+    res.status(500).json({
+      error: "Impossible de supprimer le video",
+      details: error.message
+    });
+  }
+}
+
+export default { getVideos, createVideo, deleteVideo };

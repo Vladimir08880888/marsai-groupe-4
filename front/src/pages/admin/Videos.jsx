@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { getVideos } from "../../api/videos.js";
+import { getVideos, deleteVideo } from "../../api/videos.js";
 import { useState, Fragment } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { 
   flexRender, 
   getCoreRowModel, 
@@ -39,16 +40,23 @@ function Videos() {
     keepPreviousData: true,
   });
 
-  if (isPending) {
-    return <div>Chargement en cours...</div>;
-  }
+  const deleteMutation = useMutation({
+    mutationFn: async (id) => {
+      return await deleteVideo(id);
+    },
+    onSuccess: (data, variables, context) => {
+      window.location.reload();
+    },
+    onError: (error) => {
+      alert('Erreur lors de la supression: ' + (error.response?.data?.error || error.message));
+    }
+  });
 
-  if (isError) {
-    return <div>Une erreur est survenue : {error.message}</div>;
+  function handleDelete(id) {
+    if (confirm("Voulez-vous vraiment supprimer cet video ?")) {
+      deleteMutation.mutate(id);
+    }
   }
-
-  console.log("Video data received:", data);
-  console.log("showVideos array:", data?.data?.showVideos);
 
   const toggleVideoExpand = (videoId) => {
     setExpandedVideoId(expandedVideoId === videoId ? null : videoId);
@@ -99,7 +107,7 @@ function Videos() {
     },
     {
       id: "actions",
-      header: "Actions",
+      header: "",
       cell: ({ row }) => {
         const video = row.original;
         return (
@@ -114,7 +122,7 @@ function Videos() {
             <Button 
               variant="destructive"
               size="sm"
-              onClick={() => console.log("Delete video:", video.id)} className="hover:cursor-pointer"
+              onClick={() => handleDelete(video.id)} className="hover:cursor-pointer"
             >
               Supprimer
             </Button>
@@ -125,7 +133,7 @@ function Videos() {
   ];
 
   const table = useReactTable({
-    data: data.data.showVideos || [],
+    data: data?.data?.showVideos || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -134,6 +142,18 @@ function Videos() {
     },
     onSortingChange: setSorting,
   });
+
+  // Handle loading and error states AFTER all hooks
+  if (isPending) {
+    return <div className="container mx-auto px-4 py-8">Chargement en cours...</div>;
+  }
+
+  if (isError) {
+    return <div className="container mx-auto px-4 py-8">Une erreur est survenue : {error.message}</div>;
+  }
+
+  console.log("Video data received:", data);
+  console.log("showVideos array:", data?.data?.showVideos);
 
   return (
     <section className="container mx-auto px-4 py-8">
