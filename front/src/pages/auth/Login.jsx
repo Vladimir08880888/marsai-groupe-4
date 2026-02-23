@@ -1,7 +1,6 @@
 import { Link, useNavigate } from "react-router";
 import { login } from "../../api/auth.js";
 import { useMutation } from "@tanstack/react-query";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -9,6 +8,8 @@ import handleLogout from "@/utils/helpers.js";
 import { LogOut } from "lucide-react";
 import { Send } from "lucide-react";
 import { LogIn } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 
 const loginSchema = z.object({
   email: z.string().email("Email invalide"),
@@ -16,6 +17,7 @@ const loginSchema = z.object({
 });
 
 export function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const { register, handleSubmit } = useForm({
@@ -93,6 +95,7 @@ export function Login() {
   };
 
   return (
+    
     <>
       {/* <h1 className="text-2xl">Login</h1>
 
@@ -147,7 +150,7 @@ export function Login() {
             CONNEXION
           </h2>
           <h2 className="text-center text-[10px] mb-[44px] tracking-[3px] text-white/50 font-bold">
-            Protocole d'accès marsAI
+           {t("login.protocole")}        
           </h2>
 
           <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">

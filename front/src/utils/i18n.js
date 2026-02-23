@@ -11,11 +11,11 @@ i18n
             fr: { translation: fr },
             en: { translation: en },
         },
-        lng: "fr",
-        fallbackLng: "fr",
+        lng: "fr", // c'est language par défualt
+        debug: true,
+        fallbackLng: "fr", // si jamais lng est introuvable 
         interpolation: {
             escapeValue: false,
         },
     });
-
 export default i18n;

@@ -25,7 +25,7 @@
     "location_access":""
   },
   "login": {
-    "protocole": "Protocole d'authentification",
+    "protocole":"",
     "session_identity":"",
     "password":"",
     "hold":"",
