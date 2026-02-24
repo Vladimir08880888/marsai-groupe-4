@@ -26,42 +26,44 @@
   },
   "login": {
     "protocole": "Protocole d'authentification",
-    "session_identity":"",
-    "password":"",
-    "hold":"",
-    "login_button":"",
-    "register_text":"",
-    "register_button":""
+    "session_identity":" Identifiant de Session",
+    "password":"Clé Cryptographique",
+    "hold":"Maintenir session",
+    "login_button":"Initialiser Flux",
+    "register_text":" Nouveau Voyageur ?",
+    "register_button":" Générer Identité"
   },
   "register": {
-    "register_title":"",
-    "subtitle_title":"",
-    "first_name":"",
-    "last_name":"",
-    "email":"",
-    "password":"",
-    "confirm_pasword":"",
-    "condition":"",
-    "register_button":"",
-    "login_text":"",
-    "login_button":""
+    "register_title":"INSCRIPTION",
+    "subtitle_title":" Nouveau profil cyber-premium",
+    "first_name":"Prénom",
+    "last_name":"Nom",
+    "email":"Canal de Communication",
+    "password":"Clé d'Accès",
+    "confirm_pasword":"Vérification",
+    "condition":"Je consents aux Termers et au condition GENERAL",
+    "register_button":"Initialiser Flux",
+    "login_text":" Déjà Enregistré ?",
+    "login_button":"Ouvrir Session"
 
   },
   "agenda": {
 
   },
   "event": {
-    "management": "",
-    "add_event": "",
-    "all_events": ""
+    "management": " Gestion des Événements",
+    "control_event":"Contrôle du protocole marsAI 2026",
+    "add_event": "creer un evenement",
+    "all_events": "TOUS"
   },
   "accessdenied": {
-    "sorry": "",
-    "access_denied": "",
-    "page":"",
-    "message_reason":"",
-    "button_home":"",
-    "back_button":""
+    "access_denied": "ACCÈS REFUSÉ",
+    "sorry": " Désolé, vous n’avez",
+    "not_access":" pas accès",
+    "page":"à cette page.",
+    "message_reason":"  Cette page est réservée aux utilisateurs autorisés.  ",
+    "button_home":"Revenir à l’accueil",
+    "back_button":"Retour"
   },
   "contact": {
     "info":"",
