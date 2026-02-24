@@ -7,6 +7,7 @@ import { Sparkles } from "lucide-react";
 import { Film } from "lucide-react";
 import { CircleCheck } from "lucide-react";
 import { Info } from "lucide-react";
+import { Image } from "lucide-react";
 
 const MAX_SECONDS = 60;
 const MAX_FILE_SIZE = 500 * 1024 * 1024;
@@ -195,26 +196,38 @@ export default function Upload() {
   };
 
   return (
-    <section className="py-[140px] bg-black text-white p-10">
-      <div>
-        <div className="flex items-center gap-[5px] text-[#f6339a]">
-          <Sparkles size={36} />
-          <h2 className="uppercase  text-[24px] font-bold">
+    <section className="py-40 bg-black text-white px-4 sm:px-6  text-[16px] md:text-[18px]">
+      <div className="mb-12 sm:mb-12 text-center">
+        <div className="flex items-center gap-[5px] mb-4 sm:mb-6 text-[#f6339a] w-full justify-center">
+          <Sparkles 
+  className="
+    w-6 h-6        // 24px на мобилке
+    
+    sm:w-10 sm:h-10 // 40px от 1024px
+  " 
+/>
+          <h2 className="uppercase text-[20px] sm:text-[24px] font-bold">
             Appel à projets 2026
           </h2>
-          <Sparkles size={36} />
+          <Sparkles 
+  className="
+    w-6 h-6        // 24px на мобилке
+    
+    sm:w-10 sm:h-10 // 40px от 1024px
+  " 
+/>
         </div>
 
-        <span className="uppercase text-[54px] font-bold">Déposer UN </span>
-        <span className="uppercase text-[54px] font-bold text-[#2b7fff]">
+        <span className="uppercase text-[32px] sm:text-[54px] font-bold">Déposer UN </span>
+        <span className="uppercase text-[32px] sm:text-[54px] font-bold text-[#2b7fff]">
           FILM
         </span>
       </div>
-      <div className="bg-[#1b1b1b] p-10 rounded-[25px]">
+      
+      <div className="bg-pink-500/20 border mt-8 p-6 sm:p-9 border-white/10 rounded-[25px] shadow-[0_0_300px_rgba(255,0,128,0.5)]">
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Titre */}
-          <div className="grid grid-cols-[40px_1fr] gap-4 items-center">
-            <CircleCheck size={40} className="text-[#2b7fff]" />
+          <div className="flex flex-col md:grid md:grid-cols-[40px_1fr] gap-4 items-center mt-8">
+            <CircleCheck size={40} className="text-[#2b7fff] hidden md:flex" />
             <h2 className="uppercase text-[16px] tracking-[0.06em]">
               Transmettez les éléments techniques, l'usage de l'IA et la
               composition de votre équipe. Tous les champs marqués d'une étoile
@@ -222,287 +235,318 @@ export default function Upload() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-[40px_1fr] gap-4 items-center">
+          <div className="grid grid-cols-[40px_1fr] gap-4 items-center mt-10">
             <Film size={39} className="text-[#c27aff] min-w-[39px]" />
-            <h2 className="text-[32px] text-[#c27aff] uppercase">
+            <h2 className="text-[22px] sm:text-[32px] text-[#c27aff] uppercase">
               01.Identitée du film
             </h2>
           </div>
-          <div>
-            <div className="grid grid-cols-[40px_1fr] gap-4 items-center">
+          
+          <div className="mt-6">
+            <div className="flex flex-col md:grid md:grid-cols-[40px_1fr] gap-4">
               <div></div>
-
               <div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col xl:grid xl:grid-cols-2  gap-6">
                   <div className="flex flex-col">
-                    <label className="uppercase text-[24px]">
+                    <label className="uppercase text-[18px] sm:text-[24px] mb-1">
                       titre du court métrage * :
                     </label>
                     <input
-                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px]"
+                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3"
                       {...register("title")}
                       placeholder="Titre de la vidéo"
                     />
-                    {errors.title && <p>{errors.title.message}</p>}
+                    {errors.title && <p className="mt-2 text-red-400">{errors.title.message}</p>}
                   </div>
 
-                  {/* Titre traduit */}
                   <div className="flex flex-col">
-                    <label className="uppercase text-[26px]">
+                    <label className="uppercase text-[18px] sm:text-[24px] mb-1">
                       traduction anglaise * :
                     </label>
                     <input
-                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px]"
+                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3"
                       {...register("translated_title")}
                       placeholder="Translated title"
                     />
                     {errors.translated_title && (
-                      <p>{errors.translated_title.message}</p>
+                      <p className="mt-2 text-red-400">{errors.translated_title.message}</p>
                     )}
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="uppercase text-[24px]">
+                    <label className="uppercase text-[18px] sm:text-[24px] mb-1">
                       Langue (optionnel)
                     </label>
                     <input
-                      className="
-    bg-white/2 
-    border-white/5 
-    border-[1px] 
-    rounded-[10px] 
-    p-[10px] 
-    resize-none
-    w-full 
-    
-    flex items-start
-  "
+                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full flex items-start"
                       {...register("language")}
                       placeholder="Français, Anglais, etc."
                     />
-                    {errors.language && <p>{errors.language.message}</p>}
+                    {errors.language && <p className="mt-2 text-red-400">{errors.language.message}</p>}
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="uppercase text-[24px]">
+                    <label className="uppercase text-[18px] sm:text-[24px] mb-1">
                       Outils IA (optionnel)
                     </label>
                     <input
                       type="text"
-                      className="
-    bg-white/2 
-    border-white/5 
-    border-[1px] 
-    rounded-[10px] 
-    p-[10px] 
-    resize-none
-    w-full 
-  "
+                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full"
                       {...register("ai_tools")}
                       rows={3}
                       placeholder="Midjourney, Runway, Luma, etc."
                     />
-                    {errors.ai_tools && <p>{errors.ai_tools.message}</p>}
+                    {errors.ai_tools && <p className="mt-2 text-red-400">{errors.ai_tools.message}</p>}
                   </div>
                 </div>
 
-                {/* Synopsis */}
-                <label className="uppercase text-[24px]">Synopsis</label>
-                <div className="flex flex-col">
+                <div className="flex flex-col mt-10">
+                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">Synopsis</label>
                   <textarea
-                    className="
-    bg-white/2 
-    border-white/5 
-    border-[1px] 
-    rounded-[10px] 
-    p-[10px] 
-    resize-none
-    w-full 
-    h-[120px]
-
-  "
+                    className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full h-[120px]"
                     {...register("synopsis")}
                     placeholder="Description du film"
-                    // rows={4} mozhno ubrat', t.k. ispol'zuem h-[120px]
                   />
-                  {errors.synopsis && <p>{errors.synopsis.message}</p>}
+                  {errors.synopsis && <p className="mt-2 text-red-400">{errors.synopsis.message}</p>}
                 </div>
 
-                {/* Langue */}
-
-                {/* Synopsis anglais */}
-                <div className="flex flex-col">
-                  <label className="uppercase text-[24px]">
+                <div className="flex flex-col mt-10">
+                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">
                     Synopsis en anglais (optionnel)
                   </label>
                   <textarea
-                    className="
-    bg-white/2 
-    border-white/5 
-    border-[1px] 
-    rounded-[10px] 
-    p-[10px] 
-    resize-none
-    w-full 
-    h-[120px]  /* fiksirovannaya vysota */
-  "
+                    className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full h-[120px]"
                     {...register("synopsis_en")}
                     rows={4}
                     placeholder="English synopsis"
                   />
-                  {errors.synopsis_en && <p>{errors.synopsis_en.message}</p>}
+                  {errors.synopsis_en && <p className="mt-2 text-red-400">{errors.synopsis_en.message}</p>}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-[40px_1fr] gap-4 items-center">
+          <div className="grid grid-cols-[40px_1fr] gap-4 items-center mt-10">
             <Film size={39} className="text-[#c27aff] min-w-[39px]" />
-            <h2 className="text-[32px] text-[#c27aff] uppercase">
-              02. Livrables & Accessibilité
+            <h2 className="text-[22px] sm:text-[32px] text-[#c27aff] uppercase">
+              02. Livrables et Accessibilité
             </h2>
           </div>
 
-          <div className="grid grid-cols-[40px_1fr] gap-4 items-center">
-            <div></div>
+          <div className="mt-10">
+            <div className="xl:grid xl:grid-cols-[40px_1fr] gap-4">
+              <div></div>
+              <div className="flex flex-col xl:grid xl:grid-cols-2  gap-6">
+                <div className="flex flex-col">
+                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">Vidéo *</label>
+                  <input
+                    type="file"
+                    accept={ACCEPTED_VIDEO_TYPES.join(",")}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) setValue("video", file, { shouldValidate: true });
+                    }}
+                    className="hidden"
+                    id="video-upload"
+                  />
+                  <label
+                    htmlFor="video-upload"
+                    className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full mt-3"
+                  >
+                    <span className="text-white/50">
+                      {watch("video") ? watch("video").name : "Choisir une vidéo"}
+                    </span>
+                  </label>
+                  {errors.video && (
+                    <p className="mt-2 text-red-400">{errors.video.message}</p>
+                  )}
+                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {/* Vidéo */}
-              <div className="flex flex-col">
-                <label className="uppercase text-[24px]">Vidéo *</label>
+                <div className="flex flex-col">
+                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">
+                    Sous-titres (.srt) (optionnel)
+                  </label>
+                  <input
+                    className="hidden"
+                    type="file"
+                    id="sous-titre-upload"
+                    accept=".srt"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setValue("subtitles", file, { shouldValidate: true });
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor="sous-titre-upload"
+                    className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full mt-3"
+                  >
+                    <span className="text-white/50">
+                      {watch("subtitles")
+                        ? watch("subtitles").name
+                        : "Choisir sous titre"}
+                    </span>
+                  </label>
+                  {errors.subtitles && <p className="mt-2 text-red-400">{errors.subtitles.message}</p>}
+                </div>
 
-                <input
-                  type="file"
-                  accept={ACCEPTED_VIDEO_TYPES.join(",")}
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) setValue("video", file, { shouldValidate: true });
-                  }}
-                  className="hidden"
-                  id="video-upload"
-                />
+                <div className="flex flex-col col-span-2 mt-6">
+                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">Thumbnail (optionnel)</label>
+                  <input
+                    type="file"
+                    accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setValue("thumbnail", file, { shouldValidate: true });
+                      }
+                    }}
+                    className="hidden"
+                    id="thumbnail-upload"
+                  />
+                  <label
+                    htmlFor="thumbnail-upload"
+                    className="flex items-center gap-2 p-3 sm:p-6 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full min-h-[100px] justify-center mt-3"
+                  >
+                    {watch("thumbnail") ? (
+                      <div className="relative w-full h-full flex items-center justify-center">
+                        {(() => {
+                          const file = watch("thumbnail");
+                          const previewUrl = URL.createObjectURL(file);
+                          return (
+                            <img 
+                              src={previewUrl} 
+                              alt="preview" 
+                              className="max-w-full full aspect-video rounded-[10px] object-cover"
+                              onLoad={() => URL.revokeObjectURL(previewUrl)}
+                            />
+                          );
+                        })()}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <Image size={30} className="text-white/30" />
+                        <span className="text-white/50 text-sm">Choisir une image</span>
+                      </div>
+                    )}
+                  </label>
+                  {errors.thumbnail && (
+                    <p className="mt-2 text-red-400">{errors.thumbnail.message}</p>
+                  )}
+                </div>
 
-                <label
-                  htmlFor="video-upload"
-                  className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full"
-                >
-                  <span>
-                    {watch("video") ? watch("video").name : "Choisir une vidéo"}
-                  </span>
-                </label>
+                <div className="col-span-2 mt-12">
+                  <h3 className="uppercase text-[18px] sm:text-[24px] mb-5">
+                    Galerie Médias <span className="text-white/50 text-sm ml-2">(Stills - Max 2)</span>
+                  </h3>
+                  
+                  <div className="flex flex-col xl:grid xl:grid-cols-2 gap-6">
+                    <div className="flex flex-col">
+                      <input
+                        type="file"
+                        accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setValue("image_2", file, { shouldValidate: true });
+                          }
+                        }}
+                        className="hidden"
+                        id="image-2-upload"
+                      />
+                      <label
+                        htmlFor="image-2-upload"
+                        className="flex items-center justify-center gap-2 p-3 sm:p-6 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer min-h-[120px]"
+                      >
+                        {watch("image_2") ? (
+                          <div className="relative w-full h-full flex items-center justify-center">
+                            {(() => {
+                              const file = watch("image_2");
+                              const previewUrl = URL.createObjectURL(file);
+                              return (
+                                <img 
+                                  src={previewUrl} 
+                                  alt="preview 2" 
+                                  className="max-w-full max-h-full aspect-video rounded-[10px] object-cover"
+                                  onLoad={() => URL.revokeObjectURL(previewUrl)}
+                                />
+                              );
+                            })()}
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center gap-2">
+                            <Image size={30} className="text-white/30" />
+                            <span className="text-white/50 text-sm text-center">
+                              Image 2<br/>(optionnel)
+                            </span>
+                          </div>
+                        )}
+                      </label>
+                      {errors.image_2 && <p className="mt-2 text-red-400 text-sm">{errors.image_2.message}</p>}
+                    </div>
 
-                {errors.video && (
-                  <p className="text-red-400">{errors.video.message}</p>
-                )}
-              </div>
-
-             <div className="flex flex-col">
-  <label className="uppercase text-[24px]">
-    Sous-titres (.srt) (optionnel)
-  </label>
-  
-  <input
-    className="hidden"
-    type="file"
-    id="sous-titre-upload"
-    accept=".srt"
-    onChange={(e) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        setValue("subtitles", file, { shouldValidate: true });
-      }
-    }}
-  />
-  
-  {errors.subtitles && <p>{errors.subtitles.message}</p>}
-
-  <label
-    htmlFor="sous-titre-upload"
-    className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full"
-  >
-    <span>
-      {watch("subtitles")
-        ? watch("subtitles").name
-        : "Choisir sous titre"}
-    </span>
-  </label>
-</div>
-
-
-              {/* Thumbnail */}
-              <div className="flex flex-col">
-  <label className="uppercase text-[24px]">
-    Thumbnail (optionnel)
-  </label>
-  
-  <input
-    type="file"
-    accept={ACCEPTED_IMAGE_TYPES.join(",")}
-    onChange={(e) => {
-      const file = e.target.files?.[0];
-      if (file) setValue("thumbnail", file, { shouldValidate: true });
-    }}
-    className="hidden"
-    id="thumbnail-upload"
-  />
-  
-  <label
-    htmlFor="thumbnail-upload"
-    className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-fit"
-  >
-    <span>
-      {watch("thumbnail") ? watch("thumbnail").name : "Choisir une image"}
-    </span>
-  </label>
-
-  {errors.thumbnail && <p className="text-red-400">{errors.thumbnail.message}</p>}
-</div>
-
-              <div>
-                <h3 className="uppercase text-[24px]">
-                  Galerie Médias (Stills - Max 3)
-                </h3>
-                <div className="grid grid-cols-2">
-                  {/* Image 2 */}
-                  <div className="flex flex-col">
-                    <label></label>
-                    <input
-                      type="file"
-                      accept={ACCEPTED_IMAGE_TYPES.join(",")}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file)
-                          setValue("image_2", file, { shouldValidate: true });
-                      }}
-                    />
-                    {errors.image_2 && <p>{errors.image_2.message}</p>}
+                    <div className="flex flex-col">
+                      <input
+                        type="file"
+                        accept={ACCEPTED_IMAGE_TYPES.join(",")}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setValue("image_3", file, { shouldValidate: true });
+                          }
+                        }}
+                        className="hidden"
+                        id="image-3-upload"
+                      />
+                      <label
+                        htmlFor="image-3-upload"
+                        className="flex items-center justify-center gap-2 p-3 sm:p-6 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer min-h-[120px]"
+                      >
+                        {watch("image_3") ? (
+                          <div className="relative w-full h-full flex items-center justify-center">
+                            {(() => {
+                              const file = watch("image_3");
+                              const previewUrl = URL.createObjectURL(file);
+                              return (
+                                <img 
+                                  src={previewUrl} 
+                                  alt="preview 3" 
+                                  className="max-w-full max-h-full aspect-video rounded-[10px] object-cover"
+                                  onLoad={() => URL.revokeObjectURL(previewUrl)}
+                                />
+                              );
+                            })()}
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center gap-2">
+                            <Image size={30} className="text-white/30" />
+                            <span className="text-white/50 text-sm text-center">
+                              Image 3<br/>(optionnel)
+                            </span>
+                          </div>
+                        )}
+                      </label>
+                      {errors.image_3 && <p className="mt-2 text-red-400 text-sm">{errors.image_3.message}</p>}
+                    </div>
                   </div>
-
-                  {/* Image 3 */}
-                  <div className="flex flex-col">
-                    <label></label>
-                    <input
-                      type="file"
-                      accept={ACCEPTED_IMAGE_TYPES.join(",")}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file)
-                          setValue("image_3", file, { shouldValidate: true });
-                      }}
-                    />
-                    {errors.image_3 && <p>{errors.image_3.message}</p>}
-                  </div>
+                  <div className="flex w-full justify-center  mt-14">
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="min-h-20 w-full md:w-[60%] bg-[#741748] border border-white/10 text-[16px] sm:text-[16px] rounded-[13px] font-bold uppercase hover:bg-[#ffffff10] cursor-pointer transition-colors disabled:opacity-50"
+            >
+              {loading ? "Envoi en cours..." : "finaliser ma soumission"}
+            </button>
+          </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Sous-titres */}
-          <button type="submit" disabled={loading}>
-            {loading ? "Envoi en cours..." : "Uploader"}
-          </button>
+          
 
-          {serverError && <p>{serverError}</p>}
+          {serverError && <p className="mt-6 text-red-400 text-center">{serverError}</p>}
         </form>
 
         <ConfirmModal
