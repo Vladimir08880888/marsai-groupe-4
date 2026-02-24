@@ -1,21 +1,26 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import Backend from "i18next-http-backend"; // https://github.com/i18next/i18next-http-backend
 
-import fr from "../locals/fr.json";
-import en from "../locals/en.json";
+
 
 i18n
+    .use(Backend)
     .use(initReactI18next)
     .init({
-        resources: {
-            fr: { translation: fr },
-            en: { translation: en },
-        },
         lng: "fr", // c'est language par défualt
         debug: true,
         fallbackLng: "fr", // si jamais lng est introuvable 
         interpolation: {
             escapeValue: false,
         },
+        backend:{
+           loadPath: "http://localhost:3000/translations/{{lng}}",
+            requestOptions: {
+                headers:{
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+        }
+    }
     });
 export default i18n;
