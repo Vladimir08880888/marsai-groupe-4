@@ -196,9 +196,9 @@ export default function Upload() {
   };
 
   return (
-    <section className="py-40 bg-black text-white px-4 sm:px-6  text-[16px] md:text-[18px]">
-      <div className="mb-12 sm:mb-12 text-center">
-        <div className="flex items-center gap-[5px] mb-4 sm:mb-6 text-[#f6339a] w-full justify-center">
+    <section className="py-40 bg-black text-white placeholder:bg-white px-4 sm:px-6  text-[15px] md:text-[15px]">
+      <div className="flex flex-col justify-center mb-12 sm:mb-12 text-center">
+        <div className="flex items-center gap-[5px] mb-4 sm:mb-6 text-[#f6339a]  w-full justify-center">
           <Sparkles 
   className="
     w-6 h-6        // 24px на мобилке
@@ -211,20 +211,23 @@ export default function Upload() {
           </h2>
           <Sparkles 
   className="
-    w-6 h-6        // 24px на мобилке
+    w-6 h-6        // 
     
-    sm:w-10 sm:h-10 // 40px от 1024px
+    sm:w-10 sm:h-10 
   " 
 />
-        </div>
+        </div >
 
-        <span className="uppercase text-[32px] sm:text-[54px] font-bold">Déposer UN </span>
+<div>
+<span className="uppercase text-[32px] sm:text-[54px] font-bold ">Déposer UN </span>
         <span className="uppercase text-[32px] sm:text-[54px] font-bold text-[#2b7fff]">
           FILM
         </span>
+</div>
+        
       </div>
       
-      <div className="bg-pink-500/20 border mt-8 p-6 sm:p-9 border-white/10 rounded-[25px] shadow-[0_0_300px_rgba(255,0,128,0.5)]">
+      <div className="bg-gray-500/20 border mt-8 p-6 sm:p-9 border-white/10 rounded-[25px] shadow-[0_0_300px_rgba(255,0,128,0.400)] max-w-[1000px] mx-auto">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col md:grid md:grid-cols-[40px_1fr] gap-4 items-center mt-8">
             <CircleCheck size={40} className="text-[#2b7fff] hidden md:flex" />
@@ -248,79 +251,79 @@ export default function Upload() {
               <div>
                 <div className="flex flex-col xl:grid xl:grid-cols-2  gap-6">
                   <div className="flex flex-col">
-                    <label className="uppercase text-[18px] sm:text-[24px] mb-1">
+                    <label className="uppercase text-[18px] text-white/40 sm:text-[22px] mb-1">
                       titre du court métrage * :
                     </label>
                     <input
-                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3"
+                      className="bg-white/2 border-white/5 placeholder:text-white/40 border-[1px] rounded-[10px] p-[10px] mt-3"
                       {...register("title")}
                       placeholder="Titre de la vidéo"
                     />
-                    {errors.title && <p className="mt-2 text-red-400">{errors.title.message}</p>}
+                    {errors.title && <p className="mt-2 text-white/40-400">{errors.title.message}</p>}
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="uppercase text-[18px] sm:text-[24px] mb-1">
+                    <label className="uppercase text-[18px] text-white/40 sm:text-[22px] mb-1">
                       traduction anglaise * :
                     </label>
                     <input
-                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3"
+                      className="bg-white/2 border-white/5 placeholder:text-white/40 border-[1px] rounded-[10px] p-[10px] mt-3"
                       {...register("translated_title")}
                       placeholder="Translated title"
                     />
                     {errors.translated_title && (
-                      <p className="mt-2 text-red-400">{errors.translated_title.message}</p>
+                      <p className="mt-2 text-white/40-400">{errors.translated_title.message}</p>
                     )}
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="uppercase text-[18px] sm:text-[24px] mb-1">
+                    <label className="uppercase text-[18px] text-white/40 sm:text-[22px] mb-1">
                       Langue (optionnel)
                     </label>
                     <input
-                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full flex items-start"
+                      className="bg-white/2 border-white/5 placeholder:text-white/40 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full flex items-start"
                       {...register("language")}
                       placeholder="Français, Anglais, etc."
                     />
-                    {errors.language && <p className="mt-2 text-red-400">{errors.language.message}</p>}
+                    {errors.language && <p className="mt-2 text-white/40-400">{errors.language.message}</p>}
                   </div>
 
                   <div className="flex flex-col">
-                    <label className="uppercase text-[18px] sm:text-[24px] mb-1">
+                    <label className="uppercase text-[18px] text-white/40 sm:text-[22px] mb-1">
                       Outils IA (optionnel)
                     </label>
                     <input
                       type="text"
-                      className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full"
+                      className="bg-white/2 border-white/5 placeholder:text-white/40 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full"
                       {...register("ai_tools")}
                       rows={3}
                       placeholder="Midjourney, Runway, Luma, etc."
                     />
-                    {errors.ai_tools && <p className="mt-2 text-red-400">{errors.ai_tools.message}</p>}
+                    {errors.ai_tools && <p className="mt-2 text-white/40-400">{errors.ai_tools.message}</p>}
                   </div>
                 </div>
 
                 <div className="flex flex-col mt-10">
-                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">Synopsis</label>
+                  <label className="uppercase text-[18px] text-white/40 sm:text-[22px] mb-1">Synopsis</label>
                   <textarea
-                    className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full h-[120px]"
+                    className="bg-white/2 placeholder:text-white/40 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full h-[120px]"
                     {...register("synopsis")}
                     placeholder="Description du film"
                   />
-                  {errors.synopsis && <p className="mt-2 text-red-400">{errors.synopsis.message}</p>}
+                  {errors.synopsis && <p className="mt-2 text-white/40-400">{errors.synopsis.message}</p>}
                 </div>
 
                 <div className="flex flex-col mt-10">
-                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">
+                  <label className="uppercase text-[18px] text-white/40 sm:text-[22px] mb-1">
                     Synopsis en anglais (optionnel)
                   </label>
                   <textarea
-                    className="bg-white/2 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full h-[120px]"
+                    className="bg-white/2 placeholder:text-white/40 border-white/5 border-[1px] rounded-[10px] p-[10px] mt-3 resize-none w-full h-[120px]"
                     {...register("synopsis_en")}
                     rows={4}
                     placeholder="English synopsis"
                   />
-                  {errors.synopsis_en && <p className="mt-2 text-red-400">{errors.synopsis_en.message}</p>}
+                  {errors.synopsis_en && <p className="mt-2 text-white/40-400">{errors.synopsis_en.message}</p>}
                 </div>
               </div>
             </div>
@@ -334,11 +337,11 @@ export default function Upload() {
           </div>
 
           <div className="mt-10">
-            <div className="xl:grid xl:grid-cols-[40px_1fr] gap-4">
+            <div className="md:grid md:grid-cols-[40px_1fr] gap-4">
               <div></div>
-              <div className="flex flex-col xl:grid xl:grid-cols-2  gap-6">
+              <div className="flex flex-col lg:grid lg:grid-cols-2  gap-6">
                 <div className="flex flex-col">
-                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">Vidéo *</label>
+                  <label className="uppercase text-[18px] placeholder:text-white/40 text-white/40 sm:text-[22px] mb-1">Vidéo *</label>
                   <input
                     type="file"
                     accept={ACCEPTED_VIDEO_TYPES.join(",")}
@@ -353,17 +356,17 @@ export default function Upload() {
                     htmlFor="video-upload"
                     className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full mt-3"
                   >
-                    <span className="text-white/50">
-                      {watch("video") ? watch("video").name : "Choisir une vidéo"}
+                    <span className="text-white/40">
+                      {watch("video") ? watch("video").name.slice(0, 30) + '...' : "Choisir une vidéo"}
                     </span>
                   </label>
                   {errors.video && (
-                    <p className="mt-2 text-red-400">{errors.video.message}</p>
+                    <p className="mt-2 text-white/40-400">{errors.video.message}</p>
                   )}
                 </div>
 
                 <div className="flex flex-col">
-                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">
+                  <label className="uppercase text-[18px] placeholder:text-white/40 text-white/40 sm:text-[22px] mb-1">
                     Sous-titres (.srt) (optionnel)
                   </label>
                   <input
@@ -382,17 +385,17 @@ export default function Upload() {
                     htmlFor="sous-titre-upload"
                     className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer w-full mt-3"
                   >
-                    <span className="text-white/50">
+                    <span className="text-white/40">
                       {watch("subtitles")
-                        ? watch("subtitles").name
+                        ? watch("video").name.slice(0, 30) + '...'
                         : "Choisir sous titre"}
                     </span>
                   </label>
-                  {errors.subtitles && <p className="mt-2 text-red-400">{errors.subtitles.message}</p>}
+                  {errors.subtitles && <p className="mt-2 text-white/40-400">{errors.subtitles.message}</p>}
                 </div>
 
                 <div className="flex flex-col col-span-2 mt-6">
-                  <label className="uppercase text-[18px] sm:text-[24px] mb-1">Thumbnail (optionnel)</label>
+                  <label className="uppercase text-[18px] text-white/40 sm:text-[22px] mb-1">Thumbnail (optionnel)</label>
                   <input
                     type="file"
                     accept={ACCEPTED_IMAGE_TYPES.join(",")}
@@ -426,19 +429,19 @@ export default function Upload() {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center gap-2">
-                        <Image size={30} className="text-white/30" />
-                        <span className="text-white/50 text-sm">Choisir une image</span>
+                        <Image size={30} className="text-zinc-500" />
+                        <span className="text-white/40 text-sm">Choisir une image</span>
                       </div>
                     )}
                   </label>
                   {errors.thumbnail && (
-                    <p className="mt-2 text-red-400">{errors.thumbnail.message}</p>
+                    <p className="mt-2 text-white/40-400">{errors.thumbnail.message}</p>
                   )}
                 </div>
 
                 <div className="col-span-2 mt-12">
-                  <h3 className="uppercase text-[18px] sm:text-[24px] mb-5">
-                    Galerie Médias <span className="text-white/50 text-sm ml-2">(Stills - Max 2)</span>
+                  <h3 className="uppercase text-[18px] text-white/40 sm:text-[22px] mb-5">
+                    Galerie Médias <span className="text-white/40 text-sm ml-2">(Stills - Max 2)</span>
                   </h3>
                   
                   <div className="flex flex-col xl:grid xl:grid-cols-2 gap-6">
@@ -457,7 +460,7 @@ export default function Upload() {
                       />
                       <label
                         htmlFor="image-2-upload"
-                        className="flex items-center justify-center gap-2 p-3 sm:p-6 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer min-h-[120px]"
+                        className="flex items-center justify-center  gap-2 p-3 sm:p-6 bg-white/5 border border-white/10 rounded-[10px] cursor-pointer min-h-[120px]"
                       >
                         {watch("image_2") ? (
                           <div className="relative w-full h-full flex items-center justify-center">
@@ -476,14 +479,14 @@ export default function Upload() {
                           </div>
                         ) : (
                           <div className="flex flex-col items-center gap-2">
-                            <Image size={30} className="text-white/30" />
-                            <span className="text-white/50 text-sm text-center">
+                            <Image size={30} className="text-zinc-500" />
+                            <span className="text-white/40 text-sm text-center">
                               Image 2<br/>(optionnel)
                             </span>
                           </div>
                         )}
                       </label>
-                      {errors.image_2 && <p className="mt-2 text-red-400 text-sm">{errors.image_2.message}</p>}
+                      {errors.image_2 && <p className="mt-2 text-white/40-400 text-sm">{errors.image_2.message}</p>}
                     </div>
 
                     <div className="flex flex-col">
@@ -520,33 +523,33 @@ export default function Upload() {
                           </div>
                         ) : (
                           <div className="flex flex-col items-center gap-2">
-                            <Image size={30} className="text-white/30" />
-                            <span className="text-white/50 text-sm text-center">
+                            <Image size={30} className="text-zinc-500" />
+                            <span className="text-white/40 text-sm text-center">
                               Image 3<br/>(optionnel)
                             </span>
                           </div>
                         )}
                       </label>
-                      {errors.image_3 && <p className="mt-2 text-red-400 text-sm">{errors.image_3.message}</p>}
+                      {errors.image_3 && <p className="mt-2 text-white/40-400 text-sm">{errors.image_3.message}</p>}
                     </div>
                   </div>
-                  <div className="flex w-full justify-center  mt-14">
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="min-h-20 w-full md:w-[60%] bg-[#741748] border border-white/10 text-[16px] sm:text-[16px] rounded-[13px] font-bold uppercase hover:bg-[#ffffff10] cursor-pointer transition-colors disabled:opacity-50"
-            >
-              {loading ? "Envoi en cours..." : "finaliser ma soumission"}
-            </button>
-          </div>
+                  
                 </div>
               </div>
             </div>
           </div>
-
+<div className="flex w-full justify-center mt-14">
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="min-h-20 w-full md:w-[60%] px-6 bg-[#741748] border border-white/10 text-[16px] sm:text-[16px] rounded-[13px] font-bold uppercase hover:bg-[#ffffff10] duration-300 cursor-pointer transition-colors disabled:opacity-50"
+            >
+              {loading ? "Envoi en cours..." : "finaliser ma soumission"}
+            </button>
+          </div>
           
 
-          {serverError && <p className="mt-6 text-red-400 text-center">{serverError}</p>}
+          {serverError && <p className="mt-6 text-white/40-400 text-center">{serverError}</p>}
         </form>
 
         <ConfirmModal
