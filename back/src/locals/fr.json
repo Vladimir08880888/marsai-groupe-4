@@ -176,8 +176,8 @@
     "speciality":"Profession / spécialité",
     "condition":" J'accepte les conditions générales et le règlement de protection des données.",
     "publish":"ENVOYER",
-    "ceritificat_title":"CERTIFICAT DE PROPRIÉTÉ",
-    "ceritificat_text":"En soumettant ce dossier, vous certifiez sur l'honneur être l'auteur original de l'œuvre et détenir l'intégralité des droits de diffusion. Vous acceptez que MARS.AI utilise ces éléments pour la promotion du festival."
+    "certificat_title":"CERTIFICAT DE PROPRIÉTÉ",
+    "certificat_text":"En soumettant ce dossier, vous certifiez sur l'honneur être l'auteur original de l'œuvre et détenir l'intégralité des droits de diffusion. Vous acceptez que MARS.AI utilise ces éléments pour la promotion du festival."
   },
   "upload": {
     "upload_title":"Upload Vidéo & Images",
