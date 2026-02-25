@@ -55,7 +55,7 @@ export default function PublicLayout() {
                 <h2 className="text-[#AD46FF] uppercase text-[11px] tracking-[4.4px] mb-[12px]">
                   Navigation
                 </h2>
-                <span>{t("footer.navigation_1")}</span>
+                <span>{t("footer.gallery")}</span>
                 <span>{t("footer.program")}</span>
                 <span>Top 50</span>
                 <span>{t("footer.ticket")}</span>
