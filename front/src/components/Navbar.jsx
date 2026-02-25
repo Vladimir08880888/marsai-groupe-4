@@ -3,6 +3,7 @@ import { ThemeToggle } from "./ThemeToggle";
 import { useState, useEffect } from "react";
 import { Trophy, House, Search, Calendar, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Navbar() {
   const { t } = useTranslation();
@@ -70,6 +71,7 @@ export default function Navbar() {
 
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-4">
+          <LanguageSwitcher />
           <ThemeToggle />
 
           {/* BURGER — mobile only */}
