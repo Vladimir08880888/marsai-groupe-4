@@ -12,39 +12,25 @@ export default function LanguageSwitcher() {
     setCurrentLang(savedLang);
   }, [i18n]);
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-    setCurrentLang(lng);
-    localStorage.setItem('i18nextLng', lng); 
+  const toggleLanguage = () => {
+    const newLang = currentLang === 'en' ? 'fr' : 'en';
+    i18n.changeLanguage(newLang);
+    setCurrentLang(newLang);
+    localStorage.setItem('i18nextLng', newLang);
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <button
-        onClick={() => changeLanguage('en')}
-        className={`
-          px-3 py-1.5 rounded-md text-sm font-medium transition-colors
-          ${currentLang === 'en'
-            ? 'bg-[linear-gradient(180deg,rgba(81,162,255,1)_0%,rgba(173,70,255,1)_50%,rgba(255,43,127,1)_100%)] text-white shadow-sm'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }
-        `}
-      >
-        EN
-      </button>
-
-      <button
-        onClick={() => changeLanguage('fr')}
-        className={`
-          px-3 py-1.5 rounded-md text-sm font-medium transition-colors
-          ${currentLang === 'fr'
-            ? 'bg-[linear-gradient(180deg,rgba(81,162,255,1)_0%,rgba(173,70,255,1)_50%,rgba(255,43,127,1)_100%)] text-white shadow-sm'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-          }
-        `}
-      >
-        FR
-      </button>
-    </div>
+    <button
+      onClick={toggleLanguage}
+      className="
+        px-4 py-2 rounded-full text-sm font-semibold
+        bg-[linear-gradient(180deg,rgba(81,162,255,1)_0%,rgba(173,70,255,1)_50%,rgba(255,43,127,1)_100%)]
+        text-white shadow-md
+        transition-all duration-200
+        hover:scale-105 active:scale-95
+      "
+    >
+      {currentLang.toUpperCase()}
+    </button>
   );
 }
