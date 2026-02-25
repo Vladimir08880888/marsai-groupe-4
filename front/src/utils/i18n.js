@@ -8,7 +8,7 @@ i18n
     .use(Backend)
     .use(initReactI18next)
     .init({
-        lng: "fr", // c'est language par défualt
+        lng: "en", // c'est language par défualt
         debug: true,
         fallbackLng: "fr", // si jamais lng est introuvable 
         interpolation: {

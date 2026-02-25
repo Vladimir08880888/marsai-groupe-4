@@ -154,7 +154,7 @@ export function Login() {
           </h2>
 
           <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">
-            Identifiant de Session
+            {t("login.session_identity")} 
           </h2>
           <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full mb-[24px]">
             <img
@@ -172,7 +172,7 @@ export function Login() {
           </div>
 
           <h2 className="w-full text-[10px] mb-[12px] tracking-[2px]">
-            Clé Cryptographique
+            {t("login.password")}
           </h2>
           <div className="flex bg-black/40 border border-white/10 rounded-[28px] w-full">
             <img
@@ -212,7 +212,7 @@ export function Login() {
             </label>
 
             {/* Текст */}
-            <h2 className="mr-auto tracking-[1px]">Maintenir session</h2>
+            <h2 className="mr-auto tracking-[1px]">{t("login.hold")}</h2>
             <h2 className="text-[#51A2FF] tracking-[2px]  cursor-pointer">
               Reset ?
             </h2>
@@ -226,16 +226,16 @@ export function Login() {
             {" "}
             <Send size={20} />
             <h2>
-              {loginMutation.isPending ? "Connecting..." : "Initialiser Flux"}
+              {loginMutation.isPending ? "Connecting..." : t("login.login_button")}
             </h2>
           </button>
 
           <div className="flex items-center sm:items-end flex-col sm:flex-row   w-full gap-[15px] justify-center">
             <h2 className="text-[11px] text-[rgba(255,255,255,0.6)] tracking-[2.2px]">
-              Nouveau Voyageur ?
+              {t("login.register_text")}
             </h2>
             <h2 className="text-[16px] capitalize tracking-[2.2px] mb-[-3px]">
-              Générer Identité
+              {t("login.register_button")}
             </h2>
           </div>
         </div>
