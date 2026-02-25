@@ -29,7 +29,8 @@
     "night_badge":"ÉVÉNEMENT SPÉCIAL",
     "night_title":"LA NUIT",
     "night_subtitle":"MARS.AI",
-    "night_description":"Une soirée unique mêlant projections immersives, performances live et rencontres avec les créateurs du futur.",
+    "night_description":"Une soirée unique mêlant projections immersives,",
+    "night_dscription_2":"performances live et rencontres avec les créateurs du futur.",
     "night_button":"RÉSERVER MA PLACE",
    
     "conference_title":"CONFÉRENCE",
@@ -71,11 +72,8 @@
     "register_button":"Initialiser Flux",
     "login_text":" Déjà Enregistré ?",
     "login_button":"Ouvrir Session"
-
   },
-  "agenda": {
-
-  },
+  "agenda": {},
   "event": {
     "management": " Gestion des Événements",
     "control_event":"Contrôle du protocole marsAI 2026",
@@ -146,7 +144,6 @@
     "status":"Statut",
     "publish":"Publié",
     "pending":"En attente"
-
   },
   "palmares": {
     "edition_title":"FESTIVAL MARSAI — ÉDITION INAUGURALE",
@@ -181,14 +178,20 @@
   },
   "upload": {
     "upload_title":"Upload Vidéo & Images",
-    "title":"Titre *",
+    "title":"Titre ",
+    "placeholder_title":"Entrez le titre de votre film",
     "title_trad":"Titre traduit",
+    "placeholder_trad_title":"Entrez le titre traduit de votre film",
     "language":"Langue",
+    "language_placeholder":"Français, Anglais, etc.",
+    "synopsis_placeholder":"Entrez une brève synopsis de votre film",
     "synopsis_english":"Synopsis en anglais",
     "ai_type":"Outils IA",
+    "ai_type_placeholder": "Midjourney, Runway, Luma, etc.",
     "subtitle":"Sous-titres",
-    "selected_doc":"Fichier sélectionné "
-    
+    "selected_doc":"Fichier sélectionné ",
+    "upload_progress":"Envoi en cours...",
+    "upload_button":"Uploader"
   },
   "confirmmodal": {
      "upload_title":"Confirmer l'envoi",
@@ -218,17 +221,16 @@
     "select":"Sélectionner"
   },
   "navbar": {
-    "link_gallery":"Galerie",
-    "link_palmares":"Palmarès"
+    "gallery":"Galerie",
   },
   "publiclayout": {
-      "subtitle":"La plateforme mondiale de la narration générative, ancrée dans",
-      "subtitle_2":"la lumière de Marseille.",
+    "subtitle":"La plateforme mondiale de la narration générative, ancrée dans la lumière de Marseille.",
     "gallery":"Galerie",
     "program":"Programme",
     "ticket":"Billetterie",
     "legal":"Légal",
     "partners":"Partenaires",
+    "stay": "STAY",
     "connected":"CONNECTÉ",
     "year":"© 2026 MARS.A.I ● PROTOCOL MARSEILLE HUB",
     "legal_text":"DESIGN SYSTÈME CYBER-PREMIUM LÉGAL"

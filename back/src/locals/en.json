@@ -178,13 +178,20 @@
   },
   "upload": {
     "upload_title": "Upload Video & Images",
-    "title": "Title *",
+    "title": "Title ",
+    "placeholder_title": "Enter the title of your film",
     "title_trad": "Translated title",
+    "placeholder_trad_title": "Enter the translated title of your film",
     "language": "Language",
+    "language_placeholder": "French, English, etc.",
+    "synopsis_placeholder": "Enter a brief synopsis of your film",
     "synopsis_english": "Synopsis in English",
+    "ai_type_placeholder": "Midjourney, Runway, Luma, etc.",
     "ai_type": "AI Tools",
     "subtitle": "Subtitles",
-    "selected_doc": "Selected file"
+    "selected_doc": "Selected file",
+    "upload_progress": "Upload in progress...",
+    "upload_button": "Upload"
   },
   "confirmmodal": {
     "upload_title": "Confirm submission",
@@ -198,8 +205,8 @@
     "publish_button": "Confirm and send"
   },
   "footer": {
-    "subtitle": "The global platform for generative storytelling, rooted in",
-    "subtitle_2": "the light of Marseille.",
+    "subtitle": "The global platform for generative storytelling, rooted in the light of Marseille." ,
+    "subtitle_2": "",
     "gallery": "Gallery",
     "program": "Program",
     "ticket": "Tickets",
@@ -214,17 +221,16 @@
     "select": "Select"
   },
   "navbar": {
-    "link_gallery": "Gallery",
-    "link_palmares": "Palmarès"
+    "gallery": "Gallery"
   },
   "publiclayout": {
-    "subtitle": "The global platform for generative storytelling, rooted in",
-    "subtitle_2": "the light of Marseille.",
+    "subtitle": "The global platform for generative storytelling, rooted in the light of Marseille.",
     "gallery": "Gallery",
     "program": "Program",
     "ticket": "Tickets",
     "legal": "Legal",
     "partners": "Partners",
+    "stay": "STAY",
     "connected": "CONNECTED",
     "year": "© 2026 MARS.A.I ● MARSEILLE HUB PROTOCOL",
     "legal_text": "CYBER-PREMIUM DESIGN SYSTEM LEGAL"
