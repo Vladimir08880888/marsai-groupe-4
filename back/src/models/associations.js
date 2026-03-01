@@ -1,6 +1,7 @@
 import User from "./User.js";
 import Film from "./Video.js";
 import FilmsJury from "./FilmsJury.js";
+import Award from "./Award.js";
 
 // Define all associations here after all models are loaded
 export function setupAssociations() {
@@ -25,4 +26,8 @@ export function setupAssociations() {
   // FilmsJury associations
   FilmsJury.belongsTo(Film, { foreignKey: "film_id", as: "film" });
   FilmsJury.belongsTo(User, { foreignKey: "user_id", as: "jury" });
+
+  // Award -> Film
+  Award.belongsTo(Film, { foreignKey: "film_id", as: "film" });
+  Film.hasMany(Award, { foreignKey: "film_id", as: "awards" });
 }
