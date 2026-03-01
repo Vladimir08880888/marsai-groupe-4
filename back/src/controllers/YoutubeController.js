@@ -154,7 +154,7 @@ const BASE_FOLDER = "grp4";
 // Fonction qui upload un fichier local vers S3
  async function uploadToS3(localFilePath, subFolder = "videos") {
   try {
-    const fileContent = fs.readFileSync(localFilePath);
+    const fileContent = fs.createReadStream(localFilePath);
     const fileName = path.basename(localFilePath);
 
     // Clé S3 : on garde la même structure que local + prefix grp4
