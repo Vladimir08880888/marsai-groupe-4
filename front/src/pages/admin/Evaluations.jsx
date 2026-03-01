@@ -31,16 +31,16 @@ function Evaluations() {
     },
     {
       header: "Jury",
-      accessorFn: (row) => row.user ? `${row.user.first_name} ${row.user.last_name}` : `User #${row.user_id}`,
+      accessorFn: (row) => row.jury ? `${row.jury.first_name} ${row.jury.last_name}` : `User #${row.user_id}`,
     },
     {
-      accessorKey: "vote",
-      header: "Vote",
+      accessorKey: "decision",
+      header: "Decision",
       cell: ({ row }) => {
-        const v = row.getValue("vote");
+        const v = row.getValue("decision");
         return (
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${v === "yes" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-            {v === "yes" ? "YES" : "NO"}
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${v === "YES" ? "bg-green-100 text-green-800" : v === "MAYBE" ? "bg-yellow-100 text-yellow-800" : "bg-red-100 text-red-800"}`}>
+            {v}
           </span>
         );
       },
@@ -61,8 +61,8 @@ function Evaluations() {
     onSortingChange: setSorting,
   });
 
-  const yesCount = evaluations.filter((e) => e.vote === "yes").length;
-  const noCount = evaluations.filter((e) => e.vote === "no").length;
+  const yesCount = evaluations.filter((e) => e.decision === "YES").length;
+  const noCount = evaluations.filter((e) => e.decision === "NO").length;
 
   return (
     <section className="container mx-auto px-4 py-8">
