@@ -13,6 +13,7 @@ import evaluationRouter from "./admin/Evaluation.route.js";
 import palmaresRouter from "./Palmares.route.js";
 import awardRouter from "./admin/Award.route.js";
 import profileRouter from "./Profile.route.js";
+import contactRouter from "./Contact.route.js";
 
 const router = express.Router();
 
@@ -30,5 +31,6 @@ router.use("/admin/evaluations", evaluationRouter);
 router.use("/palmares", palmaresRouter);
 router.use("/admin/awards", awardRouter);
 router.use("/profile", profileRouter);
+router.use("/contact", contactRouter);
 
 export default router;

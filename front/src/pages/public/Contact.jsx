@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { Train, Car, MapPin, CalendarDays, Clock, Navigation } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { sendContact } from "../../api/contact";
 
 export default function Contact() {
   const { t } = useTranslation();
@@ -12,29 +13,27 @@ export default function Contact() {
     message: "",
   });
 
-  const [schedule, setSchedule] = useState([]);
-
-  // ===== FETCH SCHEDULE FROM DB =====
-  useEffect(() => {
-    fetch("/api/schedule/today")
-      .then((res) => res.json())
-      .then((data) => setSchedule(data))
-      .catch(() => setSchedule([]));
-  }, []);
+  const [sending, setSending] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const subject = encodeURIComponent(`Demande: ${form.subject}`);
-    const body = encodeURIComponent(
-      `Nom: ${form.name}\nEmail: ${form.email}\n\nMessage:\n${form.message}`
-    );
-
-    window.location.href = `mailto:tonemail@example.com?subject=${subject}&body=${body}`;
+    setSending(true);
+    setError("");
+    try {
+      await sendContact(form);
+      setSuccess(true);
+      setForm({ email: "", name: "", subject: "", message: "" });
+    } catch (err) {
+      setError(err?.response?.data?.error || "Failed to send message");
+    } finally {
+      setSending(false);
+    }
   };
 
   const today = new Date();
@@ -240,10 +239,23 @@ export default function Contact() {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-semibold text-white hover:opacity-90 transition"
+            disabled={sending}
+            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 py-3 rounded-xl font-semibold text-white hover:opacity-90 transition disabled:opacity-50"
           >
-            {t("contact.publish")}
+            {sending ? "Sending..." : t("contact.publish")}
           </button>
+
+          {success && (
+            <div className="mt-4 p-4 rounded-xl bg-green-500/20 text-green-400 text-center">
+              Message sent successfully!
+            </div>
+          )}
+
+          {error && (
+            <div className="mt-4 p-4 rounded-xl bg-red-500/20 text-red-400 text-center">
+              {error}
+            </div>
+          )}
 
         </form>
       </div>
