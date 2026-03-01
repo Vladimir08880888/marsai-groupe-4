@@ -82,7 +82,8 @@ function getUserById(req, res) {
   const { id } = req.params;
   User.findOne({ where: { id } }).then((user) => {
     if (user) {
-      res.json(user);
+      const { password, ...safeUser } = user.dataValues;
+      res.json(safeUser);
     } else {
       res.status(404).json({ error: "Utilisateur non trouvé" });
     }
