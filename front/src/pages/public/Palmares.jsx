@@ -84,7 +84,7 @@ export default function Palmares() {
 
                 {award.film?.thumbnail ? (
                   <img
-                    src={`${API_URL}${award.film.thumbnail}`}
+                    src={`${API_URL}/uploads/images/${award.film.thumbnail}`}
                     alt={award.film.title}
                     className="h-40 w-full object-cover rounded-xl mb-4"
                   />
@@ -122,7 +122,7 @@ export default function Palmares() {
               >
                 {award.film?.thumbnail ? (
                   <img
-                    src={`${API_URL}${award.film.thumbnail}`}
+                    src={`${API_URL}/uploads/images/${award.film.thumbnail}`}
                     alt={award.film.title}
                     className="h-40 w-full object-cover rounded-xl mb-3"
                   />

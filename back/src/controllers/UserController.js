@@ -11,8 +11,6 @@ function getUsers(req, res) {
 
 // Création
 function createUser(req, res) {
-  console.log(req);
-
   if (!req.body) {
     return res.status(400).json({ error: "Données manquantes" });
   }

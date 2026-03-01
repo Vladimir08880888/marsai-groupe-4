@@ -52,7 +52,7 @@ const registerSchema = z.object({
   instagram_url: z.string().optional(),
   linkedin_url: z.string().optional(),
   facebook_url: z.string().optional(),
-  tiktok_ur: z.string().optional(),
+  tiktok_url: z.string().optional(),
   discovery_source: z.string().optional(),
   role: z.string(),
 });
@@ -135,7 +135,7 @@ function Users() {
       setValue("instagram_url", user.instagram_url || "https://google.com");
       setValue("linkedin_url", user.linkedin_url || "https://google.com");
       setValue("facebook_url", user.facebook_url || "https://google.com");
-      setValue("tiktok_ur", user.tiktok_ur || "https://google.com");
+      setValue("tiktok_url", user.tiktok_url || "https://google.com");
       setValue("discovery_source", user.discovery_source || "https://google.com");
       setValue("role", user.role);
       setIsDialogOpen(true);
@@ -162,7 +162,7 @@ function Users() {
       setValue("instagram_url", "");
       setValue("linkedin_url", "");
       setValue("facebook_url", "");
-      setValue("tiktok_ur", "");
+      setValue("tiktok_url", "");
       setValue("discovery_source", "");
       setValue("role", "");
       setIsDialogOpen(false);
@@ -279,7 +279,7 @@ function Users() {
                   <FormField label="Instagram URL" id="instagram_url" type="url" register={register} />
                   <FormField label="LinkedIn URL" id="linkedin_url" type="url" register={register} />
                   <FormField label="Facebook URL" id="facebook_url" type="url" register={register} />
-                  <FormField label="TikTok URL" id="tiktok_ur" type="url" register={register} />
+                  <FormField label="TikTok URL" id="tiktok_url" type="url" register={register} />
                   <FormField label="Source de découverte" id="discovery_source" register={register} />
                   <FormField label="Rôle" id="role" type="select" register={register} options={roles} />
                 </div>
@@ -380,7 +380,7 @@ function Users() {
               <FormField label="Instagram URL" id="instagram_url" type="url" register={register} />
               <FormField label="LinkedIn URL" id="linkedin_url" type="url" register={register} />
               <FormField label="Facebook URL" id="facebook_url" type="url" register={register} />
-              <FormField label="TikTok URL" id="tiktok_ur" type="url" register={register} />
+              <FormField label="TikTok URL" id="tiktok_url" type="url" register={register} />
               <FormField label="Source de découverte" id="discovery_source" register={register} />
               <FormField label="Rôle" id="role" type="select" register={register} options={roles} />
             </div>

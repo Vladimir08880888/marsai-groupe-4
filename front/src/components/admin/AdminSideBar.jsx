@@ -40,6 +40,8 @@ const navItems = [
   { title: "Gestion Films", url: "/admin/videos", icon: Clapperboard },
   { title: "Evenements", url: "/admin/events", icon: CalendarCheck },
   { title: "CMS", url: "/admin/cms", icon: SquareCode },
+  { title: "Evaluations", url: "/admin/evaluations", icon: BarChart3 },
+  { title: "Settings", url: "/admin/settings", icon: Settings },
 ]
 
 export default function AdminSidebar() {

@@ -67,7 +67,7 @@ export default function Film() {
         {film.thumbnail && (
           <div className="mb-8">
             <img
-              src={`${API_URL}${film.thumbnail}`}
+              src={`${API_URL}/uploads/images/${film.thumbnail}`}
               alt={film.title}
               className="w-full max-h-[400px] object-cover rounded-2xl border border-white/10"
             />

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Rapport d'equipe — Mars.AI — Groupe 4</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+  @page { size: A4; margin: 25mm 20mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.7; font-size: 11pt; background: #fff; }
+
+  .cover { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; page-break-after: always; }
+  .cover h1 { font-size: 42pt; font-weight: 900; margin-bottom: 8px; }
+  .cover .ai { color: #7C3AED; }
+  .cover .subtitle { font-size: 14pt; color: #666; margin-bottom: 40px; }
+  .cover .meta { font-size: 11pt; color: #999; line-height: 2; }
+  .cover .meta strong { color: #333; }
+
+  h2 { font-size: 18pt; font-weight: 700; color: #7C3AED; margin: 30px 0 15px 0; padding-bottom: 6px; border-bottom: 2px solid #7C3AED; }
+  h3 { font-size: 13pt; font-weight: 600; color: #1a1a1a; margin: 20px 0 10px 0; }
+  p { margin-bottom: 10px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; font-size: 10pt; }
+  th { background: #7C3AED; color: white; padding: 8px 12px; text-align: left; font-weight: 600; }
+  td { padding: 7px 12px; border-bottom: 1px solid #E5E7EB; vertical-align: top; }
+  tr:nth-child(even) { background: #F9FAFB; }
+
+  .highlight-box { background: #F5F3FF; border-left: 4px solid #7C3AED; padding: 14px 18px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+
+  ul { padding-left: 20px; margin-bottom: 10px; }
+  li { margin-bottom: 4px; }
+  .page-break { page-break-before: always; }
+
+  .member-header { background: #F5F3FF; padding: 12px 18px; border-radius: 8px; margin: 20px 0 12px 0; }
+  .member-header h3 { margin: 0; color: #7C3AED; }
+  .member-header .stats { font-size: 10pt; color: #6B7280; margin-top: 4px; }
+
+  .commit-list { font-size: 10pt; color: #374151; }
+  .commit-list li { margin-bottom: 2px; }
+  .commit-hash { color: #9CA3AF; font-family: 'Courier New', monospace; font-size: 9pt; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <h1>MARS<span class="ai">AI</span></h1>
+  <div class="subtitle">Rapport des contributions individuelles<br>Groupe 4</div>
+  <div style="width: 60px; height: 3px; background: #7C3AED; margin: 30px auto;"></div>
+  <div class="meta">
+    <strong>Projet :</strong> marsai-groupe-4 (cdpi-25-26)<br>
+    <strong>Depot :</strong> github.com/cdpi-25-26/marsai-groupe-4<br>
+    <strong>Periode :</strong> 27 janvier — 12 fevrier 2026<br>
+    <strong>Total commits :</strong> 195<br>
+    <strong>Membres :</strong> 8<br>
+    <strong>Formation :</strong> CDPI — La Plateforme_, Marseille
+  </div>
+</div>
+
+<!-- SYNTHESE -->
+<h2>Synthese des contributions</h2>
+
+<table>
+  <tr><th>Membre</th><th>Commits</th><th>Domaine principal</th><th>Branches</th></tr>
+  <tr>
+    <td><strong>Joao Silva</strong></td>
+    <td>61 (34+27)</td>
+    <td>Backend CRUD, merges PR, admin sidebar, seeders, events</td>
+    <td>47-dashboard-films, 64-dashboard-events-jury, main</td>
+  </tr>
+  <tr>
+    <td><strong>Vladimir Rodzaevski</strong></td>
+    <td>36</td>
+    <td>Architecture full-stack, API Home, dark/light theme</td>
+    <td>feature/full-festival-platform, 39-home-page-development</td>
+  </tr>
+  <tr>
+    <td><strong>Karim Sebih</strong></td>
+    <td>35</td>
+    <td>Upload video, register, YouTube API</td>
+    <td>2-register, 4-upload-videos, 62-youtube-api</td>
+  </tr>
+  <tr>
+    <td><strong>Ilmira</strong></td>
+    <td>21</td>
+    <td>Pages statiques, galerie, navbar, Access Denied</td>
+    <td>42-navbar-connections, 52-page-acess-denied, 6-pages-statics</td>
+  </tr>
+  <tr>
+    <td><strong>Vahe Vardanyan</strong></td>
+    <td>19</td>
+    <td>CSS/responsive, navbar, evenements, agenda</td>
+    <td>3-css-header-footer, 18-css-navbar, 44-css-evennements</td>
+  </tr>
+  <tr>
+    <td><strong>Polina Dubova</strong></td>
+    <td>9</td>
+    <td>Page Contact, page Palmares</td>
+    <td>20-page-contact, 53-palmares</td>
+  </tr>
+  <tr>
+    <td><strong>Khouloud Rais</strong></td>
+    <td>7</td>
+    <td>Reservation, responsive Tailwind, migrations</td>
+    <td>reservation, 66-reservation-responsive</td>
+  </tr>
+</table>
+
+<!-- JOAO -->
+<h2>Contributions detaillees</h2>
+
+<div class="member-header">
+  <h3>Joao Silva / Joao (School)</h3>
+  <div class="stats">61 commits (2 comptes) · ~11 900 lignes ajoutees · Role : merge manager + backend</div>
+</div>
+
+<h3>Ce qu'il a fait :</h3>
+<ul>
+  <li><strong>Merge de la majorite des Pull Requests</strong> — PR #70, #60, #58, #57, #55, #54, #51, #50, #48, #46, #40, #34, #13. Il accepte et merge les branches de l'equipe dans main.</li>
+  <li><strong>Authentification</strong> — Token validation, role-based access control (RoleGuard), JWT expiration configuree a 8h.</li>
+  <li><strong>Admin Dashboard</strong> — Gestion des utilisateurs (table avec creation et edition), gestion des roles, overview avec statistiques.</li>
+  <li><strong>Dashboard Films</strong> — Pagination des videos (<code>findAndCountAll</code> avec offset/limit), composants video player et YouTube player.</li>
+  <li><strong>Theme dark/light</strong> — Composant ThemeToggle integre dans AdminSidebar et Navbar.</li>
+  <li><strong>Events (branche 64)</strong> — Modele Event, EventController (CRUD), seeders pour events/categories/collaborators/films/awards/reservations/evaluations, page de reservation.</li>
+  <li><strong>Refactoring</strong> — Commit <code>06fecca</code> : restructuration du code backend (controllers, models, routes).</li>
+</ul>
+
+<h3>Commits cles :</h3>
+<ul class="commit-list">
+  <li><span class="commit-hash">159195f</span> feat: add event retrieval and deletion functions to EventController</li>
+  <li><span class="commit-hash">2d039d9</span> feat: implement event management functionality with API integration</li>
+  <li><span class="commit-hash">467d22b</span> feat: add seeders for events, categories, collaborators, films, awards</li>
+  <li><span class="commit-hash">06fecca</span> Refactor code structure for improved readability and maintainability</li>
+  <li><span class="commit-hash">2a2aac3</span> feat: implement pagination for video listings</li>
+  <li><span class="commit-hash">e330953</span> feat: add video player components and YouTube player integration</li>
+  <li><span class="commit-hash">1762fba</span> feat: implement user management table with create and edit functionality</li>
+</ul>
+
+<!-- VLADIMIR -->
+<div class="member-header page-break">
+  <h3>Vladimir Rodzaevski</h3>
+  <div class="stats">36 commits · ~15 600 lignes ajoutees · Role : architecture full-stack</div>
+</div>
+
+<h3>Ce qu'il a fait :</h3>
+<ul>
+  <li><strong>Branche feature/full-festival-platform (PR #13)</strong> — Implementation complete du systeme de festival : modeles (Film refactoring, Tag, Award, JuryAssignment, JuryVote, SiteContent), controleurs backend (Film, Tag, Award, Jury, SiteContent), pages frontend (AdminFilms, AdminJury, AdminAwards, AdminContent, Films public, Soumettre, interface Jury). 2 400+ lignes, ~50 fichiers.</li>
+  <li><strong>Systeme de notification email</strong> — Configuration SMTP, envoi d'emails (PR #35).</li>
+  <li><strong>Validation Zod</strong> — Schemas de validation sur toutes les routes backend.</li>
+  <li><strong>Dark/Light theme</strong> — CSS custom properties, toggle persistant dans localStorage.</li>
+  <li><strong>Integration des branches d'equipe</strong> — Merge de 6 branches dans feature/full-festival-platform avec resolution de conflits.</li>
+  <li><strong>Responsive mobile</strong> — Corrections Contact et AdminLayout pour mobile.</li>
+  <li><strong>Branche 39-home-page-development</strong> — Creation de HomeController avec 2 endpoints publics : <code>GET /home/featured</code> (films en vedette avec jointure User) et <code>GET /home/stats</code> (statistiques du festival avec Promise.all).</li>
+</ul>
+
+<h3>Commits cles :</h3>
+<ul class="commit-list">
+  <li><span class="commit-hash">15a2291</span> feat: implementation complete du systeme de festival Mars.A.I</li>
+  <li><span class="commit-hash">8412c02</span> Add public /home/featured and /home/stats API endpoints</li>
+  <li><span class="commit-hash">67394fd</span> Ajouter le systeme de notification par email (#28)</li>
+  <li><span class="commit-hash">0f7b27d</span> Ajouter la validation Zod sur toutes les routes backend</li>
+  <li><span class="commit-hash">eab4992</span> Add dark/light theme toggle with CSS custom properties</li>
+  <li><span class="commit-hash">29457db</span> Ajouter filtres et recherche sur la page Films (#29)</li>
+</ul>
+
+<!-- KARIM -->
+<div class="member-header">
+  <h3>Karim Sebih</h3>
+  <div class="stats">35 commits · Role : upload video + auth register</div>
+</div>
+
+<h3>Ce qu'il a fait :</h3>
+<ul>
+  <li><strong>Systeme d'inscription (branche 2-register)</strong> — Formulaire d'inscription avec email et confirmation de mot de passe, migration de username vers email pour l'authentification.</li>
+  <li><strong>Upload video (branche 4-upload-videos)</strong> — CRUD upload avec Multer, validation de duree video, upload de thumbnails (image_2, image_3), ajout des sous-titres avec validation de format, modal de confirmation de soumission. C'est le travail le plus consequent de Karim.</li>
+  <li><strong>YouTube API (branche 62-youtube-api)</strong> — Debut d'integration OAuth2 pour upload YouTube. En cours, non termine (1 seul commit).</li>
+  <li><strong>Navbar</strong> — Affichage du prenom utilisateur apres connexion.</li>
+</ul>
+
+<h3>Commits cles :</h3>
+<ul class="commit-list">
+  <li><span class="commit-hash">d6b649c</span> Add confirmation modal for upload submission</li>
+  <li><span class="commit-hash">3ee4bd4</span> Add subtitles upload functionality with validation and file handling</li>
+  <li><span class="commit-hash">13f08f1</span> feat: upload video with duration and path file in the data base</li>
+  <li><span class="commit-hash">fc9443f</span> feat: implement video upload functionality with form handling</li>
+  <li><span class="commit-hash">058ec32</span> feat: update user registration to use email instead of username</li>
+  <li><span class="commit-hash">774516f</span> Debut ytb api</li>
+</ul>
+
+<div class="highlight-box">
+  <strong>Note :</strong> Karim a commite le dossier <code>node_modules/</code> dans le depot (~99 000 lignes). Ce ne sont pas des lignes de code ecrites, mais des dependances npm installees automatiquement. Ce dossier aurait du etre ignore via <code>.gitignore</code>.
+</div>
+
+<!-- ILMIRA -->
+<div class="member-header page-break">
+  <h3>Ilmira</h3>
+  <div class="stats">21 commits · ~930 lignes ajoutees · Role : pages statiques + composants</div>
+</div>
+
+<h3>Ce qu'elle a fait :</h3>
+<ul>
+  <li><strong>Pages statiques (branche 6-pages-statics)</strong> — Creation du composant FilmCard, page Galerie des films, ajout des routes pour Palmares et Agenda.</li>
+  <li><strong>Navbar connections (branche 42-navbar-connections)</strong> — Affichage conditionnel des liens de navigation selon l'etat de connexion de l'utilisateur.</li>
+  <li><strong>Page Access Denied (branche 52-page-acess-denied)</strong> — Page affichee quand un utilisateur non autorise tente d'acceder a une section admin. Le footer est devenu un composant reutilisable a cette occasion.</li>
+</ul>
+
+<h3>Commits cles :</h3>
+<ul class="commit-list">
+  <li><span class="commit-hash">fac22b7</span> page created (Access Denied)</li>
+  <li><span class="commit-hash">5dd6be5</span> footer devenu component</li>
+  <li><span class="commit-hash">cf4cfdf</span> page gallerie avec component film</li>
+  <li><span class="commit-hash">9be179f</span> create component film</li>
+  <li><span class="commit-hash">e9e26fe</span> create navbar connections</li>
+  <li><span class="commit-hash">51e3f99</span> ajout routes pour palmares et agenda</li>
+</ul>
+
+<!-- VAHE -->
+<div class="member-header">
+  <h3>Vahe Vardanyan</h3>
+  <div class="stats">19 commits · Role : CSS / responsive design</div>
+</div>
+
+<h3>Ce qu'il a fait :</h3>
+<ul>
+  <li><strong>CSS Header et Footer (branche 3-css-header-et-footer)</strong> — Premiere version du footer, style de la page d'accueil.</li>
+  <li><strong>CSS Navbar (branche 18-css-navbar)</strong> — Login, register, footer, header stylises. Navbar avec gradient.</li>
+  <li><strong>CSS Evenements (branche 44-css-evennements)</strong> — Page evenements avec composant CardEvennements, debut de l'agenda.</li>
+  <li><strong>Responsive final (branche 63 → PR #70)</strong> — Responsive de toutes les pages (login, register, footer, navbar, evenements). Nouveau design de la navbar. C'est le dernier merge dans main (12 fevrier).</li>
+</ul>
+
+<h3>Commits cles :</h3>
+<ul class="commit-list">
+  <li><span class="commit-hash">4167e51</span> responsive, new navbar, small details</li>
+  <li><span class="commit-hash">fb9ad97</span> navbar done</li>
+  <li><span class="commit-hash">9711614</span> register done</li>
+  <li><span class="commit-hash">c21d4f4</span> login, footer, header</li>
+  <li><span class="commit-hash">d5104e3</span> evennements page, et card sans css</li>
+  <li><span class="commit-hash">a1ad8ed</span> css home page</li>
+</ul>
+
+<div class="highlight-box">
+  <strong>Note :</strong> Vahe a commite le dossier <code>node_modules/</code> (~544 000 lignes comptabilisees). Ce sont des fichiers generes automatiquement, pas du code ecrit.
+</div>
+
+<!-- POLINA -->
+<div class="member-header page-break">
+  <h3>Polina Dubova</h3>
+  <div class="stats">9 commits · ~510 lignes ajoutees · Role : pages Contact et Palmares</div>
+</div>
+
+<h3>Ce qu'elle a fait :</h3>
+<ul>
+  <li><strong>Page Contact (branche 20-page-contact)</strong> — Creation de la page contact avec informations d'acces (transports, voiture), integration d'une carte Google Maps (iframe), ajout d'icones, formulaire de commentaires.</li>
+  <li><strong>Page Palmares (branche 53-palmares)</strong> — Page d'affichage du palmares du festival avec les prix et laureats.</li>
+</ul>
+
+<h3>Commits cles :</h3>
+<ul class="commit-list">
+  <li><span class="commit-hash">dcacacc</span> creation page contact</li>
+  <li><span class="commit-hash">aecf0a4</span> ajout de google maps et d'access</li>
+  <li><span class="commit-hash">0048b7b</span> Un formulaire de commentaires a ete ajoute</li>
+  <li><span class="commit-hash">ed5cfaf</span> Ajout d'une date et d'un calendrier interactifs des evenements</li>
+  <li><span class="commit-hash">c9b7b74</span> changement de page palmares</li>
+</ul>
+
+<!-- KHOULOUD -->
+<div class="member-header">
+  <h3>Khouloud Rais</h3>
+  <div class="stats">7 commits · ~535 lignes ajoutees · Role : reservation + responsive</div>
+</div>
+
+<h3>Ce qu'elle a fait :</h3>
+<ul>
+  <li><strong>Reservation (branche reservation)</strong> — Mise en place de la page reservation, migration de la table, verification des titres, remplacement du CSS classique par Tailwind.</li>
+  <li><strong>Reservation responsive (branche 66-reservation-responsive)</strong> — Adaptation responsive avec Tailwind, seeders pour les donnees de demo.</li>
+</ul>
+
+<h3>Commits cles :</h3>
+<ul class="commit-list">
+  <li><span class="commit-hash">8e6a08d</span> mise en place reservation</li>
+  <li><span class="commit-hash">847a9f0</span> add tailwind delete css</li>
+  <li><span class="commit-hash">2baa463</span> verification des titres</li>
+  <li><span class="commit-hash">134bcb8</span> tailwind responsive</li>
+  <li><span class="commit-hash">89d1734</span> Fix migration create table first</li>
+</ul>
+
+<!-- BILAN -->
+<h2 class="page-break">Bilan comparatif</h2>
+
+<h3>Repartition par domaine</h3>
+<table>
+  <tr><th>Domaine</th><th>Responsable(s)</th></tr>
+  <tr><td>Backend — Auth (login, register, JWT, middleware)</td><td>Joao, Karim</td></tr>
+  <tr><td>Backend — API Home (featured, stats)</td><td>Vladimir</td></tr>
+  <tr><td>Backend — CRUD Films/Videos + pagination</td><td>Joao</td></tr>
+  <tr><td>Backend — Upload fichiers (multer, validation)</td><td>Karim</td></tr>
+  <tr><td>Backend — Events (modele, controleur, seeders)</td><td>Joao</td></tr>
+  <tr><td>Frontend — Page d'accueil (Home)</td><td>Vahe (CSS), Vladimir (API)</td></tr>
+  <tr><td>Frontend — Galerie des films</td><td>Ilmira</td></tr>
+  <tr><td>Frontend — Page Contact</td><td>Polina</td></tr>
+  <tr><td>Frontend — Page Palmares</td><td>Polina, Ilmira</td></tr>
+  <tr><td>Frontend — Page Evenements</td><td>Vahe</td></tr>
+  <tr><td>Frontend — Page Reservation</td><td>Khouloud</td></tr>
+  <tr><td>Frontend — Admin Dashboard</td><td>Joao</td></tr>
+  <tr><td>Frontend — Navbar</td><td>Vahe, Ilmira, Karim</td></tr>
+  <tr><td>Frontend — Access Denied</td><td>Ilmira</td></tr>
+  <tr><td>CSS / Responsive</td><td>Vahe (principal), Khouloud</td></tr>
+  <tr><td>Dark/Light theme</td><td>Vladimir, Joao</td></tr>
+  <tr><td>Merges / Code review</td><td>Joao</td></tr>
+</table>
+
+<h3>Activite par semaine</h3>
+<table>
+  <tr><th>Periode</th><th>Activite principale</th></tr>
+  <tr><td>27-29 janvier</td><td>Setup initial, register (Karim), architecture complete (Vladimir)</td></tr>
+  <tr><td>30 jan - 2 fev</td><td>Integration branches, CSS navbar/login (Vahe), upload (Karim), merges (Joao)</td></tr>
+  <tr><td>2 fevrier</td><td>Merge PR #13 (Vladimir), revert par le professeur (Sambeau), merges (Joao)</td></tr>
+  <tr><td>3-6 fevrier</td><td>Refactoring (Joao), Access Denied (Ilmira), Palmares (Polina)</td></tr>
+  <tr><td>6-9 fevrier</td><td>Reservation (Khouloud), seeders/events (Joao), API Home (Vladimir)</td></tr>
+  <tr><td>10-12 fevrier</td><td>Responsive final (Vahe, PR #70), YouTube API (Karim), events backend (Joao)</td></tr>
+</table>
+
+<div style="text-align: center; margin-top: 60px; color: #999; font-size: 10pt;">
+  — Fin du rapport —<br>
+  Donnees extraites de l'historique Git le 12 fevrier 2026<br>
+  CDPI 2025-2026 — La Plateforme_, Marseille
+</div>
+
+</body>
+</html>

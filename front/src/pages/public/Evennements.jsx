@@ -28,6 +28,16 @@ function Evennements() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
+
+  const EVENT_TYPES = ["SCREENING", "WORKSHOP", "MASTERCLASS", "CONCERT", "PARTY"];
+
+  const filteredEvents = events.filter((e) => {
+    if (typeFilter && e.type !== typeFilter) return false;
+    if (search && !e.title.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
 
 useEffect(() => {
   fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/events`)
@@ -73,38 +83,31 @@ useEffect(() => {
             className="w-[200px] placeholder-white/30 outline-none"
             placeholder={t("event.search_placeholder")}
             type="search"
-            name=""
-            id=""
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
-        <button className="bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]">
+        <button
+          onClick={() => setTypeFilter("")}
+          className={`text-[10px] border rounded-[16px] font-bold tracking-[2px] h-[54px] px-[20px] ${!typeFilter ? "bg-white/10 text-white border-white/30" : "bg-white/2 text-white/40 border-white/10"}`}
+        >
           {t("event_all_events")}
         </button>
 
-        <button className="bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]">
-          SCREENIGN
-        </button>
-
-        <button className="bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]">
-          WORKSHOP
-        </button>
-
-        <button className="bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]">
-          MASTERCLASS
-        </button>
-
-        <button className="bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]">
-          CONCERT
-        </button>
-
-        <button className="bg-white/2 text-[10px] border border-white/10 rounded-[16px] text-white/40 font-bold tracking-[2px] h-[54px] px-[20px]">
-          PARTY
-        </button>
+        {EVENT_TYPES.map((type) => (
+          <button
+            key={type}
+            onClick={() => setTypeFilter(typeFilter === type ? "" : type)}
+            className={`text-[10px] border rounded-[16px] font-bold tracking-[2px] h-[54px] px-[20px] ${typeFilter === type ? "bg-white/10 text-white border-white/30" : "bg-white/2 text-white/40 border-white/10"}`}
+          >
+            {type}
+          </button>
+        ))}
       </div>
 
       <div className="bg-black grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 p-[24px] gap-[24px]">
-        {events.map(event => {
+        {filteredEvents.map(event => {
           return <CardEvennements key={event.id} data={event} />
         })}
       </div>

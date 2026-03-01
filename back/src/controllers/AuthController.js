@@ -1,7 +1,7 @@
 import User from "../models/User.js";
-import { comparePassword } from "../utils/password.js";
-import UserController from "./UserController.js";
+import { comparePassword, hashPassword } from "../utils/password.js";
 import jwt from "jsonwebtoken";
+import sendMail from "../services/mailer.js";
 
 async function login(req, res) {
   const { email, password } = req.body;
@@ -35,9 +35,27 @@ async function login(req, res) {
   }
 }
 
-function register(req, res) {
-  UserController.createUser(req, res);
-  // Envoi d'email
+async function register(req, res) {
+  try {
+    const { first_name, last_name, email, password, role } = req.body;
+    if (!first_name || !last_name || !email || !password) {
+      return res.status(400).json({ error: "Tous les champs sont requis" });
+    }
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+      return res.status(400).json({ error: "Email déjà utilisé" });
+    }
+    const hash = await hashPassword(password);
+    const newUser = await User.create({ first_name, last_name, email, password: hash, role: role || "PRODUCER" });
+    const { password: _, ...safeUser } = newUser.dataValues;
+
+    sendMail(email, "Welcome to MarsAI!",
+      `<p>Hi ${first_name},</p><p>Your account has been created successfully. Welcome to the MarsAI platform!</p><p>— The MarsAI Team</p>`);
+
+    res.status(201).json({ message: "Utilisateur créé", newUser: safeUser });
+  } catch (error) {
+    res.status(500).json({ error: "Server error", details: error.message });
+  }
 }
 
 function checkToken(req, res) {

@@ -113,8 +113,14 @@ export default function Gallerie() {
     );
   }
 
-  const videos = data?.data?.showVideos ?? [];
+  const rawVideos = data?.data?.showVideos ?? [];
   const totalPages = data?.data?.totalPages ?? 1;
+
+  const videos = rawVideos.filter((v) => {
+    if (typeIA && !(v.ai_tools || "").toLowerCase().includes(typeIA.toLowerCase())) return false;
+    if (statut && v.status !== statut) return false;
+    return true;
+  });
 
   if (videos.length === 0) {
     return (

@@ -22,6 +22,8 @@ import Upload from "./pages/public/Upload.jsx";
 import Palmares from "./pages/public/Palmares.jsx";
 import Evennements from "./pages/public/Evennements.jsx";
 import Cms from "./pages/admin/Cms.jsx";
+import Settings from "./pages/admin/Settings.jsx";
+import Evaluations from "./pages/admin/Evaluations.jsx";
 import Reservation from "./pages/public/Reservation.jsx";
 import Profile from "./pages/public/Profile.jsx";
 import JuryVote from "./pages/JuryVote.jsx";
@@ -50,7 +52,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="/auth/login" element={<Login />} />
             <Route path="/auth/register" element={<Register />} />
             <Route path="/films/:id" element={<Film />} />
-            <Route path="/upload" element={<UploadRoleGuard allowedRoles={["Producer", "ADMIN"]}>
+            <Route path="/upload" element={<UploadRoleGuard allowedRoles={["PRODUCER", "ADMIN"]}>
              <Upload />
             </UploadRoleGuard>} />
             <Route path="/palmares" element={<Palmares />} />
@@ -83,6 +85,8 @@ createRoot(document.getElementById("root")).render(
             <Route path="jurys" element={<Jury />} />
             <Route path="events" element={<Events />} />
             <Route path="cms" element={<Cms />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="evaluations" element={<Evaluations />} />
 
           </Route>
         </Routes>

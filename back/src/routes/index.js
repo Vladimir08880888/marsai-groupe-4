@@ -15,6 +15,7 @@ import awardRouter from "./admin/Award.route.js";
 import profileRouter from "./Profile.route.js";
 import contactRouter from "./Contact.route.js";
 import reservationRouter from "./Reservation.route.js";
+import settingsRouter from "./admin/Settings.route.js";
 
 const router = express.Router();
 
@@ -34,5 +35,6 @@ router.use("/admin/awards", awardRouter);
 router.use("/profile", profileRouter);
 router.use("/contact", contactRouter);
 router.use("/reservations", reservationRouter);
+router.use("/admin/settings", settingsRouter);
 
 export default router;

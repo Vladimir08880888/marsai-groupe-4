@@ -1,5 +1,6 @@
 import Reservation from "../models/Reservation.js";
 import Event from "../models/Event.js";
+import sendMail from "../services/mailer.js";
 
 // Public — create a reservation
 async function createReservation(req, res) {
@@ -28,6 +29,9 @@ async function createReservation(req, res) {
 
     // Increment enrolled count
     await event.increment("enrolled");
+
+    sendMail(email, `MarsAI — Reservation confirmed: ${event.title}`,
+      `<p>Hi ${first_name},</p><p>Your reservation for <strong>${event.title}</strong> has been confirmed.</p><ul><li><strong>Date:</strong> ${event.event_date || "TBD"}</li><li><strong>Location:</strong> ${event.location || "TBD"}</li></ul><p>— The MarsAI Team</p>`);
 
     res.status(201).json({ message: "Reservation created successfully", reservation });
   } catch (error) {

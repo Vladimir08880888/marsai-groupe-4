@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Rapport — Branche 39-home-page-development</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
+  @page { size: A4; margin: 25mm 20mm; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; color: #1a1a1a; line-height: 1.7; font-size: 11pt; background: #fff; }
+
+  .cover { height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; page-break-after: always; }
+  .cover h1 { font-size: 42pt; font-weight: 900; margin-bottom: 8px; }
+  .cover .ai { color: #7C3AED; }
+  .cover .subtitle { font-size: 14pt; color: #666; margin-bottom: 40px; }
+  .cover .meta { font-size: 11pt; color: #999; line-height: 2; }
+  .cover .meta strong { color: #333; }
+
+  h2 { font-size: 18pt; font-weight: 700; color: #7C3AED; margin: 30px 0 15px 0; padding-bottom: 6px; border-bottom: 2px solid #7C3AED; }
+  h3 { font-size: 13pt; font-weight: 600; color: #1a1a1a; margin: 20px 0 10px 0; }
+  h4 { font-size: 11pt; font-weight: 600; color: #444; margin: 14px 0 6px 0; }
+  p { margin-bottom: 10px; }
+
+  .code { background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 6px; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 9.5pt; line-height: 1.6; margin: 10px 0 16px 0; white-space: pre; }
+  .code .kw { color: #7C3AED; font-weight: 600; }
+  .code .fn { color: #2563EB; }
+  .code .str { color: #059669; }
+  .code .cm { color: #9CA3AF; }
+
+  .tag { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 9pt; font-weight: 600; margin: 2px; }
+  .tag-green { background: #D1FAE5; color: #059669; }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 16px 0; font-size: 10pt; }
+  th { background: #7C3AED; color: white; padding: 8px 12px; text-align: left; font-weight: 600; }
+  td { padding: 7px 12px; border-bottom: 1px solid #E5E7EB; }
+  tr:nth-child(even) { background: #F9FAFB; }
+
+  .highlight-box { background: #F5F3FF; border-left: 4px solid #7C3AED; padding: 14px 18px; margin: 12px 0; border-radius: 0 6px 6px 0; }
+
+  .schema-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 16px 0; }
+  .schema-box { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 10px 16px; text-align: center; min-width: 100px; }
+  .schema-box strong { display: block; font-size: 10pt; }
+  .schema-box span { font-size: 8pt; color: #9CA3AF; }
+  .schema-arrow { color: #7C3AED; font-size: 16pt; }
+
+  ul { padding-left: 20px; margin-bottom: 10px; }
+  li { margin-bottom: 4px; }
+  .page-break { page-break-before: always; }
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <h1>MARS<span class="ai">AI</span></h1>
+  <div class="subtitle">Rapport technique<br>Branche 39-home-page-development</div>
+  <div style="width: 60px; height: 3px; background: #7C3AED; margin: 30px auto;"></div>
+  <div class="meta">
+    <strong>Auteur :</strong> Vladimir Rodzaevski<br>
+    <strong>Branche :</strong> 39-home-page-development<br>
+    <strong>Commit :</strong> 8412c02 — Add public /home/featured and /home/stats API endpoints<br>
+    <strong>Date du commit :</strong> 9 fevrier 2026<br>
+    <strong>Projet :</strong> marsai-groupe-4<br>
+    <strong>Formation :</strong> CDPI — La Plateforme_, Marseille
+  </div>
+</div>
+
+<!-- 1. OBJECTIF -->
+<h2>1. Objectif du commit</h2>
+
+<p>La page d'accueil du site Mars.AI affiche actuellement des donnees statiques (titres de films, chiffres du festival codes en dur dans le JSX). L'objectif de ce commit est de creer deux <strong>endpoints API publics</strong> cote backend pour fournir ces donnees dynamiquement depuis la base de donnees MySQL :</p>
+
+<ul>
+  <li><code>GET /home/featured</code> — retourne les films en vedette (statut "selected" ou "finalist")</li>
+  <li><code>GET /home/stats</code> — retourne les statistiques du festival (nombre de films, utilisateurs, etc.)</li>
+</ul>
+
+<div class="highlight-box">
+  <strong>Fichiers crees :</strong> <code>HomeController.js</code>, <code>Home.route.js</code><br>
+  <strong>Fichier modifie :</strong> <code>routes/index.js</code> (2 lignes ajoutees)<br>
+  <strong>Total :</strong> 47 lignes ajoutees, 0 supprimees, 3 fichiers
+</div>
+
+<!-- 2. FICHIER 1 -->
+<h2>2. HomeController.js — Le controleur</h2>
+
+<p>Chemin : <code>back/src/controllers/HomeController.js</code> (37 lignes)</p>
+
+<h3>2.1 Imports</h3>
+<div class="code"><span class="kw">import</span> Film <span class="kw">from</span> <span class="str">"../models/Video.js"</span>;
+<span class="kw">import</span> User <span class="kw">from</span> <span class="str">"../models/User.js"</span>;
+<span class="kw">import</span> { Op } <span class="kw">from</span> <span class="str">"sequelize"</span>;</div>
+
+<ul>
+  <li><strong>Film</strong> — modele Sequelize defini dans <code>Video.js</code>, mappe la table <code>films</code> en base.</li>
+  <li><strong>User</strong> — modele Sequelize de la table <code>users</code>, utilise pour la jointure (recuperer le nom du realisateur).</li>
+  <li><strong>Op</strong> — operateurs Sequelize. On utilise <code>Op.in</code> pour filtrer par plusieurs valeurs.</li>
+</ul>
+
+<h3>2.2 Fonction getFeaturedVideos</h3>
+<div class="code"><span class="kw">function</span> <span class="fn">getFeaturedVideos</span>(req, res) {
+  Film.<span class="fn">findAll</span>({
+    where: { status: { [Op.<span class="fn">in</span>]: [<span class="str">"selected"</span>, <span class="str">"finalist"</span>] } },
+    limit: 6,
+    order: [[<span class="str">"created_at"</span>, <span class="str">"DESC"</span>]],
+    include: [
+      {
+        model: User,
+        as: <span class="str">"user"</span>,
+        attributes: [<span class="str">"id"</span>, <span class="str">"first_name"</span>, <span class="str">"last_name"</span>],
+      },
+    ],
+  }).<span class="fn">then</span>((films) => {
+    res.<span class="fn">json</span>(films);
+  }).<span class="fn">catch</span>((error) => {
+    res.<span class="fn">status</span>(500).<span class="fn">json</span>({ error: <span class="str">"Failed to fetch featured films"</span> });
+  });
+}</div>
+
+<h4>Analyse ligne par ligne :</h4>
+<table>
+  <tr><th>Element</th><th>Explication</th></tr>
+  <tr><td><code>Film.findAll({...})</code></td><td>Requete SELECT sur la table <code>films</code>. Retourne un tableau d'objets.</td></tr>
+  <tr><td><code>where: { status: { [Op.in]: [...] } }</code></td><td>Clause SQL : <code>WHERE status IN ('selected', 'finalist')</code>. Filtre les films qui ont ete selectionnes ou qui sont finalistes.</td></tr>
+  <tr><td><code>limit: 6</code></td><td>Maximum 6 resultats. La page d'accueil n'affiche que 6 films en vedette.</td></tr>
+  <tr><td><code>order: [["created_at", "DESC"]]</code></td><td>Tri par date de creation decroissante : les films les plus recents apparaissent en premier.</td></tr>
+  <tr><td><code>include: [{ model: User, as: "user" }]</code></td><td>Jointure LEFT JOIN avec la table <code>users</code> via la cle etrangere <code>user_id</code>. L'alias <code>"user"</code> correspond a l'association definie dans le modele Video.js.</td></tr>
+  <tr><td><code>attributes: ["id", "first_name", "last_name"]</code></td><td>On ne retourne que 3 champs de l'utilisateur. Le mot de passe et l'email sont exclus pour des raisons de securite.</td></tr>
+  <tr><td><code>.then((films) => res.json(films))</code></td><td>En cas de succes, retourne le tableau JSON avec code HTTP 200.</td></tr>
+  <tr><td><code>.catch((error) => res.status(500)...)</code></td><td>En cas d'erreur (DB inaccessible, requete invalide), retourne un code 500 avec un message d'erreur.</td></tr>
+</table>
+
+<h4>Requete SQL generee :</h4>
+<div class="code">SELECT films.*, users.id, users.first_name, users.last_name
+FROM films
+LEFT JOIN users ON films.user_id = users.id
+WHERE films.status IN ('selected', 'finalist')
+ORDER BY films.created_at DESC
+LIMIT 6;</div>
+
+<h4>Exemple de reponse :</h4>
+<div class="code">[
+  {
+    <span class="str">"id"</span>: 3,
+    <span class="str">"title"</span>: <span class="str">"Neural Odyssey"</span>,
+    <span class="str">"status"</span>: <span class="str">"finalist"</span>,
+    <span class="str">"thumbnail"</span>: <span class="str">"uploads/images/neural.jpg"</span>,
+    <span class="str">"youtube_link"</span>: <span class="str">"https://youtube.com/watch?v=..."</span>,
+    <span class="str">"created_at"</span>: <span class="str">"2026-02-01T00:00:00.000Z"</span>,
+    <span class="str">"user"</span>: {
+      <span class="str">"id"</span>: 5,
+      <span class="str">"first_name"</span>: <span class="str">"Jean"</span>,
+      <span class="str">"last_name"</span>: <span class="str">"Dupont"</span>
+    }
+  }
+]</div>
+
+<h3 class="page-break">2.3 Fonction getStats</h3>
+<div class="code"><span class="kw">function</span> <span class="fn">getStats</span>(req, res) {
+  Promise.<span class="fn">all</span>([
+    Film.<span class="fn">count</span>(),
+    User.<span class="fn">count</span>(),
+    Film.<span class="fn">count</span>({ where: { status: <span class="str">"selected"</span> } }),
+    Film.<span class="fn">count</span>({ where: { status: <span class="str">"finalist"</span> } }),
+  ]).<span class="fn">then</span>(([total_films, total_users, total_selected, total_finalists]) => {
+    res.<span class="fn">json</span>({ total_films, total_users, total_selected, total_finalists });
+  }).<span class="fn">catch</span>((error) => {
+    res.<span class="fn">status</span>(500).<span class="fn">json</span>({ error: <span class="str">"Failed to fetch stats"</span> });
+  });
+}</div>
+
+<h4>Analyse ligne par ligne :</h4>
+<table>
+  <tr><th>Element</th><th>Explication</th></tr>
+  <tr><td><code>Promise.all([...])</code></td><td>Execute les 4 requetes COUNT en <strong>parallele</strong>. Chaque <code>Film.count()</code> retourne une Promise. Promise.all attend que les 4 soient resolues.</td></tr>
+  <tr><td><code>Film.count()</code></td><td>SQL : <code>SELECT COUNT(*) FROM films</code>. Retourne le nombre total de films.</td></tr>
+  <tr><td><code>User.count()</code></td><td>SQL : <code>SELECT COUNT(*) FROM users</code>. Retourne le nombre total d'utilisateurs.</td></tr>
+  <tr><td><code>Film.count({ where: { status: "selected" } })</code></td><td>SQL : <code>SELECT COUNT(*) FROM films WHERE status = 'selected'</code>.</td></tr>
+  <tr><td><code>([total_films, total_users, ...])</code></td><td>Destructuring : les 4 resultats du Promise.all sont assignes a des variables nommees.</td></tr>
+  <tr><td><code>res.json({ total_films, total_users, ... })</code></td><td>Shorthand ES6 : equivalent a <code>{ total_films: total_films, ... }</code>.</td></tr>
+</table>
+
+<div class="highlight-box">
+  <strong>Pourquoi Promise.all ?</strong> Sans Promise.all, les 4 requetes seraient executees l'une apres l'autre (sequentiellement). Si chaque COUNT prend ~50ms, le total serait ~200ms. Avec Promise.all, elles s'executent en parallele et le total est ~50ms. C'est <strong>4 fois plus rapide</strong>.
+</div>
+
+<h4>Exemple de reponse :</h4>
+<div class="code">{
+  <span class="str">"total_films"</span>: 24,
+  <span class="str">"total_users"</span>: 156,
+  <span class="str">"total_selected"</span>: 8,
+  <span class="str">"total_finalists"</span>: 3
+}</div>
+
+<h3>2.4 Export</h3>
+<div class="code"><span class="kw">export default</span> { getFeaturedVideos, getStats };</div>
+<p>Export par defaut d'un objet contenant les deux fonctions. Cet objet est importe dans le routeur sous le nom <code>HomeController</code>.</p>
+
+<!-- 3. FICHIER 2 -->
+<h2>3. Home.route.js — Le routeur</h2>
+
+<p>Chemin : <code>back/src/routes/Home.route.js</code> (10 lignes)</p>
+
+<div class="code"><span class="kw">import</span> express <span class="kw">from</span> <span class="str">"express"</span>;
+<span class="kw">import</span> HomeController <span class="kw">from</span> <span class="str">"../controllers/HomeController.js"</span>;
+
+<span class="kw">const</span> homeRouter = express.<span class="fn">Router</span>();
+
+homeRouter.<span class="fn">get</span>(<span class="str">"/featured"</span>, HomeController.getFeaturedVideos);
+homeRouter.<span class="fn">get</span>(<span class="str">"/stats"</span>,    HomeController.getStats);
+
+<span class="kw">export default</span> homeRouter;</div>
+
+<h4>Analyse :</h4>
+<ul>
+  <li><code>express.Router()</code> — cree un mini-routeur Express independant, qui sera monte sur un prefixe dans le routeur principal.</li>
+  <li>Deux routes GET declarees. <strong>Pas de middleware d'authentification</strong> car ces endpoints sont publics (accessibles sans connexion).</li>
+  <li>Quand ce routeur est monte sur <code>/home</code>, les URLs finales deviennent <code>/home/featured</code> et <code>/home/stats</code>.</li>
+</ul>
+
+<!-- 4. FICHIER 3 -->
+<h2 class="page-break">4. Modification de routes/index.js</h2>
+
+<p>Chemin : <code>back/src/routes/index.js</code> — 2 lignes ajoutees</p>
+
+<h4>Ligne 1 — Import :</h4>
+<div class="code"><span class="kw">import</span> homeRouter <span class="kw">from</span> <span class="str">"./Home.route.js"</span>;   <span class="cm">// + ajout</span></div>
+
+<h4>Ligne 2 — Montage :</h4>
+<div class="code">router.<span class="fn">use</span>(<span class="str">"/home"</span>, homeRouter);              <span class="cm">// + ajout</span></div>
+
+<h4>Fichier complet apres modification :</h4>
+<div class="code"><span class="kw">import</span> express <span class="kw">from</span> <span class="str">"express"</span>;
+<span class="kw">import</span> userRouter <span class="kw">from</span> <span class="str">"./admin/User.route.js"</span>;
+<span class="kw">import</span> videoRouter <span class="kw">from</span> <span class="str">"./admin/Video.route.js"</span>;
+<span class="kw">import</span> authRouter <span class="kw">from</span> <span class="str">"./Auth.route.js"</span>;
+<span class="kw">import</span> homeRouter <span class="kw">from</span> <span class="str">"./Home.route.js"</span>;        <span class="cm">// ← AJOUT</span>
+<span class="kw">import</span> uploadRouter <span class="kw">from</span> <span class="str">"./Upload.route.js"</span>;
+<span class="kw">import</span> overviewRouter <span class="kw">from</span> <span class="str">"./admin/Overview.route.js"</span>;
+
+<span class="kw">const</span> router = express.<span class="fn">Router</span>();
+
+router.<span class="fn">use</span>(<span class="str">"/auth"</span>, authRouter);
+router.<span class="fn">use</span>(<span class="str">"/home"</span>, homeRouter);                <span class="cm">// ← AJOUT</span>
+router.<span class="fn">use</span>(<span class="str">"/users"</span>, userRouter);
+router.<span class="fn">use</span>(<span class="str">"/films"</span>, videoRouter);
+router.<span class="fn">use</span>(<span class="str">"/uploads"</span>, uploadRouter);
+router.<span class="fn">use</span>(<span class="str">"/overview"</span>, overviewRouter);
+
+<span class="kw">export default</span> router;</div>
+
+<p><code>router.use("/home", homeRouter)</code> monte le routeur Home sur le prefixe <code>/home</code>. Toutes les routes definies dans <code>Home.route.js</code> seront accessibles sous ce prefixe.</p>
+
+<!-- 5. SCHEMA -->
+<h2>5. Schema de fonctionnement</h2>
+
+<div class="schema-row">
+  <div class="schema-box"><strong>Navigateur</strong><span>GET /home/featured</span></div>
+  <div class="schema-arrow">→</div>
+  <div class="schema-box" style="border-color: #7C3AED;"><strong>index.js</strong><span>router.use("/home")</span></div>
+  <div class="schema-arrow">→</div>
+  <div class="schema-box" style="border-color: #7C3AED;"><strong>Home.route.js</strong><span>.get("/featured")</span></div>
+  <div class="schema-arrow">→</div>
+  <div class="schema-box"><strong>HomeController</strong><span>getFeaturedVideos()</span></div>
+  <div class="schema-arrow">→</div>
+  <div class="schema-box"><strong>MySQL</strong><span>SELECT ... FROM films</span></div>
+</div>
+
+<table>
+  <tr><th>Methode</th><th>URL finale</th><th>Fonction</th><th>Authentification</th></tr>
+  <tr><td><span class="tag tag-green">GET</span></td><td><code>/home/featured</code></td><td>getFeaturedVideos</td><td>Non (public)</td></tr>
+  <tr><td><span class="tag tag-green">GET</span></td><td><code>/home/stats</code></td><td>getStats</td><td>Non (public)</td></tr>
+</table>
+
+<!-- 6. MODELES UTILISES -->
+<h2>6. Modeles de donnees utilises</h2>
+
+<p>Les endpoints utilisent deux modeles Sequelize existants. Voici les champs pertinents :</p>
+
+<h3>Modele Film (table <code>films</code>)</h3>
+<table>
+  <tr><th>Champ</th><th>Type SQL</th><th>Utilise par</th></tr>
+  <tr><td>id</td><td>INT, PRIMARY KEY</td><td>featured, stats</td></tr>
+  <tr><td>title</td><td>VARCHAR(255)</td><td>featured</td></tr>
+  <tr><td>status</td><td>ENUM('submitted','under_review','rejected','selected','finalist')</td><td>featured (filtre), stats (count)</td></tr>
+  <tr><td>thumbnail</td><td>VARCHAR(255)</td><td>featured</td></tr>
+  <tr><td>youtube_link</td><td>VARCHAR(255)</td><td>featured</td></tr>
+  <tr><td>created_at</td><td>DATETIME</td><td>featured (tri)</td></tr>
+  <tr><td>user_id</td><td>INT, FOREIGN KEY → users</td><td>featured (jointure)</td></tr>
+</table>
+
+<h3>Modele User (table <code>users</code>)</h3>
+<table>
+  <tr><th>Champ</th><th>Type SQL</th><th>Utilise par</th></tr>
+  <tr><td>id</td><td>INT, PRIMARY KEY</td><td>featured (jointure)</td></tr>
+  <tr><td>first_name</td><td>VARCHAR(100)</td><td>featured (jointure)</td></tr>
+  <tr><td>last_name</td><td>VARCHAR(100)</td><td>featured (jointure)</td></tr>
+</table>
+
+<p><strong>Association :</strong> <code>Film.belongsTo(User, { foreignKey: "user_id", as: "user" })</code> — definie dans <code>Video.js</code> ligne 100. Chaque film appartient a un utilisateur (son realisateur).</p>
+
+<!-- 7. COMPATIBILITE -->
+<h2 class="page-break">7. Compatibilite avec main</h2>
+
+<div class="highlight-box">
+  <strong>Resultat du test de merge (dry-run) : aucun conflit.</strong>
+</div>
+
+<p>Le merge est propre car :</p>
+<ul>
+  <li><code>HomeController.js</code> — fichier <strong>nouveau</strong>, n'existe pas dans main.</li>
+  <li><code>Home.route.js</code> — fichier <strong>nouveau</strong>, n'existe pas dans main.</li>
+  <li><code>index.js</code> — seules 2 lignes sont ajoutees, aucune ligne existante n'est modifiee.</li>
+</ul>
+
+<p>Le champ <code>status</code> avec les valeurs ENUM (<code>submitted</code>, <code>under_review</code>, <code>rejected</code>, <code>selected</code>, <code>finalist</code>) existe bien dans le modele Film de la branche main. Les endpoints fonctionneront immediatement apres le merge.</p>
+
+<!-- 8. FIN -->
+<div style="text-align: center; margin-top: 80px; color: #999; font-size: 10pt;">
+  — Fin du rapport —<br>
+  Vladimir Rodzaevski — Branche 39-home-page-development — Commit 8412c02<br>
+  CDPI 2025-2026 — La Plateforme_, Marseille
+</div>
+
+</body>
+</html>

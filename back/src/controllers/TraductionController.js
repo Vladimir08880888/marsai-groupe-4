@@ -1,8 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const locals = path.join(process.cwd("src/locals"),'');
-
 async function getTranslations(req,res){
     try{
         const{lang}=req.params;
