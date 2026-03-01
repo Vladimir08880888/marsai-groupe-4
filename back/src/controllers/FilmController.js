@@ -47,4 +47,34 @@ async function listFilms(req, res) {
   }
 }
 
-export default { listFilms };
+async function getFilmById(req, res) {
+  try {
+    const { id } = req.params;
+    const film = await Film.findByPk(id, {
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "first_name", "last_name", "email"],
+        },
+        {
+          model: User,
+          as: "juryMembers",
+          attributes: ["id", "first_name", "last_name", "email"],
+          through: { attributes: [] },
+          required: false,
+        },
+      ],
+    });
+
+    if (!film) {
+      return res.status(404).json({ error: "Film not found" });
+    }
+
+    res.json(film);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch film", details: error.message });
+  }
+}
+
+export default { listFilms, getFilmById };
