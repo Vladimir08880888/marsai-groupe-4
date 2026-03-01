@@ -12,7 +12,8 @@ export default function Navbar() {
 
   const isLoggedIn = !!localStorage.getItem("token");
   const userRole = localStorage.getItem("role");
-  const userPath = isLoggedIn ? "/admin" : "/auth/login";
+  const isAdmin = userRole === "ADMIN";
+  const userPath = isAdmin ? "/admin" : isLoggedIn ? "/profile" : "/auth/login";
   const isJury = userRole === "JURY" || userRole === "ADMIN";
 
   useEffect(() => {

@@ -12,6 +12,7 @@ import juryRouter from "./admin/Jury.route.js";
 import evaluationRouter from "./admin/Evaluation.route.js";
 import palmaresRouter from "./Palmares.route.js";
 import awardRouter from "./admin/Award.route.js";
+import profileRouter from "./Profile.route.js";
 
 const router = express.Router();
 
@@ -28,5 +29,6 @@ router.use("/jury", juryRouter);
 router.use("/admin/evaluations", evaluationRouter);
 router.use("/palmares", palmaresRouter);
 router.use("/admin/awards", awardRouter);
+router.use("/profile", profileRouter);
 
 export default router;

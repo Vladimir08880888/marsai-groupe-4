@@ -23,6 +23,7 @@ import Palmares from "./pages/public/Palmares.jsx";
 import Evennements from "./pages/public/Evennements.jsx";
 import Cms from "./pages/admin/Cms.jsx";
 import Reservation from "./pages/public/Reservation.jsx";
+import Profile from "./pages/public/Profile.jsx";
 import JuryVote from "./pages/JuryVote.jsx";
 import Gallerie from "./pages/public/Gallerie.jsx";
 import { UploadRoleGuard } from "./middlewares/Upload.jsx";
@@ -55,8 +56,13 @@ createRoot(document.getElementById("root")).render(
             <Route path="/palmares" element={<Palmares />} />
             <Route path="/agenda" element={<Evennements />} />
             <Route path="/reservation" element={<Reservation />} />
+            <Route path="/profile" element={
+              <UploadRoleGuard allowedRoles={["PRODUCER", "JURY", "ADMIN"]}>
+                <Profile />
+              </UploadRoleGuard>
+            } />
 
-            
+
           </Route>
 
           {/* Route jury */}

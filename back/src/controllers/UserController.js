@@ -102,6 +102,41 @@ function getRoles(req, res) {
 }
 
 
+// Get current authenticated user profile
+function getMe(req, res) {
+  const { password, ...safeUser } = req.user.dataValues;
+  res.json(safeUser);
+}
+
+// Update current authenticated user profile
+async function updateMe(req, res) {
+  try {
+    const user = req.user;
+    const allowedFields = [
+      "first_name", "last_name", "phone", "mobile", "birth_date",
+      "biography", "current_job", "portfolio_url", "youtube_url",
+      "instagram_url", "linkedin_url", "facebook_url", "tiktok_url",
+      "street", "postal_code", "city", "country", "discovery_source",
+    ];
+
+    allowedFields.forEach((field) => {
+      if (req.body[field] !== undefined) {
+        user[field] = req.body[field];
+      }
+    });
+
+    if (req.body.password) {
+      user.password = await hashPassword(req.body.password);
+    }
+
+    const updatedUser = await user.save();
+    const { password: _, ...safeUser } = updatedUser.dataValues;
+    res.json(safeUser);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update profile", details: error.message });
+  }
+}
+
 export default {
   getUsers,
   createUser,
@@ -110,4 +145,6 @@ export default {
   getUserById,
   findUserByEmail,
   getRoles,
+  getMe,
+  updateMe,
 };
