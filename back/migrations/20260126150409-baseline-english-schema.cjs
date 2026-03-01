@@ -9,7 +9,7 @@ module.exports = {
 
       await q(`
         CREATE TABLE users (
-          id INT AUTO_INCREMENT PRIMARY KEY,
+          id SERIAL PRIMARY KEY,
           first_name VARCHAR(100) NOT NULL,
           last_name VARCHAR(100) NOT NULL,
           email VARCHAR(255) NOT NULL UNIQUE,
@@ -30,54 +30,54 @@ module.exports = {
           facebook_url VARCHAR(255) NOT NULL,
           tiktok_url VARCHAR(255) NOT NULL,
           discovery_source VARCHAR(255) NOT NULL,
-          role ENUM('ADMIN','JURY','DIRECTOR','PARTICIPANT') NOT NULL DEFAULT 'PARTICIPANT',
+          role VARCHAR(20) NOT NULL DEFAULT 'PARTICIPANT',
 
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB;
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
       `);
 
       await q(`
         CREATE TABLE categories (
-          id INT AUTO_INCREMENT PRIMARY KEY,
+          id SERIAL PRIMARY KEY,
           name VARCHAR(255) NOT NULL,
 
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB;
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
       `);
 
       await q(`
         CREATE TABLE collaborators (
-          id INT AUTO_INCREMENT PRIMARY KEY,
-          title ENUM('Ms','Mr') NOT NULL DEFAULT 'Mr',
+          id SERIAL PRIMARY KEY,
+          title VARCHAR(10) NOT NULL DEFAULT 'Mr',
           first_name VARCHAR(255) NOT NULL,
           last_name VARCHAR(255) NOT NULL,
           profession VARCHAR(50) NOT NULL,
           email VARCHAR(255) NOT NULL UNIQUE,
 
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB;
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
       `);
 
       await q(`
         CREATE TABLE events (
-          id INT AUTO_INCREMENT PRIMARY KEY,
+          id SERIAL PRIMARY KEY,
           title VARCHAR(100) NOT NULL,
           description VARCHAR(255) DEFAULT '',
           event_date DATE NOT NULL,
           location VARCHAR(100) DEFAULT '',
-          type ENUM('conference','screening','workshop') NOT NULL DEFAULT 'conference',
+          type VARCHAR(20) NOT NULL DEFAULT 'conference',
 
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        ) ENGINE=InnoDB;
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
       `);
 
       await q(`
         CREATE TABLE films (
-          id INT AUTO_INCREMENT PRIMARY KEY,
+          id SERIAL PRIMARY KEY,
           title VARCHAR(255) NOT NULL,
           translated_title VARCHAR(255),
           duration VARCHAR(20),
@@ -90,55 +90,54 @@ module.exports = {
           thumbnail VARCHAR(255),
           image_2 VARCHAR(255),
           image_3 VARCHAR(255),
-          status ENUM('submitted','under_review','rejected','selected','finalist')
-            NOT NULL DEFAULT 'submitted',
+          status VARCHAR(20) NOT NULL DEFAULT 'submitted',
           user_id INT NOT NULL,
 
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
           CONSTRAINT fk_films_user
             FOREIGN KEY (user_id) REFERENCES users(id)
             ON DELETE CASCADE
-        ) ENGINE=InnoDB;
+        );
       `);
 
       await q(`
         CREATE TABLE evaluations (
-          id INT AUTO_INCREMENT PRIMARY KEY,
-          decision ENUM('YES','MAYBE','NO') NOT NULL DEFAULT 'MAYBE',
+          id SERIAL PRIMARY KEY,
+          decision VARCHAR(10) NOT NULL DEFAULT 'MAYBE',
           comment VARCHAR(255),
           user_id INT NOT NULL,
           film_id INT NOT NULL,
 
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-          UNIQUE KEY uk_evaluation (user_id, film_id),
+          UNIQUE (user_id, film_id),
           CONSTRAINT fk_evaluations_user FOREIGN KEY (user_id) REFERENCES users(id),
           CONSTRAINT fk_evaluations_film FOREIGN KEY (film_id) REFERENCES films(id)
-        ) ENGINE=InnoDB;
+        );
       `);
 
       await q(`
         CREATE TABLE awards (
-          id INT AUTO_INCREMENT PRIMARY KEY,
+          id SERIAL PRIMARY KEY,
           name VARCHAR(100) NOT NULL,
-          edition_year YEAR NOT NULL,
+          edition_year INTEGER NOT NULL,
           prize VARCHAR(100) NOT NULL,
           description VARCHAR(100),
           film_id INT NOT NULL,
 
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
           CONSTRAINT fk_awards_film FOREIGN KEY (film_id) REFERENCES films(id)
-        ) ENGINE=InnoDB;
+        );
       `);
 
       await q(`
         CREATE TABLE reservations (
-          id INT AUTO_INCREMENT PRIMARY KEY,
+          id SERIAL PRIMARY KEY,
           first_name VARCHAR(100) NOT NULL,
           last_name VARCHAR(100) NOT NULL,
           email VARCHAR(255) NOT NULL,
@@ -146,10 +145,10 @@ module.exports = {
           event_id INT NOT NULL,
 
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
           CONSTRAINT fk_reservations_event FOREIGN KEY (event_id) REFERENCES events(id)
-        ) ENGINE=InnoDB;
+        );
       `);
 
 
@@ -160,7 +159,7 @@ module.exports = {
           PRIMARY KEY (film_id, category_id),
           FOREIGN KEY (film_id) REFERENCES films(id) ON DELETE CASCADE,
           FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB;
+        );
       `);
 
       await q(`
@@ -170,7 +169,7 @@ module.exports = {
           PRIMARY KEY (collaborator_id, film_id),
           FOREIGN KEY (collaborator_id) REFERENCES collaborators(id) ON DELETE CASCADE,
           FOREIGN KEY (film_id) REFERENCES films(id) ON DELETE CASCADE
-        ) ENGINE=InnoDB;
+        );
       `);
     });
   },
@@ -180,16 +179,16 @@ module.exports = {
       const q = (sql) =>
         queryInterface.sequelize.query(sql, { transaction: t });
 
-      await q(`DROP TABLE collaborator_films;`);
-      await q(`DROP TABLE film_categories;`);
-      await q(`DROP TABLE reservations;`);
-      await q(`DROP TABLE awards;`);
-      await q(`DROP TABLE evaluations;`);
-      await q(`DROP TABLE films;`);
-      await q(`DROP TABLE events;`);
-      await q(`DROP TABLE collaborators;`);
-      await q(`DROP TABLE categories;`);
-      await q(`DROP TABLE users;`);
+      await q(`DROP TABLE IF EXISTS collaborator_films;`);
+      await q(`DROP TABLE IF EXISTS film_categories;`);
+      await q(`DROP TABLE IF EXISTS reservations;`);
+      await q(`DROP TABLE IF EXISTS awards;`);
+      await q(`DROP TABLE IF EXISTS evaluations;`);
+      await q(`DROP TABLE IF EXISTS films;`);
+      await q(`DROP TABLE IF EXISTS events;`);
+      await q(`DROP TABLE IF EXISTS collaborators;`);
+      await q(`DROP TABLE IF EXISTS categories;`);
+      await q(`DROP TABLE IF EXISTS users;`);
     });
   },
 };

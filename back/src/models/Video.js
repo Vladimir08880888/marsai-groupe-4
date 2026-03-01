@@ -33,7 +33,7 @@ const Film = sequelize.define(
     },
 
     status: {
-      type: DataTypes.ENUM("submitted", "under_review", "rejected", "selected", "finalist"),
+      type: DataTypes.STRING(20),
       allowNull: false,
       defaultValue: "submitted",
     },

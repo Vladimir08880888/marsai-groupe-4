@@ -12,7 +12,7 @@ const Evaluation = sequelize.define(
       autoIncrement: true,
     },
     decision: {
-      type: DataTypes.ENUM("YES", "MAYBE", "NO"),
+      type: DataTypes.STRING(10),
       allowNull: false,
       defaultValue: "MAYBE",
     },

@@ -33,7 +33,7 @@ const Event = sequelize.define(
         },
 
         type: {
-          type: DataTypes.ENUM("conference", "screening", "Workshop"),
+          type: DataTypes.STRING(20),
           allowNull: false,
           defaultValue: "conference",
         },
@@ -63,7 +63,7 @@ const Event = sequelize.define(
         },
 
         status: {
-          type: DataTypes.ENUM("DRAFT", "OPEN", "FULL", "CLOSED", "CANCELLED"),
+          type: DataTypes.STRING(20),
           allowNull: false,
           defaultValue: "DRAFT",
         },

@@ -59,13 +59,7 @@ const Upload = sequelize.define("Upload", {
     allowNull: true,
   },
   status: {
-    type: DataTypes.ENUM(
-      "submitted",
-      "under_review",
-      "rejected",
-      "selected",
-      "finalist"
-    ),
+    type: DataTypes.STRING(20),
     defaultValue: "submitted",
     allowNull: false,
   },

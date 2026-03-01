@@ -35,7 +35,7 @@ module.exports = {
         "events",
         "status",
         {
-          type: Sequelize.ENUM("DRAFT", "OPEN", "FULL", "CLOSED", "CANCELLED"),
+          type: Sequelize.STRING(20),
           allowNull: false,
           defaultValue: "DRAFT",
         },

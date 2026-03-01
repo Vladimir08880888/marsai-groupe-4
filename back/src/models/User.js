@@ -54,7 +54,7 @@ const User = sequelize.define(
     discovery_source: { type: DataTypes.STRING(255), allowNull: true, defaultValue: null },
 
     role: {
-      type: DataTypes.ENUM("ADMIN", "JURY", "PRODUCER"),
+      type: DataTypes.STRING(20),
       allowNull: false,
       defaultValue: "PRODUCER",
     },
