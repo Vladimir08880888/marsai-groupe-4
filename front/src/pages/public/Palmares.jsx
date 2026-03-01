@@ -1,10 +1,18 @@
 import { Trophy, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import { getAwards } from "../../api/awards";
 
 export default function Palmares() {
   const { t } = useTranslation();
 
-  // 👉 DATE AUTOMATIQUE
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["awards"],
+    queryFn: () => getAwards().then((res) => res.data),
+  });
+
+  const awards = data || [];
+
   const today = new Date();
   const formattedDate = today
     .toLocaleDateString("fr-FR", {
@@ -14,31 +22,9 @@ export default function Palmares() {
     })
     .toUpperCase();
 
-  const topWinners = [
-    { place: 2, title: "CODE QUANTIQUE", studio: "Dystopia", prize: "PRIX DES HACKERS" },
-    { place: 1, title: "LE DERNIER HUMAIN", studio: "Ethereal", prize: "GRAND PRIX" },
-    { place: 3, title: "MÉMOIRES VIRTUELLES", studio: "Dystopia", prize: "PRIX DE L'INNOVATION" },
-  ];
-
-  const specialMentions = [
-    t("palmares.special_1"),
-    t("palmares.special_2"),
-    t("palmares.special_3"),
-    t("palmares.special_4"),
-    t("palmares.special_5"),
-    t("palmares.special_6"),
-  ];
-
-  const allWinners = [
-    "LE DERNIER HUMAIN",
-    "CODE QUANTIQUE",
-    "MÉMOIRES VIRTUELLES",
-    "NEURAL ODYSSEY",
-    "PIXEL PERFECT",
-    "RÊVES SYNTHÉTIQUES",
-    "ALGORITHMES D'AMOUR",
-    "LEVEL NUMÉRIQUE",
-  ];
+  // Split awards: top 3 by id order, rest as special mentions
+  const topWinners = awards.slice(0, 3);
+  const otherWinners = awards.slice(3);
 
   return (
     <div className="bg-black text-white min-h-screen px-6">
@@ -51,7 +37,7 @@ export default function Palmares() {
           </div>
         </div>
 
-        <h1 className="text-5xl font-bold tracking-wide">PALMARÈS</h1>
+        <h1 className="text-5xl font-bold tracking-wide">PALMARES</h1>
         <p className="text-gray-400 mt-3 tracking-widest text-sm">
           {t("palmares.edition_title")}
         </p>
@@ -60,93 +46,104 @@ export default function Palmares() {
 
         <div className="flex justify-center gap-16 mt-10 text-center">
           <div>
-            <p className="text-3xl font-bold">247</p>
-            <p className="text-gray-500 text-sm">{t("palmares.submitted_film")}</p>
-          </div>
-          <div>
-            <p className="text-3xl font-bold">23</p>
+            <p className="text-3xl font-bold">{awards.length}</p>
             <p className="text-gray-500 text-sm">{t("palmares.laureat")}</p>
           </div>
-          <div>
-            <p className="text-3xl font-bold">42K</p>
-            <p className="text-gray-500 text-sm">{t("palmares.spectators")}</p>
-          </div>
         </div>
       </section>
+
+      {/* LOADING / ERROR */}
+      {isLoading && (
+        <div className="text-center text-gray-400 py-12">Loading...</div>
+      )}
+      {error && (
+        <div className="text-center text-red-400 py-12">
+          Error loading awards
+        </div>
+      )}
 
       {/* TOP WINNERS */}
-      <section className="max-w-6xl mx-auto mb-24">
-        <h2 className="text-xl mb-8 font-semibold">🏆 {t("palmares.winners")}</h2>
+      {topWinners.length > 0 && (
+        <section className="max-w-6xl mx-auto mb-24">
+          <h2 className="text-xl mb-8 font-semibold">
+            {t("palmares.winners")}
+          </h2>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {topWinners.map((film) => (
-            <div
-              key={film.title}
-              className={`bg-white/5 p-6 rounded-3xl border border-white/10 ${
-                film.place === 1 ? "ring-2 ring-yellow-400" : ""
-              }`}
-            >
-              <div className="text-yellow-400 font-bold text-xl mb-2">
-                #{film.place}
+          <div className="grid md:grid-cols-3 gap-8">
+            {topWinners.map((award, idx) => (
+              <div
+                key={award.id}
+                className={`bg-white/5 p-6 rounded-3xl border border-white/10 ${
+                  idx === 0 ? "ring-2 ring-yellow-400" : ""
+                }`}
+              >
+                <div className="text-yellow-400 font-bold text-xl mb-2">
+                  #{idx + 1}
+                </div>
+
+                {award.film?.thumbnail ? (
+                  <img
+                    src={`http://localhost:3000${award.film.thumbnail}`}
+                    alt={award.film.title}
+                    className="h-40 w-full object-cover rounded-xl mb-4"
+                  />
+                ) : (
+                  <div className="h-40 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl mb-4" />
+                )}
+
+                <h3 className="text-lg font-bold">
+                  {award.film?.title || award.name}
+                </h3>
+                <p className="text-gray-400 text-sm">
+                  {award.film?.user
+                    ? `${award.film.user.first_name} ${award.film.user.last_name}`
+                    : ""}
+                </p>
+                <p className="text-pink-400 text-sm mt-2">{award.prize}</p>
               </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-              <div className="h-40 bg-gradient-to-br from-purple-500 to-blue-500 rounded-xl mb-4" />
+      {/* OTHER WINNERS */}
+      {otherWinners.length > 0 && (
+        <section className="max-w-6xl mx-auto mb-32">
+          <h2 className="text-3xl font-bold text-center mb-12 text-purple-400 flex items-center justify-center gap-3">
+            <Sparkles className="text-pink-400" /> {t("palmares.honorable_mention")}
+          </h2>
 
-              <h3 className="text-lg font-bold">{film.title}</h3>
-              <p className="text-gray-400 text-sm">{film.studio}</p>
-              <p className="text-pink-400 text-sm mt-2">{film.prize}</p>
+          <div className="grid md:grid-cols-4 gap-6">
+            {otherWinners.map((award) => (
+              <div
+                key={award.id}
+                className="bg-white/5 p-4 rounded-2xl border border-white/10"
+              >
+                {award.film?.thumbnail ? (
+                  <img
+                    src={`http://localhost:3000${award.film.thumbnail}`}
+                    alt={award.film.title}
+                    className="h-40 w-full object-cover rounded-xl mb-3"
+                  />
+                ) : (
+                  <div className="h-40 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mb-3" />
+                )}
+                <h3 className="font-semibold text-sm">
+                  {award.film?.title || award.name}
+                </h3>
+                <p className="text-gray-400 text-xs">{award.prize}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-              <button className="mt-4 text-sm underline hover:text-pink-400">
-                {t("palmares.show")}
-              </button>
-            </div>
-          ))}
+      {/* EMPTY STATE */}
+      {!isLoading && awards.length === 0 && (
+        <div className="text-center text-gray-500 py-20">
+          {t("palmares.edition_title")}
         </div>
-      </section>
-
-      {/* SPECIAL */}
-      <section className="max-w-6xl mx-auto mb-24">
-        <h2 className="text-3xl font-bold text-center mb-12 text-purple-400 flex items-center justify-center gap-3">
-          <Sparkles className="text-pink-400" /> {t("palmares.honorable_mention")}
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {specialMentions.map((title, i) => (
-            <div
-              key={i}
-              className="bg-white/5 p-6 rounded-3xl border border-white/10 hover:scale-105 transition"
-            >
-              <div className="h-36 bg-gradient-to-br from-pink-500 to-indigo-500 rounded-xl mb-4" />
-              <h3 className="font-semibold">{title}</h3>
-              <p className="text-gray-400 text-sm mt-2">
-                {t("palmares.description")}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ALL */}
-      <section className="max-w-6xl mx-auto mb-32">
-        <h2 className="text-3xl font-bold text-center mb-12">
-          {t("palmares.all_laureat")}
-        </h2>
-
-        <div className="grid md:grid-cols-4 gap-6">
-          {allWinners.map((film, i) => (
-            <div
-              key={i}
-              className="bg-white/5 p-4 rounded-2xl border border-white/10"
-            >
-              <div className="h-40 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl mb-3"></div>
-              <h3 className="font-semibold text-sm">{film}</h3>
-              <p className="text-gray-400 text-xs">
-                {t("palmares.category")}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+      )}
     </div>
   );
 }
