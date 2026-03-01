@@ -14,6 +14,7 @@ import palmaresRouter from "./Palmares.route.js";
 import awardRouter from "./admin/Award.route.js";
 import profileRouter from "./Profile.route.js";
 import contactRouter from "./Contact.route.js";
+import reservationRouter from "./Reservation.route.js";
 
 const router = express.Router();
 
@@ -32,5 +33,6 @@ router.use("/palmares", palmaresRouter);
 router.use("/admin/awards", awardRouter);
 router.use("/profile", profileRouter);
 router.use("/contact", contactRouter);
+router.use("/reservations", reservationRouter);
 
 export default router;

@@ -2,6 +2,8 @@ import User from "./User.js";
 import Film from "./Video.js";
 import FilmsJury from "./FilmsJury.js";
 import Award from "./Award.js";
+import Reservation from "./Reservation.js";
+import Event from "./Event.js";
 
 // Define all associations here after all models are loaded
 export function setupAssociations() {
@@ -30,4 +32,8 @@ export function setupAssociations() {
   // Award -> Film
   Award.belongsTo(Film, { foreignKey: "film_id", as: "film" });
   Film.hasMany(Award, { foreignKey: "film_id", as: "awards" });
+
+  // Reservation -> Event
+  Reservation.belongsTo(Event, { foreignKey: "event_id", as: "event" });
+  Event.hasMany(Reservation, { foreignKey: "event_id", as: "reservations" });
 }
