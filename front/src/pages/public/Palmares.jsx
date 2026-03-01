@@ -2,6 +2,7 @@ import { Trophy, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { getAwards } from "../../api/awards";
+import { API_URL } from "../../api/config";
 
 export default function Palmares() {
   const { t } = useTranslation();
@@ -83,7 +84,7 @@ export default function Palmares() {
 
                 {award.film?.thumbnail ? (
                   <img
-                    src={`http://localhost:3000${award.film.thumbnail}`}
+                    src={`${API_URL}${award.film.thumbnail}`}
                     alt={award.film.title}
                     className="h-40 w-full object-cover rounded-xl mb-4"
                   />
@@ -121,7 +122,7 @@ export default function Palmares() {
               >
                 {award.film?.thumbnail ? (
                   <img
-                    src={`http://localhost:3000${award.film.thumbnail}`}
+                    src={`${API_URL}${award.film.thumbnail}`}
                     alt={award.film.title}
                     className="h-40 w-full object-cover rounded-xl mb-3"
                   />

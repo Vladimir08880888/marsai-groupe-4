@@ -170,7 +170,7 @@ export default function Upload() {
       if (tempData.image_3) formData.append("image_3", tempData.image_3);
       formData.append("video", tempData.video);
 
-      const response = await fetch("http://localhost:3000/uploads", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/uploads`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,

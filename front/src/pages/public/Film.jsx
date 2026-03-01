@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { getFilmById } from "../../api/films";
+import { API_URL } from "../../api/config";
 
 function getYoutubeEmbedUrl(link) {
   if (!link) return "";
@@ -66,7 +67,7 @@ export default function Film() {
         {film.thumbnail && (
           <div className="mb-8">
             <img
-              src={`http://localhost:3000${film.thumbnail}`}
+              src={`${API_URL}${film.thumbnail}`}
               alt={film.title}
               className="w-full max-h-[400px] object-cover rounded-2xl border border-white/10"
             />

@@ -274,8 +274,8 @@ function Videos() {
                                     title={video.title}
                                     customThumbnail={
                                       video.thumbnail
-                                        ? `http://localhost:3000/uploads/images/${video.thumbnail}`
-                                        : "http://localhost:3000/uploads/images/thumbnail-placeholder.png"
+                                        ? `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/uploads/images/${video.thumbnail}`
+                                        : `${import.meta.env.VITE_API_URL || "http://localhost:3000"}/uploads/images/thumbnail-placeholder.png`
                                     }
                                     defaultExpanded={false}
                                     className="mb-4"

@@ -1,8 +1,10 @@
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
 const instance = axios.create({
-  baseURL: "http://localhost:3000",
-  timeout: 1000,
+  baseURL: API_URL,
+  timeout: 10000,
 });
 
 instance.interceptors.request.use(
@@ -21,4 +23,5 @@ instance.interceptors.request.use(
   },
 );
 
+export { API_URL };
 export default instance;

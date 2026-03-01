@@ -30,7 +30,7 @@ function Evennements() {
   const [error, setError] = useState(null);
 
 useEffect(() => {
-  fetch('http://localhost:3000/events')
+  fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/events`)
   .then(res => {
     if(!res.ok){
       throw new Error('laoding error')
