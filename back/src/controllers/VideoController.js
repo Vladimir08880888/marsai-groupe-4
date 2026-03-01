@@ -11,8 +11,9 @@ async function getVideos(req, res) {
     const limit = Math.max(parseInt(req.query.limit ?? "6", 10), 1);
     const offset = (page - 1) * limit;
 
+    const where = req.query.all === "true" ? {} : { youtube_link: { [Op.ne]: null } };
     const { rows, count } = await Video.findAndCountAll({
-      where: { youtube_link: { [Op.ne]: null } },
+      where,
       include: [
         {
           model: User,

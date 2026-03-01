@@ -1,9 +1,12 @@
 import fs from 'fs/promises';
 import path from 'path';
 
+const ALLOWED_LANGS = ["fr", "en", "es", "de", "it", "pt", "ar", "zh"];
+
 async function getTranslations(req,res){
     try{
         const{lang}=req.params;
+        if (!ALLOWED_LANGS.includes(lang)) return res.status(400).json({message:"Invalid language"});
         const filePath = path.join(process.cwd(), "src/locals", `${lang}.json`);
         const content = await fs.readFile(filePath, 'utf-8');
         res.json(JSON.parse(content));
@@ -33,8 +36,9 @@ async function updateTranslation(req,res){
         const {lang}= req.params;
         const {key,value}= req.body;
 
+        if (!ALLOWED_LANGS.includes(lang)) return res.status(400).json({message:"Invalid language"});
         if(!key || value === undefined) return res.status(400).json({message:"Key and value are required"});
-        
+
         const filePath = path.join(process.cwd(), "src/locals", `${lang}.json`);
         const content = await fs.readFile(filePath, 'utf-8');
         const json = JSON.parse(content);
@@ -55,6 +59,7 @@ async function updateBulkTranslations(req, res) {
         const { lang } = req.params;
         const { translations } = req.body;
 
+        if (!ALLOWED_LANGS.includes(lang)) return res.status(400).json({message:"Invalid language"});
         if (!translations || typeof translations !== 'object') {
             return res.status(400).json({ message: "Translations object is required" });
         }

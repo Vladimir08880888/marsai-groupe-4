@@ -72,15 +72,6 @@ export function Login() {
        <h1 className="text-2xl">
           You are already logged in as {localStorage.getItem("first_name")}
         </h1>
-         <h1 className="text-2xl">
-          You are already logged in as {localStorage.getItem("first_name")}
-        </h1>
-         <h1 className="text-2xl">
-          You are already logged in as {localStorage.getItem("first_name")}
-        </h1>
-        <h1 className="text-2xl">
-          You are already logged in as {localStorage.getItem("first_name")}
-        </h1>
         <button onClick={handleLogout} className="hover:cursor-pointer">
           <LogOut className="size-4" />
           <span>Log out</span>

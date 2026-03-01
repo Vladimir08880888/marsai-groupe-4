@@ -56,7 +56,7 @@ function Videos() {
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["films", currentPage, limit],
-    queryFn: () => getVideos(currentPage, limit),
+    queryFn: () => getVideos(currentPage, limit, true),
     keepPreviousData: true,
   });
 
@@ -64,9 +64,8 @@ function Videos() {
     mutationFn: async (id) => {
       return await deleteVideo(id);
     },
-    onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries(['films']);
-      window.location.reload();
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['films'] });
     },
     onError: (error) => {
       alert('Erreur lors de la suppression: ' + (error.response?.data?.error || error.message));
@@ -78,7 +77,7 @@ function Videos() {
       return await updateVideo(id, data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(['films']);
+      queryClient.invalidateQueries({ queryKey: ['films'] });
       setIsEditDialogOpen(false);
       setEditingVideo(null);
     },
@@ -155,6 +154,40 @@ function Videos() {
       cell: ({ row }) => row.original.user?.email || "N/A",
     },
     {
+      accessorKey: "status",
+      header: "Statut",
+      cell: ({ row }) => {
+        const video = row.original;
+        const statusColors = {
+          submitted: "bg-gray-100 text-gray-700",
+          under_review: "bg-blue-100 text-blue-700",
+          selected: "bg-green-100 text-green-700",
+          finalist: "bg-purple-100 text-purple-700",
+          rejected: "bg-red-100 text-red-700",
+        };
+        const statusLabels = {
+          submitted: "Soumis",
+          under_review: "En révision",
+          selected: "Sélectionné",
+          finalist: "Finaliste",
+          rejected: "Rejeté",
+        };
+        return (
+          <select
+            value={video.status || "submitted"}
+            onChange={(e) => {
+              updateMutation.mutate({ id: video.id, data: { status: e.target.value } });
+            }}
+            className={`px-2 py-1 rounded-full text-xs font-medium border-0 cursor-pointer ${statusColors[video.status] || statusColors.submitted}`}
+          >
+            {Object.entries(statusLabels).map(([val, label]) => (
+              <option key={val} value={val}>{label}</option>
+            ))}
+          </select>
+        );
+      },
+    },
+    {
       accessorKey: "juryMembers",
       header: "Jury Assigné",
       cell: ({ row }) => {
@@ -163,7 +196,7 @@ function Videos() {
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-gray-500" />
             <span>
-              {juryMembers.length > 0 
+              {juryMembers.length > 0
                 ? juryMembers.map(j => `${j.first_name} ${j.last_name}`).join(", ")
                 : "Aucun jury"}
             </span>

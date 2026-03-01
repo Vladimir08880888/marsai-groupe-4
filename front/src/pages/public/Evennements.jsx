@@ -43,7 +43,7 @@ useEffect(() => {
   fetch(`${import.meta.env.VITE_API_URL || "http://localhost:3000"}/events`)
   .then(res => {
     if(!res.ok){
-      throw new Error('laoding error')
+      throw new Error('loading error')
     }
     return res.json();
   })

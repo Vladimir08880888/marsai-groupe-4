@@ -229,7 +229,12 @@
     "select": "Select"
   },
   "navbar": {
-    "gallery": "Gallery"
+    "home": "Home",
+    "gallery": "Gallery",
+    "palmares": "Winners",
+    "agenda": "Events",
+    "jury": "Jury Area",
+    "profile": "Profile"
   },
   "publiclayout": {
     "subtitle": "The global platform for generative storytelling, rooted in the light of Marseille.",

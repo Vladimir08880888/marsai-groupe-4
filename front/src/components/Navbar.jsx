@@ -129,25 +129,25 @@ export default function Navbar() {
         </div>
 
         {/* Links */}
+        <NavLink to="/" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
+          {t("navbar.home")}
+        </NavLink>
         <NavLink to="/gallerie" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
           {t("navbar.gallery")}
         </NavLink>
-        <NavLink to="/" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
-          Home
-        </NavLink>
         <NavLink to="/palmares" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
-          Palmarès
+          {t("navbar.palmares")}
         </NavLink>
         <NavLink to="/agenda" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
-          Agenda
+          {t("navbar.agenda")}
         </NavLink>
         {isJury && (
           <NavLink to="/jury" onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
-            Espace Jury
+            {t("navbar.jury")}
           </NavLink>
         )}
         <NavLink to={userPath} onClick={() => setOpen(false)} className="text-white/70 hover:text-white transition">
-          Profile
+          {t("navbar.profile")}
         </NavLink>
       </div>
     </section>
